@@ -1,0 +1,239 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+\usepackage{../mytikz_custom}
+\usepackage{xr-hyper} % Needed for external references   
+    \externaldocument{30_Covariance_1} 
+    \externaldocument{30_Correlation_Main} 
+\title{Covariance and Correlation}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    % remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \paragraph{Case 1 : Perfectly positively linearly related dataset
+(whew!)}\label{case-1-perfectly-positively-linearly-related-dataset-whew}
+
+Suppose we have such a case as below. you could note, this is of line
+\(y=2x\)
+
+\begin{itemize}
+\tightlist
+\item
+  X = 1,2,3,4,5,6\\
+\item
+  Y = 2,4,6,8,10,12
+\end{itemize}
+
+Then, every possible rectangle for each pair of
+\([ (x_i, y_i) , (x_j,y_j) ]\) is tabulated below. This illustrates the
+redundancy better. Note the repetitive values symmetrically spread from
+the diagonal lines. The color gradient gives a better perspective of the
+spread. The actual plot of the sample set is given on the right side.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_2_files/30_Covariance_2_3_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Using \(\ref{eq:C002}\) or \(\ref{eq:C003}\), TIA for given sample set,
+turns out to be \(210\)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}33}]:} \PY{n}{X} \PY{p}{,} \PY{n}{Y}\PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{]}
+         \PY{n}{N} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+         
+         \PY{k}{def} \PY{n+nf}{get\PYZus{}TIA}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{p}{)}\PY{p}{:}
+             \PY{n}{N} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+             \PY{n}{comb\PYZus{}l}\PY{p}{,} \PY{n}{area} \PY{o}{=} \PY{n+nb}{sorted}\PY{p}{(}\PY{n+nb}{zip}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{p}{)}\PY{p}{,} \PY{n}{key}\PY{o}{=}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{0}  \PY{c+c1}{\PYZsh{}sorting w.r.t Y}
+             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{N}\PY{p}{)}\PY{p}{:}  \PY{c+c1}{\PYZsh{} equivalent for i = 1 to N because, range is 0 to N\PYZhy{}1}
+                 \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+                     \PY{n}{X1}\PY{p}{,} \PY{n}{Y1}\PY{p}{,} \PY{n}{X2}\PY{p}{,} \PY{n}{Y2} \PY{o}{=} \PY{n}{comb\PYZus{}l}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{comb\PYZus{}l}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{comb\PYZus{}l}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{comb\PYZus{}l}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+                     \PY{n}{d1}\PY{p}{,} \PY{n}{d2} \PY{o}{=} \PY{n}{X2} \PY{o}{\PYZhy{}} \PY{n}{X1}\PY{p}{,} \PY{n}{Y2} \PY{o}{\PYZhy{}} \PY{n}{Y1}
+                     \PY{n}{area} \PY{o}{+}\PY{o}{=} \PY{n}{d1}\PY{o}{*}\PY{n}{d2}
+             \PY{k}{return} \PY{n}{area}
+         
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}TIA}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+210
+
+    \end{Verbatim}
+
+    \paragraph{Case 2 : Perfectly negatively linearly related
+dataset}\label{case-2-perfectly-negatively-linearly-related-dataset}
+
+Suppose we have such a case as below. you could note, this is of line
+\(y=14 - 2x\)
+
+\begin{itemize}
+\tightlist
+\item
+  X = 1,2,3,4,5,6\\
+\item
+  Y = 12,10,8,6,4,2
+\end{itemize}
+
+For this, let us check the rectangles' area.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_2_files/30_Covariance_2_7_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We see something interesting here. If you might have thought, some way
+the rectangular area also represented actual plot could notice it here
+that the area plot on left hand side is still similarly symmetrical as
+before, even though the plot is perfectly negatively related as shown on
+RHS. This is because, that was its definition in first place. The
+rectangular area plot on LHW just gives a measure of the spread of
+relationship, while the plot on RHS represents the actual location. Also
+note, that again, due to symmetry, we have duplicate values, thus
+suggesting to halve the measure. And the values are negative. This is
+good, now that could help to indicate our sample sets are negatively
+linearity related. Let us check out the TIA.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}35}]:} \PY{n}{X} \PY{p}{,} \PY{n}{Y}\PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}TIA}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+-210
+
+    \end{Verbatim}
+
+    Its negative. We are already getting somewhere! Let us consider another
+case, where there is no linear relationship.
+
+\paragraph{Case 3 : Dataset with no linear
+relationship}\label{case-3-dataset-with-no-linear-relationship}
+
+Suppose we have such a case as below.
+
+\begin{itemize}
+\tightlist
+\item
+  X = 1,2,3,4,5,6\\
+\item
+  Y = 12,10,8,8,10,12
+\end{itemize}
+
+The respective rectangle area and plots are as below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_2_files/30_Covariance_2_11_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Again, irrespective of actual plot, the area graph on LHS, is still
+symmetrical if you look carefully, assuring, no matter what, the measure
+is available in doubled quantity across all possible rectangles, so good
+golly gosh, we chose half of the rectangles. Note the RHS plot, there is
+clearly not a possibility of a best fit linearity between X and Y, and
+this should reflect in our measure. Let us calculate the TIA.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}37}]:} \PY{n}{X} \PY{p}{,} \PY{n}{Y} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{]}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}TIA}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0
+
+    \end{Verbatim}
+
+    Understandly it is 0. The no linear relationship in a literal sense has
+been transformed to a number via our TIA. Recall,
+
+\begin{itemize}
+\tightlist
+\item
+  for a perfectly positively linearly related dataset, we got +210
+\item
+  for a perfectly negatively linearly related dataset, we got -210
+\item
+  for a perfectly not linearly related dataset, we got 0
+\end{itemize}
+
+Thus our TIA is already proving to be a good measure. Note that, if we
+had taken all rectangles and getting 420,-420,0 instead, it would be an
+unnecessarily doubled stretch, giving a doubled sense of actual linearly
+underneath. By halving the area, that is via TIA, we have taken the
+linearity sense in a kind of \emph{same} scale of what it is.
+
+    \paragraph{Case 4: A practical realistic
+dataset}\label{case-4-a-practical-realistic-dataset}
+
+Suppose we have such a case as below.
+
+\begin{itemize}
+\tightlist
+\item
+  X = 2.2, 2.7, 3, 3.55, 4, 4.5, 4.75, 5.5
+\item
+  Y = 14, 23, 13, 22, 15, 20, 28 , 23
+\end{itemize}
+
+The respective rectangle area and plots are as below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_2_files/30_Covariance_2_16_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    You see, even for a realistic sample set which has some linearity
+associated in either direction (positive or negative), the LHS area
+diagram has a symmetry as usual. This would always be the case, thus we
+are right in taking the half no of rectangles, no matter what the
+linearity is. Proceeding to TIA, we get it as
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}39}]:} \PY{n}{X} \PY{p}{,} \PY{n}{Y} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{2.2}\PY{p}{,} \PY{l+m+mf}{2.7}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mf}{3.55}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mf}{4.5}\PY{p}{,} \PY{l+m+mf}{4.75}\PY{p}{,} \PY{l+m+mf}{5.5}\PY{p}{]}\PY{p}{,}\PY{p}{[} \PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{23}\PY{p}{,} \PY{l+m+mi}{13}\PY{p}{,} \PY{l+m+mi}{22}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{28} \PY{p}{,} \PY{l+m+mi}{23}\PY{p}{]}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}TIA}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+184.39999999999995
+
+    \end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

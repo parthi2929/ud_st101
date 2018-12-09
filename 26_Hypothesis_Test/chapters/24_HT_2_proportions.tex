@@ -1,0 +1,300 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage[numbers]{natbib}
+\bibliographystyle{abbrvnat}
+\usepackage{xr-hyper} % Needed for external references
+    \externaldocument{24_Hypothesis_Testing_Main} 
+\title{Hypothesis Testing}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{When Successes and Failures are high
+enough}\label{when-successes-and-failures-are-high-enough}
+
+\subsection{\texorpdfstring{\((p_1,p_2)\)
+known}{(p\_1,p\_2) known}}\label{p_1p_2-known}
+
+Suppose that we are interested in comparing two approximately normal
+sampling distributions described by random variables
+\(\dfrac{Y_1}{n_1} = N\Big(p_1,\dfrac{p_1q_1}{n_1}\Big)\) and
+\(\dfrac{Y_2}{n_2} = N\Big(p_2,\dfrac{p_2q_2}{n_2}\Big)\), created from
+population distributions which are Bernoulli distributions. Note that
+\(Y_1\) represents the sum of \emph{successes} in a sample set, and thus
+\(\dfrac{Y_1}{n_1}\) represents sample proportions. For example, for any
+\emph{kth} sample set of \(\dfrac{Y_1}{n_1}\), we calculate sample
+proportion statistic,
+\(\dfrac{Y_{1k}}{n_1} = \dfrac {1}{n} \sum\limits_{i=1}^n Y_{1ki}\),
+where \(Y_{1ki}\) is \(i\)th sample in \(k\)th sample set of sampling
+distribution described by \(\dfrac{Y_1}{n_1}\). Similarly for
+\(\dfrac{Y_2}{n_2}\). Then, if no of success and failures are high
+enough
+\footnote{https://www.khanacademy.org/math/ap-statistics/two-sample-inference/two-sample-z-test-proportions/v/hypothesis-test-for-difference-in-proportions},
+that is at least \textgreater{} 10, as a general rule, we could assume
+that the random variable \(W = \dfrac{Y_1}{n_1} - \dfrac{Y_2}{n_2}\) has
+approximately normal distribution \(W = N(p_w, \sigma_w^2)\) where
+\(p_w = p_1 - p_2\) and
+\(\sigma_w = \sqrt{\dfrac{p_1q_1}{n_1} + \dfrac{p_2q_2}{n_2}}\) and has
+shown below, before standardization to Z. We \emph{destandradize} from
+Z, because, each \(\alpha\) could be linked to corresponding \(z\)
+score, which further could be linked to actual \(w\) or x axis in
+question.
+
+    ~
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_proportions_files/24_HT_2_proportions_4_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The significance level \(\alpha\), corresponds to the rest of
+\(1-\alpha\) area, that is green area as shown above.
+
+    \begin{equation}
+    \begin{aligned}
+        P(W \geq \mu_w + z_{\alpha}\sigma_w) = \alpha \nonumber \\
+        \therefore P\Big(\dfrac{W - \mu_w}{\sigma_w} \geq z_{\alpha}\Big) = \alpha \nonumber \\
+        P\Bigg(\dfrac{(\frac{Y_1}{n_1} - \frac{Y_2}{n_2}) - (p_1 - p_2)}{\sqrt{ \frac{p_1q_1}{n_1} + \frac{p_2q_2}{n_2}  }} \geq z_{\alpha}\Bigg) = \alpha \label{eq:401}
+    \end{aligned}
+\end{equation}
+
+    Typically, null hypothesis is \(p_1 = p_2\), so, assigning it to a
+common \(p\), i.e \(p1=p2=p\),..
+
+    \begin{equation}
+    \begin{aligned}
+        P\Bigg(\dfrac{\frac{Y_1}{n_1} - \frac{Y_2}{n_2}}{\sqrt{ \frac{p_1q_1}{n_1} + \frac{p_2q_2}{n_2}  }} \geq z_{\alpha}\Bigg) = \alpha \nonumber \\
+        P\Bigg(\dfrac{\frac{Y_1}{n_1} - \frac{Y_2}{n_2}}{\sqrt{ pq (\frac{1}{n_1} + \frac{1}{n_2})  }} \geq z_{\alpha}\Bigg) = \alpha  \label{eq:402}      
+    \end{aligned}
+\end{equation}
+
+    Thus the z score for given sample data would be
+\(z = \dfrac{\frac{Y_1}{n_1} - \frac{Y_2}{n_2}}{\sqrt{ pq (\frac{1}{n_1} + \frac{1}{n_2}) }}\)
+
+    So if our alternate hypothesis is that \(H_a: p_1 > p_2\), then we could
+calculate Z score as above and if that is beyond \(z_{\alpha}\) we could
+reject null hypothesis.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_proportions_files/24_HT_2_proportions_11_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We could simlarly derive for \(H_a: p_1 < p_2\), and
+\(H_a: p_1 \neq p_2\).
+
+    \subsection{\texorpdfstring{\((p_1,p_2)\)
+unknown}{(p\_1,p\_2) unknown}}\label{p_1p_2-unknown}
+
+Of course, the above section was for pedagogical purposes, to illustrate
+the concept. In reality, the individual \(p_1\) and \(p_2\) are not
+hypothesized typically, and usually compared only to see if there is
+significant evidence that if one is greater/smaller/different from the
+other. In which case we simply could use our best estimator \(\hat{p}\)
+for calculating standard deviation in place of \(p\). There are usually
+two ways, here.
+
+\paragraph{\texorpdfstring{Way 1: Calculate weighted
+\(p\)}{Way 1: Calculate weighted p}}\label{way-1-calculate-weighted-p}
+
+This is usually given as \(\hat{p} = \dfrac{Y_1 + Y_2}{n_1 + n_2}\). And
+then, \(\ref{eq:402}\) beocmes
+
+\begin{equation}
+    \begin{aligned}
+        P\Bigg(\dfrac{\frac{Y_1}{n_1} - \frac{Y_2}{n_2}}{\sqrt{ \hat{p}\hat{q} (\frac{1}{n_1} + \frac{1}{n_2})  }} \geq z_{\alpha}\Bigg) = \alpha 
+    \end{aligned}
+\end{equation}
+
+At the time of this writing, I could not find a derivation for the same,
+so over to next one.
+
+\paragraph{\texorpdfstring{Way 2: Use sample
+\(\hat{p_1},\hat{p_2}\)}{Way 2: Use sample \textbackslash{}hat\{p\_1\},\textbackslash{}hat\{p\_2\}}}\label{way-2-use-sample-hatp_1hatp_2}
+
+This is straight forward approach directly from \(\ref{eq:401}\), with
+\(p_1 = p_2\)
+
+\begin{equation}
+    \begin{aligned}
+        P\Bigg(\dfrac{\hat{p_1} - \hat{p_2}}{\sqrt{ \frac{\hat{p_1}\hat{q_1}}{n_1} + \frac{\hat{p_2}\hat{q_2}}{n_2}  }} \geq z_{\alpha}\Bigg) = \alpha \label{eq:404}
+    \end{aligned}
+\end{equation}
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Tips]
+\begin{itemize}
+\item Equation $\ref{eq:404}$ would be the one mostly used for almost any of difference of proportions problems (of course adapted to right or left or both tails as needed)
+\end{itemize}
+\end{tcolorbox}
+    \paragraph{Example}\label{example}
+
+A machine shop that manufactures toggle levers has both a day and a
+night shift. A toggle lever is defective if a standard nut cannot be
+screwed onto the threads. Let p1 and p2 be the proportion of defective
+levers among those manufactured by the day and night shifts,
+respectively. We shall test the null hypothesis, \(H_0: p_1 = p_2\),
+against a two-sided alternative hypothesis based on two random samples,
+each of 1000 levers taken from the production of the respective shifts.
+
+\textbf{(a)} Define the test statistic and a critical region that has an
+\(\alpha = 0.05\) significance level. Sketch a standard normal pdf
+illustrating this critical region.
+
+\textbf{(b)} If \(y_1 = 37\) and \(y_2 = 53\) defectives were observed
+for the day and night shifts, respectively, calculate the value of the
+test statistic. Locate the calculated test statistic on your figure in
+part (a) and state your conclusion.
+
+This example was taken from exercise \emph{8.3-11} in \citet{robert2015}
+
+    \textbf{Solution:}
+
+Day:
+\(y_1 = 37, n_1 = 1000, \hat{p_1} = \dfrac{Y_1}{n_1} = \dfrac{37}{1000} = 0.037\)\\
+Night:
+\(y_2 = 53, n_2 = 1000, \hat{p_2} = \dfrac{Y_2}{n_2} = \dfrac{53}{1000} = 0.053\)
+
+\textbf{(a)}
+
+It is said, "two sided alternative hypothesis", so below is our required
+test statistic. note we have used our best estimators
+\((\hat{p_1},\hat{p_2})\) so result is only approximate.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_proportions_files/24_HT_2_proportions_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Calculating the values \(\sigma_w\), we could arrive at
+\(w = \mu_w \pm z_{\alpha/2}\sigma_w = \pm z_{\alpha/2}\sigma_w\) value
+beyond which we could define critical region \(\alpha\). Since it is
+double tailed, we already know \(z_{0.025} = 1.96\).
+
+\(\sigma_w = \sqrt{\frac{\hat{p_1}\hat{q_1}}{n_1} + \frac{\hat{p_2}\hat{q_2}}{n_2}} = \sqrt{\frac{(0.037)(1-0.037)}{1000} + \frac{(0.053)(1-0.053)}{1000}}\)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}14}]:} \PY{n}{p\PYZus{}1\PYZus{}hat}\PY{p}{,} \PY{n}{q\PYZus{}1\PYZus{}hat}\PY{p}{,} \PY{n}{p\PYZus{}2\PYZus{}hat}\PY{p}{,} \PY{n}{q\PYZus{}2\PYZus{}hat}\PY{p}{,} \PY{n}{n\PYZus{}1}\PY{p}{,} \PY{n}{n\PYZus{}2} \PY{o}{=} \PY{l+m+mf}{0.037}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.037}\PY{p}{,} \PY{l+m+mf}{0.053}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.053}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{,}
+         \PY{l+m+mi}{1000}
+         \PY{n}{z\PYZus{}0025} \PY{o}{=} \PY{l+m+mf}{1.96}
+         
+         \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+         \PY{n}{s\PYZus{}w} \PY{o}{=} \PY{n}{sqrt}\PY{p}{(} \PY{p}{(}\PY{n}{p\PYZus{}1\PYZus{}hat}\PY{o}{*}\PY{n}{q\PYZus{}1\PYZus{}hat}\PY{o}{/}\PY{n}{n\PYZus{}1}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{n}{p\PYZus{}2\PYZus{}hat}\PY{o}{*}\PY{n}{q\PYZus{}2\PYZus{}hat}\PY{o}{/}\PY{n}{n\PYZus{}2}\PY{p}{)} \PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{s\PYZus{}w}\PY{o}{*}\PY{n}{z\PYZus{}0025}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.018157472158866164
+
+    \end{Verbatim}
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_proportions_files/24_HT_2_proportions_20_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We could alreay take a call on our null hypothesis, Our
+\(\hat{p_1} - \hat{p_2} = 0.037 - 0.053 = 0.016 < 0.0018\), so we cannot
+reject \(H_0\). Our standardized test statistic would be simply z
+distribution as below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_proportions_files/24_HT_2_proportions_22_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \textbf{(b)}
+
+We have already kinda finished the solution, but for question's sake we
+could complete it fully by calculating the Z score.
+
+Using \(\ref{eq:404}\),
+\(z = \dfrac{\hat{p_1} - \hat{p_2}}{\sqrt{ \frac{\hat{p_1}\hat{q_1}}{n_1} + \frac{\hat{p_2}\hat{q_2}}{n_2} }}\)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}19}]:} \PY{n}{num} \PY{o}{=} \PY{n}{p\PYZus{}1\PYZus{}hat} \PY{o}{\PYZhy{}} \PY{n}{p\PYZus{}2\PYZus{}hat}
+         \PY{n}{den} \PY{o}{=} \PY{n}{s\PYZus{}w}
+         \PY{n}{num}\PY{o}{/}\PY{n}{den}
+\end{InVerbatim}
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}19}]:} -1.7271126578424703
+\end{Verbatim}
+            
+    Being double tailed operation, our z score is thus \(\pm 1.727\). And
+since \(\pm 1.727 < \pm 1.96\), we again \textbf{cannot reject null
+hypothesis} because then our probability of making Type I error would be
+more than allowed limit of \(\alpha = 0.05\). Our standardized test
+statistic, with \(\pm z_{\alpha/2} = \pm 1.727\) is shown below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_proportions_files/24_HT_2_proportions_26_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Though visibly not clear, one could use z table to find that
+\(z_{1.727}\) takes more area than 0.05 which corresponds to
+\(z_{1.96}\). Thus we conclude our answer.
+
+    \section{Conditions Summary}\label{conditions-summary}
+				\begin{tikzpicture}[node distance=2cm]
+		\node (start) [startstop] {Start};
+		\node (dec1) [decision, below of=start, yshift=-1cm] {${\scriptstyle (Y_1, Y_2) > 10? }$\\$\scriptstyle{(1-Y_1,1-Y_2) > 10?}$};
+		\node (stop) [startstop, right of=dec1, xshift=3cm] {Stop};
+		
+		
+		\node (pro1) [process, below of=dec1, yshift=-2cm] {Use $z$\\$\newline\displaystyle\sigma_w = \sqrt{ \frac{\hat{p_1}\hat{q_1}}{n_1} + \frac{\hat{p_2}\hat{q_2}}{n_2}  }$};
+
+		
+        \draw [arrow] (start) -- (dec1);
+		\draw [arrow] (dec1) --  node[anchor=east] {yes} node[anchor=south, white, fill=black!30!green,xshift=-1.5cm, yshift=-0.20cm] {PR1} (pro1);
+		\draw [arrow] (dec1) --  node[anchor=south, xshift=-0.5cm] {no}  (stop);
+		
+        \end{tikzpicture}	% if references to be checked during stand alone..
+    \ifstandalone
+	\clearpage	
+	\bibliography{../references} 
+	\fi
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

@@ -1,0 +1,34 @@
+\documentclass[float=false, crop=false,11pt,oneside]{book}
+\usepackage{standalone}
+\usepackage{import}
+\usepackage{xr-hyper} % Needed for external references
+
+\usepackage{myipy2tex}
+\usepackage{myrawtex}
+
+
+    
+\author{Parthiban Rajendran}
+\title{Confidence Intervals}
+
+    
+\begin{document}
+    
+    \maketitle 
+    
+    \tableofcontents
+    
+    
+    \chapter{Theory}
+    \import{chapters/}{"24. Confidence Intervals - Theory"} 
+    
+    \chapter{Examples}
+    \import{chapters/}{"24. Confidence Intervals - Deep Examples"}
+    \import{chapters/}{"24_confidence_intervals_shallow_examples"}  
+    
+    \chapter{Appendix}   
+    \import{chapters/}{"24_appendix"}
+
+	\nocite{*}
+	\bibliography{references} 	
+\end{document} 

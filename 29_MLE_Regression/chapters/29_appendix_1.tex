@@ -1,0 +1,383 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage[numbers]{natbib}
+\bibliographystyle{abbrvnat}
+\usepackage{xr-hyper} % Needed for external references
+    \externaldocument{29_appendix}
+    \externaldocument{29_MLE_Regression_Main} 
+\title{Hypothesis Testing}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{\texorpdfstring{\(e\) and natural
+logarithms}{e and natural logarithms}}\label{e-and-natural-logarithms}
+
+\subsection{\texorpdfstring{The basics of
+\(e\)}{The basics of e}}\label{the-basics-of-e}
+
+\paragraph{Case 1:}\label{case-1}
+
+Suppose we have a function \(M(t) = 2^t\) and we are interested in its
+rate of change \(\dfrac{dM(t)}{dt}\).
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_appendix_1_files/29_appendix_1_3_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \[
+\dfrac{dM(t)}{dt} =  \lim_{dt \to 0} \dfrac{2^{(t+dt)}-2^t}{dt} =  \lim_{dt \to 0} \dfrac{2^t2^{dt} - 2^t}{dt} 
+=  \lim_{dt \to 0} \dfrac{2^t(2^{dt} - 1)}{dt} \\
+\therefore \dfrac{d(2^t)}{dt} = \lim_{dt \to 0} 2^t\Big(\dfrac{2^{dt}-1}{dt}\Big) 
+\]
+
+    One could note that, as \(dt \to 0\), the component
+\(\Big( \dfrac{2^{dt}-1}{dt} \Big) \to 0.6931\) as shown below.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}36}]:} \PY{n}{dt} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{,} \PY{l+m+mf}{0.005}\PY{p}{,} \PY{l+m+mf}{0.001}\PY{p}{,}\PY{l+m+mf}{0.0005}\PY{p}{,} \PY{l+m+mf}{0.0001}\PY{p}{]}
+         \PY{n}{cl} \PY{o}{=} \PY{p}{[}\PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{o}{*}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{/}\PY{n}{i}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{dt}\PY{p}{]}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.1 0.71773
+0.01 0.69556
+0.005 0.69435
+0.001 0.69339
+0.0005 0.69327
+0.0001 0.69317
+
+    \end{Verbatim}
+
+    So,
+
+\begin{equation}
+    \dfrac{d(2^t)}{dt} = \lim_{dt \to 0} 2^t\Big(\dfrac{2^{dt}-1}{dt}\Big) = 2^t(0.6931)
+\end{equation}
+
+    \paragraph{Case 2:}\label{case-2}
+
+Suppose we have a function \(M(t) = 3^t\) and we are interested in its
+rate of change \(\dfrac{dM(t)}{dt}\).
+
+    \[
+\dfrac{dM(t)}{dt} =  \lim_{dt \to 0} \dfrac{3^{(t+dt)}-3^t}{dt} =  \lim_{dt \to 0} \dfrac{3^t2^{dt} - 3^t}{dt} 
+=  \lim_{dt \to 0} \dfrac{3^t(2^{dt} - 1)}{dt} \\
+\therefore \dfrac{d(3^t)}{dt} = \lim_{dt \to 0} 3^t\Big(\dfrac{3^{dt}-1}{dt}\Big)
+\]
+
+    One could note that, as \(dt \to 0\), the component
+\(\Big( \dfrac{3^{dt}-1}{dt} \Big) \to 1.09867\) as shown below.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}38}]:} \PY{n}{dt} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{,} \PY{l+m+mf}{0.005}\PY{p}{,} \PY{l+m+mf}{0.001}\PY{p}{,}\PY{l+m+mf}{0.0005}\PY{p}{,} \PY{l+m+mf}{0.0001}\PY{p}{]}
+         \PY{n}{cl} \PY{o}{=} \PY{p}{[}\PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{3}\PY{o}{*}\PY{o}{*}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{/}\PY{n}{i}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{dt}\PY{p}{]}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.1 1.16123
+0.01 1.10467
+0.005 1.10164
+0.001 1.09922
+0.0005 1.09891
+0.0001 1.09867
+
+    \end{Verbatim}
+
+    So,
+
+\begin{equation}
+    \dfrac{d(3^t)}{dt} = \lim_{dt \to 0} 3^t\Big(\dfrac{3^{dt}-1}{dt}\Big) = 3^t(1.09867)
+\end{equation}
+
+    \paragraph{Generalization}\label{generalization}
+
+Similarly for any \(M(t) = a^t\), we could prove,
+
+\begin{equation}
+    \dfrac{d(a^t)}{dt} = \lim_{dt \to 0} a^t\Big(\dfrac{a^{dt}-1}{dt}\Big) = a^tC \ \ \text{where C is some constant}
+\end{equation}
+
+    \paragraph{Wonder}\label{wonder}
+
+Naturally if we wonder, is there any similar \(M(t)\) for which the
+derivative is itself? (In other words, that some constant becomes 1?!).
+We could solve this as below.
+
+We want to find \(a\) such that,\\
+\[
+\lim_{dt \to 0} \Big(\dfrac{a^{dt}-1}{dt}\Big) = 1
+\]
+
+Rewriting, \[
+\lim_{dt \to 0} a^{dt} = 1 + dt \\
+\therefore a = \lim_{dt \to 0} (1 + dt)^{1/dt} \\
+\]
+
+    We can mathematically prove that, \((1+n)^{1/n}\) approaches a constant,
+but for here, we could simply compute like earlier, what is the value it
+is approaching..
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}45}]:} \PY{n}{dt} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{,} \PY{l+m+mf}{0.005}\PY{p}{,} \PY{l+m+mf}{0.001}\PY{p}{,}\PY{l+m+mf}{0.0005}\PY{p}{,} \PY{l+m+mf}{0.0001}\PY{p}{]}
+         \PY{n}{cl} \PY{o}{=} \PY{p}{[}\PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{n}{i}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{i}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{dt}\PY{p}{]}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.1 2.59374
+0.01 2.70481
+0.005 2.71152
+0.001 2.71692
+0.0005 2.7176
+0.0001 2.71815
+
+    \end{Verbatim}
+
+    \(\therefore\) we do have one constant \(2.718\) for which, the
+derivative of it is itself. That is,
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=The value of $e$]
+Let $e$ = 2.71815, then
+\begin{equation}
+    \dfrac{d(e^t)}{dt} = e^t  \label{eq:MA01}
+\end{equation}
+\end{tcolorbox}
+    \subsection{\texorpdfstring{Derivative of
+\(e^{ct}\)}{Derivative of e\^{}\{ct\}}}\label{derivative-of-ect}
+
+What is \(\dfrac{d(e^{ct})}{dt}\)? This can be solved by chain rule in
+differential calculus.
+
+Let \(u = ct\), then by chain rule,
+
+\[
+\dfrac{d(e^{ct})}{dt} = \dfrac{d(e^u)}{dt} = \dfrac{d(e^u)}{du}\dfrac{du}{dt} = e^u\dfrac{du}{dt}
+\]
+
+Substituting \(u=ct\) back, \[
+\dfrac{d(e^{ct})}{dt} =  e^{ct}\dfrac{d(ct)}{dt} = ce^{ct}
+\]
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=The derivative of $e^{ct}$]
+Let $e$ = 2.71815, then
+\begin{equation}
+    \dfrac{d(e^{ct})}{dt} = ce^{ct}  \label{eq:MA02}
+\end{equation}
+\end{tcolorbox}
+    \subsection{\texorpdfstring{Using \(e\) for any exponent
+form}{Using e for any exponent form}}\label{using-e-for-any-exponent-form}
+
+A short summary of what we saw earlier.
+
+\[
+\begin{aligned}
+& \dfrac{d(2^t)}{dt} = (0.6931)2^t \\
+& \dfrac{d(3^t)}{dt} = (1.0986)3^t \\
+& \dfrac{d(a^t)}{dt} = (C)a^t , \ \ \ \ \text{where $C$ is some constant depending on $a$} \\
+\end{aligned}
+\]
+
+Let \(2 = e^C\). Then
+
+\[
+2^t = e^{Ct}
+\]
+
+Taking derivatives on both sides, \[
+\dfrac{d(2^t)}{dt} = \dfrac{ d(e^{Ct}) }{dt} \\
+\implies (0.6931)2^t = Ce^{Ct} \\
+\implies C = 0.6931
+\]
+
+That is, the constant we earlier got, is nothing but the power to which
+we need to raise \(e\) to get the base value \(2\). That is,
+\(2 = e^{0.6931}\). We could call this constant as \textbf{natural
+logarithm of 2}, denoted by \(ln(2)\) or \(log_e(2)\)
+
+Similarly, let \(3 = e^C\). Then
+
+\[
+3^t = e^{Ct}
+\]
+
+Taking derivatives on both sides, \[
+\dfrac{d(3^t)}{dt} = \dfrac{ d(e^{Ct}) }{dt} \\
+\implies (1.0986)2^t = Ce^{Ct} \\
+\implies C = 1.0986
+\]
+
+Thus, \(3 = e^{1.0986}\). We could call this constant as \textbf{natural
+logarithm of 3}, denoted by \(ln(3)\) or \(log_e(3)\)
+
+Summarizing,
+
+\[
+\begin{aligned}
+& 2 = e^{ln(2)}, \ \ ln(2) = log_e(2) = 0.6931 \\
+& 3 = e^{ln(3)}, \ \ ln(3) = log_e(3) = 1.0986 \\
+\end{aligned}
+\]
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Any number in terms of $e$]
+Any number could be equated by $e$ to the power of its natural logarithmic value, which is a unique constant that could be derived. 
+\begin{equation}
+    a = e^{ln(a)}, \ \ ln(a) = log_e(a)  \label{eq:MA03}
+\end{equation}
+\end{tcolorbox}
+    \subsection{Multiplication and Division
+simplified}\label{multiplication-and-division-simplified}
+
+Suppose we have a function \(L(p,q) = p^yq^z\)
+
+We could make the multiplication of such exponents in to simpler form of
+addition of their natural logarithms as below.
+
+Let \(p = e^{C_1}\) and \(q = e^{C_2}\), then we already have seen,
+\(C_1 = ln(p), C_2 = ln(q)\).
+
+\[
+\therefore p^yq^z = e^{C_1y}e^{C_2}z = e^{C_1y + C_2z} = e^{ln(p)y + ln(q)z}
+\]
+
+If \(L = e^{ln(L)}\) similarly, then we could write,
+
+\[
+\begin{aligned}
+L = p^yq^z \\
+e^{ln(L)} = e^{ln(p)y + ln(q)z} \\
+\implies ln(L) = yln(p) + zln(q) \ \ \ \ \text{or} \\
+log_e(L) = ylog_e(p) + zlog_e(q)
+\end{aligned}
+\]
+
+If \(L(p,q) = \dfrac{p^y}{q^z}\)
+
+\[
+\dfrac{p^y}{q^z} = \dfrac{e^{C_1y}}{e^{C_2z}} = e^{C_1y - C_2z} = e^{ln(p)y - ln(q)z}
+\]
+
+If \(L = e^{ln(L)}\) similarly, then we could write,
+
+\[
+\begin{aligned}
+L = \dfrac{p^y}{q^z} \\
+e^{ln(L)} = e^{ln(p)y - ln(q)z} \\
+\implies ln(L) = yln(p) - zln(q) \ \ \ \ \text{or} \\
+log_e(L) = ylog_e(p) - zlog_e(q)
+\end{aligned}
+\]
+
+Thus we have simplified multiplication and division to addition and
+subtraction provided we know the equivalent natural logarithms of the
+values involved.
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Multiplication and Divison Simplification]
+\begin{itemize}
+\item If $L(p,q) = p^yq^z$, then 
+\begin{equation}
+    log_e(L) = ylog_e(p) + zlog_e(q)  \label{eq:MA04}
+\end{equation}
+\item If $L(p,q) = \dfrac{p^y}{q^z}$, then 
+\begin{equation}
+    log_e(L) = ylog_e(p) - zlog_e(q)  \label{eq:MA05}
+\end{equation}
+\end{itemize}
+\end{tcolorbox}
+    \subsection{\texorpdfstring{Derivatives of
+\(ln\)}{Derivatives of ln}}\label{derivatives-of-ln}
+
+We only see few derivatives that could be useful in MLE.
+
+Q1: What is the derivative of \(\dfrac{d(ln(x))}{dx}\)?
+
+Let \(y = ln(x) = log_ex\). This means, \(e^y = x\)
+
+Differentiating that,
+
+\[
+e^y = x \\
+\dfrac{d(e^y)}{dx} = \dfrac{dx}{dx} \\
+e^y\dfrac{dy}{dx} = 1 \\
+\dfrac{dy}{dx} = \dfrac{1}{e^y} \\
+\therefore \dfrac{d(ln(x))}{dx} = \dfrac{1}{x}
+\]
+
+    Q2: What is the derivative of \(\dfrac{d(ln(1 - x))}{dx}\)?
+
+Let \(y = ln(1 - x) = log_e(1-x)\). This means, \(e^y = 1 - x\)
+
+Differentiating that,
+
+\[
+e^y = 1 - x \\
+\dfrac{d(e^y)}{dx} = \dfrac{d(1-x)}{dx} \\
+e^y\dfrac{dy}{dx} = -1 \\
+\dfrac{dy}{dx} = \dfrac{-1}{e^y} = \dfrac{-1}{1 - x} \\
+\therefore \dfrac{d(ln(1-x))}{dx} = \dfrac{-1}{1 - x}
+\]
+
+    Q3: What is the derivative of \(\dfrac{d(ln(cx))}{dx}\)?
+
+Let \(u=cx\), \(y = ln(u)\). This means, \(e^y = u\)
+
+Differentiating that,
+
+\[
+\begin{aligned}
+e^y = u \\
+\dfrac{d(e^y)}{dx} = \dfrac{du}{dx} = \dfrac{d(2\pi x)}{dx} = 2\pi \\
+e^y\dfrac{dy}{dx} = 2\pi \\
+\dfrac{dy}{dx} = \dfrac{2\pi}{e^y} = \dfrac{2\pi}{u} = \dfrac{2\pi}{2\pi x} = \dfrac{1}{x}
+\end{aligned}
+\]
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Derivatives of $ln$]
+\begin{itemize}
+\item 
+\begin{equation}
+    \dfrac{d(ln(x))}{dx} = \dfrac{1}{x} \label{eq:MA06}
+\end{equation}
+\item 
+\begin{equation}
+    \dfrac{d(ln(1-x))}{dx} = \dfrac{-1}{1 - x} \label{eq:MA07}
+\end{equation}
+\item 
+\begin{equation}
+    \dfrac{d(ln(cx))}{dx} = \dfrac{1}{x} \label{eq:MA08}
+\end{equation}
+\end{itemize}
+\end{tcolorbox}
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

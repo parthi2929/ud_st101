@@ -1,0 +1,805 @@
+\documentclass[tikz = true, float=false, crop=false, 11pt]{standalone}
+
+% ANY PREAMBLE HERE IS REMOVED IF STANDALONE SO..
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+	\usepackage{../myipy2tex}
+	\usepackage{../myrawtex}
+	\usepackage{../myipy2tex_custom} 
+	\usepackage{../myrawtex_custom} 
+	\usepackage{../mytikz_custom}		
+	\setcounter{secnumdepth}{5}
+	\usepackage{xr-hyper}
+%	\externaldocument{30_Covariance_1}
+%	\externaldocument{30_Covariance_2}
+%	\externaldocument{30_Covariance_3}
+%	\externaldocument{30_Covariance_4}	
+	\externaldocument{30_Correlation_3}
+	\title{Correlation}
+\fi
+
+    
+\begin{document} \label{ap:ap_1}
+	
+	\ifstandalone
+	\tableofcontents
+	\newpage
+	\fi
+	
+	\section{Dot Product}	\label{sc:AP_001}
+	
+	\subsection{Angle between two 2D  unit vectors}
+	
+	Suppose we have two unit vectors $\hat{u},\hat{v}$ on a plane as shown in figure \ref{fig:AP_001}. We are interested in finding the angle between them $\theta$ which gives a measure of how much apart the vectors are. That is, quite a low angle, could say, both vectors are kind of in similar direction, and around 180 could mean, they are kind of in opposite direction and so on. We said unit vectors, but any vector to be called as a unit vector, it should satisfy the property that their \textit{magnitude} is 1. 
+	
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=0, xmax=3,    ymin=0,    ymax=3,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		grid = major, axis lines = middle  ,
+		axis line style={gray}
+		]
+		
+		\def\uu{\large $\hat{u}$};
+		\def\vu{\large $\hat{v}$};
+		\coordinate (o) at (0,0);
+		\coordinate (u) at (0.5, 1.5);
+		\coordinate (v) at (0.75, 0.75);
+		\coordinate (i) at (0.5,0);
+		\coordinate (j) at (0,0.5); 
+		
+		% \draw pic[draw,fill=cyan!30,angle radius=1.6cm,"$\beta$" shift={(9mm,2mm)}] {angle=i--o--u};
+		% \draw pic[draw,fill=red!30,angle radius=1.2cm,"$\alpha$" shift={(6mm,2mm)}] {angle=i--o--v};
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\theta$" shift={(1mm,1mm)}] {angle=v--o--u};
+		
+		
+		\draw[line width=2pt,blue,-stealth](o)--(u) node[anchor=south west]{\uu};
+		\draw[line width=2pt,red,-stealth](o)--(v) node[anchor=south west]{\vu};
+		\draw[line width=1.5pt,-stealth](o)--(i) node[below=6mm, anchor=south east]{$i$};
+		\draw[line width=1.5pt,-stealth](o)--(j) node[anchor=south east]{$j$};
+		
+		\end{axis}
+		
+		\end{tikzpicture}
+		\caption{Figure \ref*{fig:AP_001} Two unit vectors} \label{fig:AP_001}
+	\end{figure}
+	
+	Thus,  if 
+	
+	$$\begin{aligned}
+	\hat{u} = u_1\hat{i} + u_2\hat{j} \\
+	\hat{v} = v_1\hat{i} + v_2\hat{j} 
+	\end{aligned}$$
+	
+	then, one should choose magnitudes, $u_1, u_2, v_1, v_2$ such that,
+
+	$$\begin{aligned}
+	\lVert u \rVert = \sqrt{u_1^2 + u_2^2} = 1 \\
+	\lVert v \rVert = \sqrt{v_1^2 + v_2^2} = 1 \\
+	\end{aligned}$$	
+	
+	Using Pythagoras theorem, if we assume $\lVert u \rVert = K$, a constant, then as shown in figure \ref{fig:AP_002}, \\
+	
+	
+	$$\begin{aligned}
+	u1 = K\mathrm{cos}\beta \\
+	u2 = K\mathrm{sin}\beta \\	
+	\end{aligned}$$
+	
+	
+	
+		\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=0, xmax=2,    ymin=0,    ymax=2,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		grid = major, axis lines = none  ,
+		axis line style={gray}
+		]
+		
+		\def\uu{\large $\hat{u}$};
+		\def\vu{\large $\hat{v}$};
+		\coordinate (o) at (0,0);
+		\coordinate (u) at (0.5, 1.5);
+		\coordinate (v) at (0.75, 0.75);
+		\coordinate (i) at (0.5,0);
+		\coordinate (j) at (0,0.5); 
+		
+		\draw pic[draw,fill=cyan!30,angle radius=0.5cm,"$\beta$" shift={(3mm,3mm)}] {angle=i--o--u};
+		
+		\draw[line width=2pt,blue,-stealth](o)--(u) node[anchor=south west]{\uu};
+		\draw (o)--(u)--(i)--cycle;    
+		
+	    \node [left] at (0.25,1) {$K$};
+		\node [below] at (0.25,0) {$u_1=Kcos\beta$};
+		\node [below, xshift=12mm] at (0.5,0.75) {$u_2=Ksin\beta$};       
+		
+		\end{axis}
+		
+		\end{tikzpicture}
+		\caption{Figure \ref*{fig:AP_002} Magnitudes should add up to 1} \label{fig:AP_002}
+	\end{figure}	
+
+	$$\begin{aligned}
+	\lVert u \rVert = \sqrt{K^2{\mathrm{cos}^2\beta} + K^2{\mathrm{sin}^2\beta}} = K = 1
+	\end{aligned}$$
+	
+	Thus, we could conclude, for $\hat{u}$ to be unit vector, 
+	
+	$$\begin{aligned}
+	u_1 = \mathrm{cos}\beta \\
+	u_2 = \mathrm{sin}\beta
+	\end{aligned}$$
+	
+	We could similarly show that, if the angle spanned by $\hat{v}$ is $\alpha$, then 
+	
+	$$\begin{aligned}
+	v_1 = \mathrm{cos}\alpha \\
+	v_2 = \mathrm{sin}\alpha
+	\end{aligned}$$	
+
+	Note that, $\theta = \beta - \alpha$ as shown in Figure \ref{fig:AP_003}. 
+	
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=0, xmax=2,    ymin=0,    ymax=2,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		grid = major, axis lines = middle  ,
+		axis line style={gray}
+		]
+		
+		\def\uu{\large $\hat{u}$};
+		\def\vu{\large $\hat{v}$};
+		\coordinate (o) at (0,0);
+		\coordinate (u) at (0.5, 1.5);
+		\coordinate (v) at (0.75, 0.75);
+		\coordinate (i) at (0.5,0);
+		\coordinate (j) at (0,0.5); 
+		
+		\draw pic[draw,fill=cyan!30,angle radius=1.6cm,"$\beta$" shift={(9mm,2mm)}] {angle=i--o--u};
+		\draw pic[draw,fill=red!30,angle radius=1.2cm,"$\alpha$" shift={(6mm,2mm)}] {angle=i--o--v};
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\theta$" shift={(1mm,1mm)}] {angle=v--o--u};
+		
+		
+		\draw[line width=2pt,blue,-stealth](o)--(u) node[anchor=south west]{\uu};
+		\draw[line width=2pt,red,-stealth](o)--(v) node[anchor=south west]{\vu};
+		\draw[line width=1.5pt,-stealth](o)--(i) node[below=6mm, anchor=south east]{$i$};
+		\draw[line width=1.5pt,-stealth](o)--(j) node[anchor=south east]{$j$};   
+		
+		\end{axis}
+		
+		\end{tikzpicture}			
+		\caption{Figure \ref{fig:AP_003}: $\theta = \beta - \alpha$} \label{fig:AP_003}
+	\end{figure}
+
+	According to Ptolemy's difference \footnote{https://www2.clarku.edu/faculty/djoyce/trig/ptolemy.html} from trignometry, one could write, 
+	
+	$$\begin{aligned}
+		\mathrm{cos}(\beta - \alpha) = \mathrm{cos}\beta \mathrm{cos}\alpha + \mathrm{sin}\beta\mathrm{sin}\alpha \label{eq:AP_000}
+	\end{aligned}$$
+	
+	Decomposing it as a \textit{product matrix}, 
+
+	$$\begin{aligned}
+		\mathrm{cos}(\beta - \alpha) = 
+		\begin{matrix}
+		\begin{bmatrix}
+		\mathrm{cos}\beta & \mathrm{sin}\beta 
+		\end{bmatrix}     \\[2.8ex] 
+		\end{matrix}
+		\begin{bmatrix} 
+		\mathrm{cos}\alpha \\ \mathrm{sin}\alpha
+		\end{bmatrix} \\				
+		\mathrm{cos}\theta =		
+		\begin{matrix}
+		\begin{bmatrix}
+		u_1 & u_2
+		\end{bmatrix}     \\[2.8ex] 
+		\end{matrix}
+		\begin{bmatrix} 
+		v_1 \\ v_2
+		\end{bmatrix} 
+	\end{aligned}$$
+	
+	Whatever we are doing on the RHS above, we call \textit{that} as \textbf{dot product} of vectors $\hat{u},\hat{v}$. It is just that we \textit{define} that quantity as a dot product, which is denoted by $\hat{u}\bullet\hat{v}$.  \\
+
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Angle between two 2D unit vectors]	
+	\begin{align}
+		& \mathrm{cos}\theta = \hat{u}\bullet\hat{v} = 
+		\begin{matrix}
+		\begin{bmatrix}
+		u_1 & u_2
+		\end{bmatrix}     \\[2.8ex] 
+		\end{matrix}
+		\begin{bmatrix} 
+		v_1 \\ v_2
+		\end{bmatrix} = u_1v_1 + u_2v_2
+		\label{eq:AP_001}
+	\end{align}
+	\end{tcolorbox}			
+	
+	\subsection{Angle between two 2D non unit vectors}
+	
+	Suppose we have \textit{non unit} vectors, $\vec{a}, \vec{b}$ as shown in figure \ref{fig:AP_004}. We could derive their respective unit vectors easily by dividing with their magnitude. 
+	
+	Let 
+	
+	$$\begin{aligned}
+	\vec{a} = a_1\hat{i} + a_2\hat{j} \\
+	\vec{b} = b_1\hat{i} + b_2\hat{j}
+	\end{aligned}$$
+	
+	
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=0, xmax=3,    ymin=0,    ymax=3,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		grid = major, axis lines = middle  ,
+		axis line style={gray}
+		]
+		
+		\def\uu{\large $\hat{u}$};
+		\def\vu{\large $\hat{v}$};
+		\def\au{\large $\vec{a}$};
+		\def\bu{\large $\vec{b}$};
+		\coordinate (o) at (0,0);
+		\coordinate (a) at (0.75, 1.75);
+		\coordinate (u) at (0.394, 0.92);
+		\coordinate (b) at (1.25, 1);
+		\coordinate (v) at (0.78, 0.62);
+		\coordinate (i) at (0.5,0);
+		\coordinate (j) at (0,0.5); 
+		
+		% \draw pic[draw,fill=cyan!30,angle radius=1.6cm,"$\beta$" shift={(9mm,2mm)}] {angle=i--o--u};
+		% \draw pic[draw,fill=red!30,angle radius=1.2cm,"$\alpha$" shift={(6mm,2mm)}] {angle=i--o--v};
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\theta$" shift={(1mm,1mm)}] {angle=b--o--a};
+		
+		
+		\draw[line width=2pt,blue,-stealth](o)--(a) node[anchor=south west]{\au};
+		\draw[line width=2pt,blue,-stealth](o)--(u) node[anchor=south east, xshift=-2mm, yshift=-6mm]{\uu};
+		\draw[line width=2pt,red,-stealth](o)--(b) node[anchor=south west]{\bu};
+		\draw[line width=2pt,red,-stealth](o)--(v) node[anchor=south west, xshift=-6mm, yshift=-8mm]{\vu};
+		\draw[line width=1.5pt,-stealth](o)--(i) node[below=6mm, anchor=south east]{$\hat{i}$};
+		\draw[line width=1.5pt,-stealth](o)--(j) node[anchor=south east]{$\hat{j}$};
+		
+		\end{axis}
+		
+		\end{tikzpicture}
+		\caption{Figure \ref{fig:AP_004}: Dot product between non unit vectors $\vec{a}$ and $\vec{b}$} \label{fig:AP_004}
+		
+	\end{figure}	
+	
+	Then, their magnitudes will be,
+	$$\begin{aligned}
+	\lVert a \rVert = \sqrt{a_1^2 + a_2^2} \\
+	\lVert b \rVert = \sqrt{b_1^2 + b_2^2} 
+	\end{aligned}$$	
+
+	The unit vectors could easily derived by scaling down to find unit $x$ and $y$ components
+	$$\begin{aligned}
+	\hat{u} = \dfrac{a_1}{\lVert a \rVert}\hat{i} + \dfrac{a_2}{\lVert a \rVert}\hat{j} \\
+	\hat{v} = \dfrac{b_1}{\lVert b \rVert}\hat{i} + \dfrac{b_2}{\lVert b \rVert}\hat{j} \\
+	\end{aligned}$$
+	
+	By using \ref{eq:AP_001}, 
+	$$\begin{aligned}
+	\mathrm{cos}\theta = \hat{u}\bullet\hat{v} = 
+	\begin{matrix}
+		\begin{bmatrix}
+		 \dfrac{a_1}{\lVert a \rVert} &  \dfrac{a_2}{\lVert a \rVert}
+		\end{bmatrix}     \\[8ex] 
+	\end{matrix}
+		\begin{bmatrix} 
+		\dfrac{b_1}{\lVert b \rVert} \\ \\ \dfrac{b_2}{\lVert b \rVert}
+		\end{bmatrix} \\
+	= \dfrac{a_1}{\lVert a \rVert}\dfrac{b_1}{\lVert b \rVert} + \dfrac{a_2}{\lVert a \rVert}\dfrac{b_2}{\lVert b \rVert}  \\
+	= \dfrac{a_1b_1 + a_2b_2}{\lVert a \rVert\lVert b \rVert}
+	\end{aligned}$$
+	
+	Taking $\lVert a \rVert\lVert b \rVert$ to the other side, 
+	$$\begin{aligned}
+	\lVert a \rVert\lVert b \rVert\mathrm{cos}\theta = a_1b_1 + a_2b_2 = 
+	\begin{matrix}
+	\begin{bmatrix}
+	a_1 & a_2
+	\end{bmatrix}     \\[2.8ex] 
+	\end{matrix}
+	\begin{bmatrix} 
+	b_1 \\ b_2
+	\end{bmatrix} \\
+	= \vec{a} \bullet \vec{b}
+	\end{aligned}$$
+	
+	Thus, 
+	\begin{align}
+		\lVert a \rVert\lVert b \rVert\mathrm{cos}\theta = \vec{a} \bullet \vec{b}  \nonumber \\
+		\text{or} \ \ \   \mathrm{cos}\theta = \dfrac{ \vec{a} \bullet \vec{b} }{ \lVert a \rVert\lVert b \rVert } \label{eq:AP_002}
+	\end{align}
+	
+	And we already have, 
+	\begin{align}
+	\vec{a} \bullet \vec{b} = 
+		\begin{matrix}
+	\begin{bmatrix}
+	a_1 & a_2
+	\end{bmatrix}     \\[2.8ex] 
+	\end{matrix}
+	\begin{bmatrix} 
+	b_1 \\ b_2
+	\end{bmatrix} = a_1b_1 + a_2b_2
+	\end{align}
+
+	which is in \textit{Matrix Multiplication} form. It is also conventional to write the same as in vector dot form as below. 
+	
+	\begin{align}	
+		\vec{a} \bullet \vec{b} =		
+	\begin{bmatrix} 
+		a_1 \\ a_2
+	\end{bmatrix} \bullet
+	\begin{bmatrix} 
+		b_1 \\ b_2
+	\end{bmatrix} = a_1b_1 + a_2b_2
+	\end{align}
+
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Angle between two 2D non unit vectors]	
+	\begin{align}
+	 & \mathrm{cos}\theta = \dfrac{ \vec{a} \bullet \vec{b} }{ \lVert a \rVert\lVert b \rVert } \nonumber \\
+	 & \vec{a} \bullet \vec{b} = 
+		\begin{matrix}
+			\begin{bmatrix}
+				a_1 & a_2
+			\end{bmatrix}     \\[2.8ex] 
+		\end{matrix}
+		\begin{bmatrix} 
+			b_1 \\ b_2
+		\end{bmatrix} = 
+		\begin{bmatrix} 
+		a_1 \\ a_2
+		\end{bmatrix} \bullet
+		\begin{bmatrix} 
+			b_1 \\ b_2
+		\end{bmatrix}	= a_1b_1 + a_2b_2
+		\label{eq:AP_0025}
+	\end{align}
+	\end{tcolorbox}
+
+
+	\subsection{Law of Cosines}
+
+	It is difficult to comprehend equation \ref{eq:AP_000} in higher dimensions., so it could be helpful to try an alternate approach to derive the dot product. Suppose we have two vectors $\vec{a}, \vec{b}$. Then a 3rd vector $\vec{c}$ could be drawn making a triangle, such that, $\vec{a} + \vec{c} = \vec{b}$
+	
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=0, xmax=3,    ymin=0,    ymax=3,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		grid = major, axis lines = middle  ,
+		axis line style={gray}
+		]
+		
+		\def\uu{\large $\hat{u}$};
+		\def\vu{\large $\hat{v}$};
+		\def\au{\large $\vec{a}$};
+		\def\bu{\large $\vec{b}$};
+		\def\cu{\large $\vec{c}$};
+		\coordinate (o) at (0,0);
+		\coordinate (a) at (1, 2);
+		
+		\coordinate (b) at (2, 0.5);
+		
+		
+		\coordinate (u) at (0.26, 0.52);
+		\coordinate (v) at (0.52, 0.13);
+		
+		\coordinate (i) at (0.5,0);
+		\coordinate (j) at (0,0.5); 
+		
+		% \draw pic[draw,fill=cyan!30,angle radius=1.6cm,"$\beta$" shift={(9mm,2mm)}] {angle=i--o--u};
+		% \draw pic[draw,fill=red!30,angle radius=1.2cm,"$\alpha$" shift={(6mm,2mm)}] {angle=i--o--v};
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\theta$" shift={(1mm,1mm)}] {angle=b--o--a};
+		
+		
+		\draw[line width=2pt,blue,-stealth](o)--(a) node[anchor=south west, xshift=-2mm, yshift=-1mm]{A}; % vector a
+		\draw[line width=2pt,red,-stealth](o)--(b) node[anchor=south west, xshift=-1mm, yshift=-2mm]{B};   % vector b
+		\draw[line width=2pt,green!60!black,-stealth](a)--(b);   % vector c
+		
+		\draw[line width=2pt,blue,-stealth](o)--(u) node[anchor=south east, yshift=-2mm]{\uu};
+		\draw[line width=2pt,red,-stealth](o)--(v) node[anchor=south west, xshift=-2mm]{\vu};
+		
+		\draw[line width=1.5pt,-stealth](o)--(i) node[below=6mm, anchor=south east]{$\hat{i}$};
+		\draw[line width=1.5pt,-stealth](o)--(j) node[anchor=south east]{$\hat{j}$};
+		
+		% perpendicular line
+		% https://tex.stackexchange.com/questions/19348/how-to-draw-a-line-passing-through-a-point-and-perpendicular-to-another
+		% \draw ($(a)!(o)!(b)$) -- (o);
+		
+		\node [above] at (0.51, 1.28) {$\vec{a}$};
+		\node [below] at (1.42, 0.35) {$\vec{b}$};
+		\node [right] at (1.5550744854651, 1.3720514743811) {$\vec{c}$};
+		\node at (-0.12, 0.1) {O};
+		
+		% BELOW LINES DO NOT ADD SYMBOL AT RIGHT PLACE. 
+		% \coordinate (X) at (o |- a);
+		% \draw ($(X)!5pt!(o)$) -| ($(X)!5pt!(a)$);  
+		
+		\end{axis}
+		
+		% BELOW IS DRAWING AT WRONG PLACE
+		% \tkzDefPoint(0,0){O}
+		% \tkzDefPoint(1,2){A}
+		% \tkzDefPoint(2,0.5){B}
+		% \tkzDefPointBy[projection=onto B--A](O)  \tkzGetPoint{H};
+		% \tkzMarkRightAngle[fill=blue!20,size=.5](O,H,B);
+		
+		\end{tikzpicture}
+		\caption{Figure \ref{fig:AP_005}: Dot Product \\ Setup for Alternate Proof} \label{fig:AP_005}
+	\end{figure}
+
+	Since $\vec{a} + \vec{c} = \vec{b}$, this implies, $\vec{c} = \vec{b} - \vec{a}$. Expanding,
+	
+	\begin{align}
+	c_1\hat{i} + c_2\hat{j} = (b_1\hat{i} + b_2\hat{j}) - (a_1\hat{i} + a_2\hat{j}) \nonumber \\ 
+	= (b_1 - a_1)\hat{i} + (b_2 - a_2)\hat{j} \label{eq:AP_003}
+	\end{align}
+
+	Thus, their magnitudes also are equal. 
+	\begin{align}
+	\lVert \vec{c} \rVert = \sqrt{c_1^2 + c_2^2} = \sqrt{(b_1 - a_1)^2 + (b_2 - a_2)^2} = \lVert \vec{b} - \vec{a} \rVert \label{eq:AP_004}
+	\end{align}
+	
+	Let us draw perpendicular line from corners of the \textit{triangle} and also have two more angles $\beta,\alpha$ defined as shown in figure \ref{fig:AP_006}.  
+	
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=-0.2, xmax=3,    ymin=0,    ymax=3,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		grid = major, axis lines = middle  ,
+		axis line style={gray}
+		]
+		
+		\def\uu{\large $\hat{u}$};
+		\def\vu{\large $\hat{v}$};
+		\def\au{\large $\vec{a}$};
+		\def\bu{\large $\vec{b}$};
+		\def\cu{\large $\vec{c}$};
+		\coordinate (o) at (0,0);
+		\coordinate (a) at (1, 2);
+		
+		\coordinate (b) at (2, 0.5);
+		
+		
+		\coordinate (u) at (0.26, 0.52);
+		\coordinate (v) at (0.52, 0.13);
+		
+		\coordinate (i) at (0.5,0);
+		\coordinate (j) at (0,0.5); 
+		
+		% \draw pic[draw,fill=cyan!30,angle radius=1.6cm,"$\beta$" shift={(9mm,2mm)}] {angle=i--o--u};
+		% \draw pic[draw,fill=red!30,angle radius=1.2cm,"$\alpha$" shift={(6mm,2mm)}] {angle=i--o--v};
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\theta$" shift={(1mm,1mm)}] {angle=b--o--a};   % angle theta
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\beta$" shift={(1mm,0mm)}] {angle=o--a--b};
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\alpha$" shift={(0mm,1mm)}] {angle=a--b--o};
+		
+		
+		\draw[line width=2pt,blue,-stealth](o)--(a) node[anchor=south west, xshift=-2mm, yshift=-1mm]{A}; % vector a
+		\draw[line width=2pt,red,-stealth](o)--(b) node[anchor=south west, xshift=-1mm, yshift=-2mm]{B};   % vector b
+		\draw[line width=2pt,green!60!black,-stealth](a)--(b);   % vector c
+		
+		\draw[line width=2pt,blue,-stealth](o)--(u) node[anchor=south east, yshift=-2mm]{\uu};
+		\draw[line width=2pt,red,-stealth](o)--(v) node[anchor=south west, xshift=-2mm]{\vu};
+		
+		\draw[line width=1.5pt,-stealth](o)--(i) node[below=6mm, anchor=south east]{$\hat{i}$};
+		\draw[line width=1.5pt,-stealth](o)--(j) node[anchor=south east]{$\hat{j}$};
+		
+		% perpendicular line
+		% https://tex.stackexchange.com/questions/19348/how-to-draw-a-line-passing-through-a-point-and-perpendicular-to-another
+	    \draw ($(a)!(o)!(b)$) coordinate(aux0)  -- (o);
+		\draw ($(o)!(a)!(b)$) coordinate(aux1) -- (a);
+		\draw ($(o)!(b)!(a)$) coordinate(aux2) -- (b);
+		\draw ($(aux0)!2mm!(b)$) -- ++ ($($(aux0)!2mm!(o)$)-(aux0)$) -- ($(aux0)!2mm!(o)$);
+		\draw ($(aux1)!2mm!(b)$) -- ++ ($($(aux1)!2mm!(a)$)-(aux1)$) -- ($(aux1)!2mm!(a)$);
+		\draw ($(aux2)!2mm!(a)$) -- ++ ($($(aux2)!2mm!(b)$)-(aux2)$) -- ($(aux2)!2mm!(b)$);
+		
+		\node [above] at (0.47, 1.1) {$\vec{a}$};
+		\node [below] at (1, 0.27) {$\vec{b}$};
+		\node [right] at (1.6, 1.5) {$\vec{c}$};
+		\node at (-0.12, 0.1) {O};
+		\node [green!60!black] at (1.6, 1.3) {D};
+		\node [blue] at (0.6, 1.5) {E};
+		\node at (1.3165749960793, 0.202822270319) {F};
+		
+		% BELOW LINES DO NOT ADD SYMBOL AT RIGHT PLACE. 
+		% \coordinate (X) at (o |- a);
+		% \draw ($(X)!5pt!(o)$) -| ($(X)!5pt!(a)$);  
+		
+		\end{axis}
+		
+		% BELOW IS DRAWING AT WRONG PLACE
+		% \tkzDefPoint(0,0){O}
+		% \tkzDefPoint(1,2){A}
+		% \tkzDefPoint(2,0.5){B}
+		% \tkzDefPointBy[projection=onto B--A](O)  \tkzGetPoint{H};
+		% \tkzMarkRightAngle[fill=blue!20,size=.5](O,H,B);
+		
+		\end{tikzpicture}
+		\caption{Figure \ref{fig:AP_006}: Introducing Perpendicular lines and \\ two more angles $\alpha, \beta$} \label{fig:AP_006}
+	\end{figure}
+	
+	Then,
+	
+	$$\begin{aligned}
+	\lVert \vec{a} \rVert = \mathrm{OA} \\
+	\lVert \vec{b} \rVert = \mathrm{OB} \\
+	\lVert \vec{c} \rVert = \mathrm{AB} =  \mathrm{AD} + \mathrm{DB}
+	\end{aligned}$$
+	
+	By Pythagoras theorem, we could then say, 
+	
+	$$\begin{aligned}
+	\mathrm{AB} = \mathrm{AD} + \mathrm{DB} = \mathrm{OAcos}\beta + \mathrm{OBcos}\alpha \\
+	\mathrm{OA} = \mathrm{OE} + \mathrm{EA} = \mathrm{OBcos}\theta + \mathrm{ABcos}\beta \\
+	\mathrm{OB} = \mathrm{OF} + \mathrm{FB} = \mathrm{OAcos}\theta + \mathrm{ABcos}\alpha
+	\end{aligned}$$
+	
+	Let $\mathrm{AB} = c, \mathrm{OA} = a, \mathrm{OB} = b$, then
+	
+	$$\begin{aligned}
+	c = a\mathrm{cos}\beta + b\mathrm{cos}\alpha \\
+	a = b\mathrm{cos}\theta + c\mathrm{cos}\beta \\
+	b = a\mathrm{cos}\theta + c\mathrm{cos}\alpha
+	\end{aligned}$$
+	
+	Multiplying by the variable on LHS for all above three equations, we get,
+	
+	$$\begin{aligned}
+	c^2 = ac\mathrm{cos}\beta + cb\mathrm{cos}\alpha \\
+	a^2 = ab\mathrm{cos}\theta + ac\mathrm{cos}\beta \\
+	b^2 = ab\mathrm{cos}\theta + cb\mathrm{cos}\alpha
+	\end{aligned}$$
+	
+	Combining as below,
+	
+	$$\begin{aligned}
+	(a^2 + b^2) - c^2 = ab\mathrm{cos}\theta + \cancel{ac\mathrm{cos}\beta} + ab\mathrm{cos}\theta + \cancel{cb\mathrm{cos}\alpha} \\
+	- \cancel{ac\mathrm{cos}\beta} - \cancel{cb\mathrm{cos}\alpha} = 2ab\mathrm{cos}\theta
+	\end{aligned}$$
+	
+	Thus,
+	$$\begin{aligned}
+	c^2 = (a^2 + b^2) - 2ab\mathrm{cos}\theta \\
+	\implies \mathrm{AB}^2 = (\mathrm{OA}^2 + \mathrm{OB}^2) - 2(OA)(OB)\mathrm{cos}\theta \\
+	\implies \lVert c \rVert^2 = \lVert a \rVert^2 + \lVert b \rVert^2 - 2\lVert a \rVert\lVert b \rVert\mathrm{cos}\theta
+	\end{aligned}$$
+	
+	For simplicity, we shall use $c = \lVert c \rVert, a = \lVert a \rVert, b = \lVert b \rVert$ interchangeably.  \\
+	
+
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Law of Cosines]
+		The law of cosines states that, the lengths of the sides of a triangle could be related to cosine of one of its angles as below
+
+		\begin{align}
+		c^2 = (a^2 + b^2) - 2ab\mathrm{cos}\theta \nonumber \\		
+		\lVert c \rVert^2 = \lVert a \rVert^2 + \lVert b \rVert^2 - 2\lVert a \rVert\lVert b \rVert\mathrm{cos}\theta		
+		\label{eq:AP_005}
+		\end{align}
+
+	\end{tcolorbox}
+
+	\subsection{Angle between two 2D non unit vectors - Alternate Proof}
+	
+	Having established the law of cosines, we could then use that, to prove again the equation \ref{eq:AP_0025}. Noting that, 
+	
+	$$\begin{aligned}
+	a^2 = a_1^2 + a_2^2 \\
+	b^2 = b_1^2 + b_2^2 
+	\end{aligned}$$
+	
+	Also note, from equation \ref{eq:AP_004}, 
+	$$\begin{aligned}
+	c = b - a, \implies c^2 = (b - a)^2 
+	= (b_1 - a_1)^2 + (b_2 - a_2)^2
+	\end{aligned}$$
+	
+	Using both relations, we could thus re write equation \ref{eq:AP_005} as, 
+	
+	$$\begin{aligned}
+	2ab\mathrm{cos}\theta & = (a^2 + b^2) - c^2 \\
+	& = (a_1^2 + a_2^2) + (b_1^2 + b_2^2) - (b_1 - a_1)^2 - (b_2 - a_2)^2 \\
+	& = (a_1^2 + a_2^2) + (b_1^2 + b_2^2) - (b_1^2 + a_1^2 - 2a_1b_1) - (b_2^2 + a_2^2 - 2a_2b_2) \\
+	& = \cancel{a_1^2} + \cancel{a_2^2} + \cancel{b_1^2} + \cancel{b_2^2} - \cancel{b_1^2} - \cancel{a_1^2} + 2a_1b_1 - \cancel{b_2^2} - \cancel{a_2^2} + 2a_2b_2 \\
+	& = 2(a_1b_1 + a_2b_2) \\
+	\therefore ab\mathrm{cos}\theta & = a_1b_1 + a_2b_2
+	\end{aligned}$$
+	
+	Thus, 
+	$$\begin{aligned}
+	\mathrm{cos}\theta = \dfrac{a_1b_1 + a_2b_2}{ab} = \dfrac{\vec{a}\bullet\vec{b}}{\lVert a \rVert\lVert b \rVert}
+	\end{aligned}$$
+	
+	which is same as equation \ref{eq:AP_0025}. 
+
+	\subsection{Angle between two higher dimensional non unit vectors}
+	
+	As said earlier, law of cosines could be used similarly for higher dimensions. This is because, at any higher dimension, the angle
+	between two vectors is still on a plane that contains the two vectors, thus on that plane,  the relation we just
+	saw, apply. Figure \ref{fig:AP_006} illustrates the case for 3 dimensions. 
+	
+	\begin{figure}[!hpt]
+		\centering
+		\tdplotsetmaincoords{60}{120} 
+		\begin{tikzpicture} [scale=1.5, 
+		tdplot_main_coords, 
+		axis/.style={->,blue,thick}, 
+		vector/.style={-stealth,very thick}, 
+		vector guide/.style={dashed,thick}]
+		
+		
+		%standard tikz coordinate definition using x, y, z coords
+		\coordinate (O) at (0,0,0);
+		
+		%tikz-3dplot coordinate definition using x, y, z coords
+		
+		\pgfmathsetmacro{\yshift}{2.5}
+		\pgfmathsetmacro{\ax}{1}
+		\pgfmathsetmacro{\ay}{3}
+		\pgfmathsetmacro{\az}{2}
+		\pgfmathsetmacro{\bx}{2}
+		\pgfmathsetmacro{\by}{2.5}
+		\pgfmathsetmacro{\bz}{0.5}    
+		\pgfmathsetmacro{\xmax}{3}
+		\pgfmathsetmacro{\ymax}{3}
+		\pgfmathsetmacro{\zmax}{2}
+		
+		
+		
+		
+		\coordinate (A) at (\ax,\ay,\az);   %x,y,z
+		\coordinate (B) at (\bx,\by,\bz);   %x,y,z
+		
+		
+		
+		
+		%draw axes
+		\draw[axis] (0,0,0) -- (\xmax,0,0) node[anchor=north east]{$x$};
+		\draw[axis] (0,0,0) -- (0,\ymax,0) node[anchor=north west]{$y$};
+		\draw[axis] (0,0,0) -- (0,0,\zmax) node[anchor=south]{$z$};
+		
+		\filldraw[ draw=red, fill=red!20] (O) -- (B) -- (A) -- cycle;
+		
+		
+		%draw a vector from O to P
+		\draw[vector, blue] (O) -- (A); % vector A
+		\draw[vector, red] (O) -- (B); % vector B
+		\draw[vector, green!60!black] (A) -- (B); % vector C
+		
+		\draw[vector guide, blue]         (O) -- (\ax,\ay,0);
+		\draw[vector guide, blue] (\ax,\ay,0) -- (A);
+		% \draw[vector guide, blue]         (A) -- (0,0,\az);
+		% \draw[vector guide, blue] (\ax,\ay,0) -- (0,\ay,0);
+		% \draw[vector guide, blue] (\ax,\ay,0) -- (\ax,0,0);
+		
+		\draw[vector guide, red]         (O) -- (\bx,\by,0);
+		\draw[vector guide, red] (\bx,\by,0) -- (B);
+		% \draw[vector guide, red] (\bx,\by,0) -- (0,\by,0);
+		% \draw[vector guide, red] (\bx,\by,0) -- (\bx,0,0);    
+		
+		%https://tex.stackexchange.com/questions/126019/drawing-a-plane-in-3d-space
+		\draw pic[draw,fill=green!30,angle radius=1cm,"$\theta$" shift={(1mm,1mm)}] {angle=B--O--A}; 
+		
+		\node[tdplot_main_coords,anchor=east] at (O){O};
+		\node[tdplot_main_coords,anchor=west] at (A){A};
+		\node[tdplot_main_coords,anchor=west] at (B){B};
+		
+		\node [above] at (0.47, \ay/2, 1.1) {$\vec{a}$};
+		\node [below, xshift=5mm,yshift=1mm] at (1, \by/2, 0.27) {$\vec{b}$};
+		
+		
+		\end{tikzpicture}
+		\caption{Figure \ref{fig:AP_006}: Law of Cosine applicable \\ in any $n>1$ dimensions} \label{fig:AP_006}
+	\end{figure}
+	
+	Thus, if we define 3 dimensional vectors as below 
+	
+	$$\begin{aligned}
+	\vec{a} = a_1\hat{i} + a_2\hat{j} + a_3\hat{k} = \langle a_1, a_2, a_3 \rangle \\
+	\vec{b} = b_1\hat{i} + b_2\hat{j} + b_3\hat{k} = \langle b_1, b_2, b_3 \rangle \\
+	\vec{c} = \vec{b} - \vec{a} = (b_1 - a_1)\hat{i} + (b_2 - a_2)\hat{j} + (b_3 - a3)\hat{k}
+	\end{aligned}$$ 
+	
+	then using \ref{eq:AP_005}, 
+	
+	$$\begin{aligned}
+	2ab\mathrm{cos}\theta & = (a^2 + b^2) - c^2 \\
+	& = (a_1^2 + a_2^2 + a_3^2) + (b_1^2 + b_2^2 + b_3^2) - [ (b_1 - a_1)^2 + (b_2 - a_2)^2 + (b_3 - a_3)^2  ]	\\
+	& = (a_1^2 + a_2^2 + a_3^2) + (b_1^2 + b_2^2 + b_3^2) - [ b_1^2 + a_1^2 - 2a_1b_1 + b_2^2 + a_2^2 - 2a_2b_2 + b_3^2 + a_3^2 - 2a_3b_3 \\
+	& = \cancel{(a_1^2 + a_2^2 + a_3^2)} + \cancel{(b_1^2 + b_2^2 + b_3^2)} - [ \cancel{(b_1^2 + b_2^2 + b_3^2)} + \cancel{(a_1^2 + a_2^2 + a_3^2)} - 2a_1b_1 - 2a_2b_2 - 2a_3b_3] \\
+	& = 2(a_1b_1 + a_2b_2 + a_3b_3) \\
+	\therefore ab\mathrm{cos}\theta & = a_1b_1 + a_2b_2 + a_3b_3
+	\end{aligned}$$
+	
+	Thus, 
+	$$\begin{aligned}
+	\mathrm{cos}\theta = \dfrac{a_1b_1 + a_2b_2 + a_3b_3}{ab} = \dfrac{\vec{a}\bullet\vec{b}}{\lVert a \rVert\lVert b \rVert}
+	\end{aligned}$$
+	
+	which is same as equation \ref{eq:AP_0025}. 
+	
+	In fact, we could also prove for any $n$ dimensional vector as below even if we are unable to visualize beyond 3D. Note the short form used to denote the vector. If we define $n$ dimensional vectors as below 
+	
+	$$\begin{aligned}
+	\vec{a} = \langle a_1, a_2, a_3, \cdots , a_n \rangle \\
+	\vec{b} = \langle b_1, b_2, b_3, \cdots , b_n \rangle \\
+	\vec{c} = \vec{b} - \vec{a} = \langle (b_1-a_1), (b_2-a_2),\cdots,(b_n-a_n) \rangle 
+	\end{aligned}$$ 	
+	
+	then using \ref{eq:AP_005}, 
+
+	$$\begin{aligned}
+	2ab\mathrm{cos}\theta & = (a^2 + b^2) - c^2 \\
+	& = (a_1^2 + a_2^2 + a_3^2 + \cdots + a_n^2) + (b_1^2 + b_2^2 + b_3^2 + \cdots + b_n^2) - \\
+	& [ (b_1 - a_1)^2 + (b_2 - a_2)^2 + (b_3 - a_3)^2  + \cdots + (b_n - a_n)^2]	\\	
+	& = (a_1^2 + a_2^2 + a_3^2 + \cdots + a_n^2) + (b_1^2 + b_2^2 + b_3^2 + \cdots + b_n^2) - \\
+	& [ b_1^2 + a_1^2 - 2a_1b_1 +  b_2^2 + a_2^2 - 2a_2b_2 + \cdots + b_n^2 + a_n^2 - 2a_nb_n] \\
+	& = \cancel{(a_1^2 + a_2^2 + a_3^2 + \cdots + a_n^2)} + \cancel{(b_1^2 + b_2^2 + b_3^2 + \cdots + b_n^2)} - \\
+	& [ \cancel{(b_1^2 + b_2^2 + b_3^2 + \cdots + b_n^2)} +  \cancel{(a_1^2 + a_2^2 + a_3^2 + \cdots + a_n^2)} - \\
+	& (2a_1b_1 + 2a_2b_2 + \cdots + 2a_nb_n) ] \\
+	& = 2(a_1b_1 + a_2b_2 + a_3b_3 + \cdots + a_nb_n) \\
+	\therefore ab\mathrm{cos}\theta & = a_1b_1 + a_2b_2 + a_3b_3 + \cdots + a_nb_n
+	\end{aligned}$$
+	
+	Thus, 
+	$$\begin{aligned}
+	\mathrm{cos}\theta = \dfrac{a_1b_1 + a_2b_2 + a_3b_3 + \cdots + a_nb_n}{ab} = \dfrac{\vec{a}\bullet\vec{b}}{\lVert a \rVert\lVert b \rVert}
+	\end{aligned}$$	 \\
+	
+	
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Angle between two any $n$ dimensional non unit vectors]
+	For any two $n>1$ dimensional vectors, the angle between them could always be calculated as,	
+	\begin{align}
+		\mathrm{cos}\theta = \dfrac{a_1b_1 + a_2b_2 + a_3b_3 + \cdots + a_nb_n}{ab} = \dfrac{\vec{a}\bullet\vec{b}}{\lVert a \rVert\lVert b \rVert} \label{eq:AP_006}
+	\end{align}
+	This is true, even when we are unable to comprehend visually beyond 3D vectors, because the angle between two vectors is always on a plane (2D) no matter the dimensionality of the vectors is. 
+	\end{tcolorbox}	
+
+\end{document} 

@@ -1,0 +1,39 @@
+\documentclass[float=false, crop=false,11pt,oneside]{book}
+\usepackage{standalone}
+\usepackage{import}
+\usepackage{xr-hyper} % Needed for external references
+
+
+\usepackage{myipy2tex}
+\usepackage{myrawtex}
+\usepackage{myipy2tex_custom} 
+\usepackage{myrawtex_custom} 
+\usepackage{mytikz_custom}	
+    
+\title{Covariance and Correlation}
+\author{Parthiban Rajendran \\ \small parthi292929@gmail.com}
+
+    
+\begin{document}
+    
+    \maketitle 
+
+    \tableofcontents
+
+    \chapter{Covariance}
+	\import{chapters/}{30_Covariance_1}   
+	\import{chapters/}{30_Covariance_2}   
+	\import{chapters/}{30_Covariance_3}   	
+	\import{chapters/}{30_Covariance_4}  
+	
+	\chapter{Correlation} 	
+	\import{chapters/}{30_Correlation_1}   
+	\import{chapters/}{30_Correlation_2}   
+	\import{chapters/}{30_Correlation_3}   	
+	
+	\chapter{Appendix}
+	\import{chapters/}{30_Appendix_1}   
+	
+	\nocite{*}
+	\bibliography{references} 	
+\end{document} 

@@ -1,0 +1,24 @@
+<script type='text/javascript'>	
+	
+	//var divsID = ['notebook_0', 'notebook_1', 'notebook_2']; //DO NOT FORGET TO INCLUDE divsID array
+	visibledivId = 0;
+	function divVisibility(id) {
+		if(visibledivId === id) {
+			visibledivId = 0;
+		} else {
+			visibledivId = id;
+		}
+		hideNonVisibledivs();
+	}
+	function hideNonVisibledivs() {
+
+		for(i = 0; i < divsID.length; i++) {
+			div = document.getElementById(divsID[i]);	
+			if(visibledivId === i) {
+				div.style.display = 'block';
+			} else {
+				div.style.display = 'none';				
+			}
+		}
+	}			
+</script>

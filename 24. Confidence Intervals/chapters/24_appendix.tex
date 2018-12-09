@@ -1,0 +1,39 @@
+\documentclass[tikz = true, float=false, crop=false, 11pt]{standalone}
+
+\usepackage{../myrawtex}
+
+
+
+
+\begin{document}
+
+	
+\ifstandalone
+\tableofcontents %to be removed in main section
+\newpage
+\fi
+
+% Appendix title would be included in main.tex
+
+\subsection{Difference between two Random Variables} \label{app_sc:001} 
+
+	Suppose we have two populations described by random variables $X(\mu_x, \sigma_x^2)$ and $Y(\mu_y, \sigma_y^2)$. We are interested in 	the distribution of their differences W = X - Y. What would be $\mu_w,\sigma_w^2$? We could solve that using Expectations. This is true for any distributions X and Y have, as long as they are independent to each other or $X \neq Y$. 
+	
+	\begin{align}
+	\mu_w = E[W] = E[X - Y] = E[X] - E[Y] = \mu_x - \mu_y 
+	\end{align}
+
+	\begin{align}		
+	\sigma_w^2 = Var[W] = E[W^2] - [E[W]]^2 \nonumber \\
+	= E[(X-Y)^2] - [E[X-Y]]^2 \nonumber \\
+	= E[X^2 + Y^2 - 2XY] - (E[X] - E[Y])^2 \nonumber \\
+	= E[X^2] + E[Y^2] - E[2XY] - \Big\{  (E[X])^2 + (E[X])^2 - 2E[X]E[Y]  \Big\} \nonumber \\
+	= E[X^2] + E[Y^2] - \cancel{2E[X][Y]} - (E[X])^2 - (E[Y])^2 + \cancel{2E[X]E[Y]} \nonumber \\
+	= \{E[X^2] - (E[X])^2\} + \{E[Y^2] - (E[Y])^2\} \nonumber \\
+	= Var[X] + Var[Y] \nonumber \\ \nonumber \\
+	\therefore \sigma_w^2 = \sigma_x^2 + \sigma_y^2 
+	\end{align}
+
+
+
+\end{document}

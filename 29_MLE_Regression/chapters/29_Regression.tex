@@ -1,0 +1,792 @@
+\documentclass[tikz = true, float=false, crop=false, 11pt]{standalone}
+
+% ANY PREAMBLE HERE IS REMOVED IF STANDALONE SO..
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+	\usepackage{../myipy2tex}
+	\usepackage{../myrawtex}
+	\usepackage{../myipy2tex_custom} 
+	\usepackage{../myrawtex_custom} 
+	\usepackage{../mytikz_custom}	
+	\setcounter{secnumdepth}{5}
+	\usepackage{xr-hyper}
+	\externaldocument{29_MLE}
+	\externaldocument{29_appendix_1}
+	\externaldocument{29_appendix_2}
+	\title{Regression}
+\fi
+
+    
+\begin{document} \label{ch:chapter_1}
+	
+	% example sample set
+	\pgfplotstableread{
+		X Y
+		2.2 14
+		2.7 23
+		3 13
+		3.55 22
+		4 15
+		4.5 20
+		4.75 28
+		5.5 23
+	}\datatable
+
+	% example 3D sample set
+	\pgfplotstableread{
+		X Y Z m
+		2.2 14 0 0
+		2.7 23 0 0
+		3 13 0 0
+		3.55 22 0 0
+		4 15 0 0
+		4.5 20 0 0
+		4.75 28 0 0
+		5.5 23 0 0
+	}\datatablet	
+
+	\pgfplotstableread{
+		X Y Z m
+		2.2 15.61 0 0
+		2.7 16.92 0 0
+		3 17.71 0 0
+		3.55 19.15 0 0
+		4 20.33 0 0
+		4.5 21.64 0 0
+		4.75 22.29 0 0
+		5.5 24.26 0 0
+	}\datatabletideal
+
+	\pgfplotsset{
+		name nodes near coords/.style={
+			every node near coord/.append style={
+				name=#1-\coordindex,
+			},
+		},
+		name nodes near coords/.default=coordnode
+	}
+
+\section{The Simple Linear Regression Model} 
+
+	\subsection{Introduction}
+	
+	Suppose we have a sample set $(X,Y)$ of size $m$, that is $(X,Y) = \{ (x_1, y_1), (x_2,y_2) \cdots (x_m,y_m) \}$. 
+Then a simple linear model assumes a linear relationship between variables $(x_i,y_i)$, and tries to estimate that. For example, observe a sample scatter plot of sample set in Figure \ref{fig:R001}. By looking at the figure, one could intuitively guess a linear relation between $x$ and $y$ variables as $y$ increasing roughly with $x$. It is this we will try to find, and in that,
+find the best possible one.  
+	
+
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}[scale=1.5]
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=1,
+		xmax=6,
+		ymin=5,
+		ymax=40,
+		xlabel=$x$,
+		ylabel=$y$,
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		axis on top,
+		grid = major,
+		axis lines = middle        
+		]
+		
+		\addplot [only marks, cyan, mark = *] table {\datatable};
+        \def\X{2.7}
+		\def\Y{23}
+		\draw [-latex] (2.2,30) node[left]{$(x_1,y_1)$} to[out=350,in=160] (\X,\Y);  
+		
+		
+		\end{axis}
+		\end{tikzpicture}			
+		\caption{Fig 1: Given Sample Set} \label{fig:R001}
+	\end{figure}
+
+	We will find a line that passes through these points, there by being the best line, that has
+minimum vertical or $\Delta y$ distance from all the sample points. Typically such a line would be unique to given any sample set and it is the \textbf{best fit} line possible. Figure \ref{fig:R002} shows such a \textit{potential} line. The vertical difference $\Delta y_1$ as shown in figure, is the distance between the point $(x_1,y_1)$ and the line. 
+
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}[scale=1.5]
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=1,
+		xmax=6,
+		ymin=5,
+		ymax=40,
+		xlabel=$x$,
+		ylabel=$y$,
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		axis on top,
+		grid = major,
+		axis lines = middle        
+		]
+		
+		\addplot [only marks, cyan, mark = *] table {\datatable};
+		\def\X{2.7}
+		\def\Y{23}
+		\draw [-latex] (2.2,30) node[left]{$(x_1,y_1)$} to[out=350,in=160] (\X,\Y);  
+		\addplot [thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear
+	    \draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1) -- (\X,17) node [midway, anchor=west, xshift=0.5mm]{\scriptsize $\Delta y_1$}; % brace 
+		
+		\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+		\node[below] at (\X,4) {$x_1$};
+		
+		\end{axis}
+		\end{tikzpicture}			
+		\caption{Fig 2: Finding a best-fit line is the goal} \label{fig:R002}
+		
+	\end{figure}	
+
+	When a sample set is given, we will assume such a line exists and that ideally, all sample points should have fallen on that line, implying a perfect linear relationship between $x$ and $y$. However, because of an \textbf{underlying error} $\varepsilon$, the sample points have fallen apart, around the line, giving us the sample set.  Suppose, such a perfect linear relationship exists ideally, let us say, it could be defined as below by using a regular line equation with slope $\beta_1$ and y-intercept $\beta_0$,  as 
+	
+	$$
+	y = \beta_0 + \beta_1 x
+	$$
+	
+	Thus in this ideal world, $y$ is completely deterministic from $x$. However, when we introduce randomness in the form or error $\varepsilon$, the $y$ value also becomes a random variable
+	associated with the randomness from $\varepsilon$. That is, if  we describe such a RV as $Y$, then 
+	
+	\begin{equation}
+		Y = \beta_0 + \beta_1 x + \varepsilon	\label{eq:R001}
+	\end{equation}
+	
+	We do not know $\varepsilon$. Naturally, the \textit{expectation} of the error is to be zero, or in other words we assume, though there is room for error, but the zero error has maximum probability. Thus assuming a normal distribution of $N(0, \sigma^2)$,
+	
+	\begin{equation}
+		E(\varepsilon) = 0 \ \ \ \ Var(\varepsilon) = \sigma^2 \label{eq:R002}
+	\end{equation}
+	 
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Assumptions and Approach]
+		\begin{itemize}
+			\item Given the sample set value, we will imagine there to be an \textit{ideal} linear relationship, and try to find that hypothetical line which will have \textit{least error} for all observed sample points.
+			\item Also assume that error has maximum probability to be 0, and normally distributed, formulating as a  cause for observing sample values as observed instead of, on the line where error would have been zero.			
+		\end{itemize}
+	\end{tcolorbox}	 
+
+	This line of thought is important and fundamental to our model. Because of this assumption, we could now say, the points should have ideally sat on the line, but resulted in their places in reality as we find them, because of the error. Thus the observed $y$ value is the result of the error $\varepsilon$, while its \textbf{expected y value $E(Y|x)$ or $\mu_{Y.x_1}$}, should sit on the line. This is illustrated in Figure \ref{fig:R003}. Similarly the only randomness comes from error $\varepsilon$, so its variance directly transfers to the $Y$ random variable due to \ref{eq:R002}. That is, $\sigma_{Y.x_1} \to \sigma$. 
+	
+	\begin{figure}[!hpt]
+	\centering
+	\begin{tikzpicture}[scale=1.5]
+	
+	\begin{axis}[
+	% legend pos=outer north east,
+	xmin=1,
+	xmax=6,
+	ymin=5,
+	ymax=40,
+	xlabel=$x$,
+	ylabel=$y$,
+	ytick=\empty,
+	xtick=\empty,
+	clip=false, 
+	axis on top,
+	grid = major,
+	axis lines = middle        
+	]
+	
+	\addplot [only marks, cyan, mark = *] table {\datatable};
+	\def\X{2.7}
+	\def\Y{23}
+	\draw [-latex] (2.2,30) node[left]{$(x_1,y_1)$} to[out=350,in=160] (\X,\Y);  
+	\addplot [thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear
+	\draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1) -- (\X,17) node [midway, anchor=west, xshift=0.5mm]{\scriptsize $\Delta y_1$}; % brace 
+	
+	\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (1,17.1) -- (\X,17.1);
+	\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+	\node[below] at (\X,4) {$x_1$};
+	\node[left, align=left] at (1,17.1) {$E(Y|x_1)$ \\ $=\mu_{Y.x_1}$};
+	
+	\end{axis}
+	\end{tikzpicture}			
+	\caption{Fig 3: $y1$ and $E(Y|x_1)$} \label{fig:R003}
+	
+	\end{figure}
+
+	We could also prove them mathematically as below.  For any point $(x_1,y_1)$
+	
+	$$
+		\mu_{Y.x_1} = E(Y|x_1) = E(\beta_0 + \beta_1 x_1 + \varepsilon) = E(\beta_0) + E(\beta_1 x_1) + E(\varepsilon)
+	$$
+	
+	If $a$ is a constant observed, then $E(a) = a$ only as its the only value and already observed. And since $\varepsilon = N(0, \sigma^2)$ we could write,
+	
+	$$
+		\mu_{Y.x_1} = E(Y|x_1) = \beta_0 + \beta_1 x_1
+	$$
+	
+	Similary, 
+	
+	$$
+		\sigma_{Y.x_1}^2 = Var(Y|x_1) = Var(\beta_0 + \beta_1 x_1 + \varepsilon) 
+	$$
+	
+	If $a$ is a constant observed, then $Var(a) = 0$ only as its already observed and there is no uncertainty. And since $\varepsilon = N(0, \sigma^2)$ we could write,
+	
+	$$
+		\sigma_{Y.x_1}^2 = Var(Y|x_1) =0 + 0 + \sigma^2
+	$$
+
+	Thus, in general for any $x$, in continuous scale, we could say, 
+	
+	$$
+	\begin{aligned}
+		\mu_{Y.x} = E(Y|x) = \beta_0 + \beta_1 x \\
+		\sigma_{Y.x}^2 = Var(Y|x) = \sigma^2		
+	\end{aligned}
+	$$
+	
+	Note, though our sample values are discrete, we are able to get a line at continuous scale, because its the ideal situation, where all the expected values should lie on that hypothetical line $y = \beta_0 + \beta_1 x$. So this line should stay true for any value of $x$. It is a hypothetical line of expected or mean values  $E(Y|x)$, so understandably, its called \textbf{line of mean values}. It should also have been the ideal line, where all sample points should have rested, provided there were no errors. So this line is also called \textbf{True regression line}. 
+	
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}[scale=1.5]
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=1,
+		xmax=6,
+		ymin=5,
+		ymax=40,
+		xlabel=$x$,
+		ylabel=$y$,
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		axis on top,
+		grid = major,
+		axis lines = middle        
+		]
+		
+		\addplot [only marks, cyan, mark = *] table {\datatable};
+		\def\X{2.7}
+		\def\Y{23}
+		\draw [-latex] (2.2,30) node[left]{$(x_1,y_1)$} to[out=350,in=160] (\X,\Y);  
+		\draw [-latex] (5.5,30) node[right, align=left]{\scriptsize True Regression Line\\ \scriptsize $y = \beta_0 + \beta_1 x$} to[out=160,in=90] (5,22.7);
+		\addplot [thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear
+		\draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1) -- (\X,17) node [midway, anchor=west, xshift=0.5mm]{\scriptsize $\Delta y_1$}; % brace 
+		
+		\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (1,17.1) -- (\X,17.1);
+		\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+		\node[below] at (\X,4) {$x_1$};
+		\node[left, align=left] at (1,17.1) {$E(Y|x_1)$ \\ $=\mu_{Y.x_1}$};
+		
+		\end{axis}
+		\end{tikzpicture}			
+		\caption{Fig 4: $\beta_0 + \beta_1 x$ is the ideal hypothetical line with no error} \label{fig:R004}
+	
+	\end{figure}	
+	
+
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Expected value and Variance of $Y$ given a sample $x^*$]	
+	For any observed value $(x^*, y^*)$, 	
+	\begin{equation}
+		\begin{aligned}
+			\mu_{Y.x^*} = E(Y|x^*) = \beta_0 + \beta_1 x^* \\
+			\sigma_{Y.x^*}^2 = Var(Y|x^*) = \sigma^2  \label{eq:R003}
+		\end{aligned}
+	\end{equation}
+	In continuous scale, for any $(x,y)$, 
+	\begin{equation}
+		\begin{aligned}
+			\mu_{Y.x} = E(Y|x) = \beta_0 + \beta_1 x \\
+			\sigma_{Y.x}^2 = Var(Y|x) = \sigma^2 \label{eq:R004}		
+		\end{aligned}
+	\end{equation}	
+	\end{tcolorbox}	 	
+
+	It is difficult to visualize the error randomness (say, its pdf) in the $x,y$ graph as $\varepsilon$ is another 3rd variable hidden underneath. However we just saw, how that distribution transfers to the random variable $Y$. If $\varepsilon$ has $N(0, \sigma^2)$, then $Y$ has distribution $N(\beta_0 + \beta_1 x, \sigma^2)$. This facilitates us to view the randomness on the face of random variable
+	$Y$ as shown in \ref{fig:R005}. Observe that, for a point, say $(x_1,y_1)$, for the given $x_1$, ideally, $y$ should have been the mean value $E(Y|x_1) = \beta_0 + \beta_1 x$, that has the highest probability of the normal distribution. That is our assumption and then we say, because there exists an error, we got $y$ at $y_1$. Note for the sample location $y_1$, the error is low, but still had a chance. 
+	
+
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}[scale=1.5]
+		\begin{axis}
+		[ set layers,   
+		view={130}{50},
+		samples=200,
+		samples y=0, 
+		xmin=1,xmax=6, ymin=5,ymax=40, zmin=0, zmax=10,
+		xlabel={$x$}, ylabel={$y$}, zlabel={$f(Y|x)$},
+		ytick=\empty,xtick=\empty,ztick=\empty,
+		clip=false, axis lines = middle,
+		area plot/.style=   % for this: https://tex.stackexchange.com/questions/53794/plotting-several-2d-functions-in-a-3d-graph
+		{
+			fill opacity=0.5,
+			draw=none,
+			fill=orange,
+			mark=none,
+			smooth
+		}
+		]				
+		\GetLocalFrame			    
+		\begin{scope}[transform shape]
+		\addplot3[only marks, fill=cyan,mark=fcirc] table {\datatablet};
+		\end{scope}	
+		
+		\def\X{2.7}
+		\def\Y{23}
+		
+		\draw [-{Latex[length=4mm, width=2mm]}] (\X,\Y+10,12.5) node[right]{\scriptsize $(x_1,y_1)$} ..controls (0,5) .. (\X,\Y,0);
+		\draw [-{Latex[length=4mm, width=2mm]}] (9,30,20) node[align=right, yshift=5mm]{\scriptsize True Regression Line\\ \scriptsize $y = \beta_0 + \beta_1 x$} .. controls (5,2.5) .. (5,22.7,0); 
+		\draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1,0) to (\X,17,0) node[left, xshift=4.5mm, yshift=-2.5mm]{\scriptsize $\Delta y_1$}; % brace 
+		
+		\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (1,17.1) to (\X,17.1);
+		\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+		\node[above] at (\X,4) {\scriptsize $x_1$};
+		\node[right, align=left,yshift=0.5mm] at (1,17.1) {\scriptsize $E(Y|x_1)=\mu_{Y.x_1}$};	
+		
+		% regression line - lets try to manually calculate
+		% \addplot3[thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear regression from the input table
+		\def\a{2.62}
+		\def\b{9.85}
+		\addplot3 [samples=2, samples y=0, red, domain=1:6] (x, {\a*(x)+\b}, 0);
+		
+		% normal distribution above the interesting regression point, that is expected value of Y for a given x
+		%https://tex.stackexchange.com/questions/254484/how-to-make-a-graph-of-heteroskedasticity-with-tikz-pgf/254497
+		\pgfmathsetmacro\valueY{\a*(\X)+\b}
+		\addplot3 [area plot, domain=0:40)] (\X, x, {100*normal(x, \valueY, 3)});
+		
+		\pgfonlayer{axis foreground}
+		\draw [thick] (\X,\valueY,0) to (\X,\valueY,{100*normal(\valueY, \valueY, 3)});  
+		\endpgfonlayer																													
+		\end{axis}
+		\end{tikzpicture} 
+		\caption{Fig 5: The Probability Distribution $f(Y|x_1)$} \label{fig:R005}
+	\end{figure}
+
+
+	The distance how much the \textit{erroneous} locations of sample points spread out
+	from the mean value is determined by variance $\sigma$ of the error. Note that, we assume this error is constant for all sample values. This means, any point $x_m,y_m$ has same probability distribution of committing an error, as any other point in the sample set. This assumed property is called \textbf{Homoscedasticity}. If this is not the case, then the characteristic is called \textbf{Heteroscedasticity}. One could fairly assume from given a sample set, if the underlying error could be  Homoscedastic or Heteroscedastic, by eyeballing at the spread from the regression 	line. We will focus and assume Homoscedasticity and for any one interested, \citet{jimfrost2017} has written an interesting article about dealing with the same. Given that Homoscedasticity is assumed, the probability distribution would be uniform across the regression line. This is illustrated in \ref{fig:R006}. That is, for any $x$ value, the equivalent $f(Y|x)$ could be picked up like a card from a stack. This distribution across the regression line could be continuous or discrete, depending on $x$ is continuous or discrete. 
+	
+		
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}[scale=1.5]
+		\begin{axis}
+		[ set layers,   
+		view={130}{50},
+		samples=200,
+		samples y=0, 
+		xmin=1,xmax=6, ymin=5,ymax=40, zmin=0, zmax=10,
+		% ytick=\empty,xtick=\empty,ztick=\empty,
+		clip=false, axis lines = middle,
+		area plot/.style=   % for this: https://tex.stackexchange.com/questions/53794/plotting-several-2d-functions-in-a-3d-graph
+		{
+			fill opacity=0.25,
+			draw=none,
+			fill=orange,
+			mark=none,
+			smooth
+		}
+		]
+		% read out the transformation done by pgfplots
+		
+		\GetLocalFrame
+		\begin{scope}[transform shape]
+		\addplot3[only marks, fill=cyan,mark=fcirc] table {\datatablet};
+		\end{scope}
+		
+		\def\X{2.7}
+		\def\Y{23}
+		
+		% \draw [-{Latex[length=4mm, width=2mm]}] (\X,\Y+10,12.5) node[right]{\scriptsize $(x_1,y_1)$} ..controls (0,5) .. (\X,\Y,0);
+		% \draw [-{Latex[length=4mm, width=2mm]}] (9,30,20) node[align=right, yshift=1mm]{\scriptsize True Regression Line $y = \beta_0 + \beta_1 x$} .. controls (5,2.5) .. (5,22.7,0); 
+		% \draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1,0) to (\X,17,0) node[left, xshift=5mm, yshift=-1mm]{\scriptsize 1}; % brace 
+		
+		% \draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (1,17.1) to (\X,17.1);
+		% \draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+		% \node[above] at (\X,4) {$x_1$};
+		% \node[right, align=left,yshift=0.5mm] at (1,17.1) {\scriptsize $E(Y|x_1)=\mu_{Y.x_1}$};
+		
+		
+		% regression line - lets try to manually calculate
+		% \addplot3[thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear regression from the input table
+		\def\a{2.62}
+		\def\b{9.85}
+		\addplot3 [samples=2, samples y=0, red, domain=1:6] (x, {\a*(x)+\b}, 0);
+		
+		% normal distribution above the interesting regression point, that is expected value of Y for a given x
+		%https://tex.stackexchange.com/questions/254484/how-to-make-a-graph-of-heteroskedasticity-with-tikz-pgf/254497
+		\def\xe{4.8}
+		\pgfmathsetmacro\valueY{\a*(\xe)+\b}
+		\addplot3 [fill=orange, draw=red, smooth, domain=5:40)] (\xe, x, {100*normal(x, \valueY, 3)});
+		\pgfonlayer{axis foreground}
+		\draw [thick] (\xe,\valueY,0) to (\xe,\valueY,{100*normal(\valueY, \valueY, 3)});  
+		\endpgfonlayer     
+		\foreach \s in {1,1.2,...,\xe}
+		{
+			\pgfmathsetmacro\valueY{\a*(\s)+\b}
+			\addplot3 [area plot, domain=0:40)] (\s, x, {100*normal(x, \valueY, 3)});        
+		}
+		
+		
+%		\node [below=1cm, align=flush center,text width=8cm] at (5,30,0)
+%		{
+%			The Probability Distribution $f(Y|x_1)$
+%		};    
+		\end{axis}
+		
+		\end{tikzpicture} 		
+		\caption{Fig 6: The \textit{pdf} $f(Y|x)$ is continuous or discrete along the regression line \\ depending on $x$ is continuous or discrete} \label{fig:R006}
+	\end{figure}
+   		
+   	Now that our sample set is discrete, let us focus on that. We need to find out, for given sample set, what would be the optimal values of $\beta_0$ and $\beta_1$. 
+   	
+   	\subsection{Estimating Model Parameters}
+   	
+   	The goal is to find $(\beta_0,\beta_1)$ such that, the resulting line is some how "best-fit" among all possible lines of $E(Y|x)$. You see, our sample set could be a part of a bigger population, and thus the hypothetical line for entire population could be anything. However, we have only a sample set, so our best bet is always what is the best representative of the sample. That is, \textbf{given the samples}, what would be the best representative regression line is what our goal is. Imagine, if all sample lines, line up in a certain way, then our best bet would be just a line cutting across all those points. This suggests, all sample points have zero error, or have fallen at their respective highest probability mean locations, thus one could expect any more new sample to take a similar place on that line.  Note that in this case, all lines are at \textit{zeroth distance} from the mean line. This is illustrated in \ref{fig:R007} where the vertical red dotted line represents maximum probability. 
+
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}[scale=1.5]
+		\begin{axis}
+		[ set layers,   
+		view={130}{50},
+		samples=200,
+		samples y=0, 
+		xmin=1,xmax=6, ymin=5,ymax=40, zmin=0, zmax=10,
+		% ytick=\empty,xtick=\empty,ztick=\empty,
+		clip=false, axis lines = middle,
+		area plot/.style=   % for this: https://tex.stackexchange.com/questions/53794/plotting-several-2d-functions-in-a-3d-graph
+		{
+			fill opacity=0.25,
+			draw=none,
+			fill=orange,
+			mark=none,
+			smooth
+		}
+		]
+		% read out the transformation done by pgfplots
+		
+		\GetLocalFrame
+		\begin{scope}[transform shape]
+		\addplot3[only marks, fill=cyan,mark=fcirc,nodes near coords={},
+		nodes near coords style={anchor=center,opacity=0,inner sep=2pt},
+		name nodes near coords=blob] table {\datatabletideal};
+		\end{scope}
+		
+		\def\X{2.7}
+		\def\Y{23}
+		
+		\def\a{2.62}
+		\def\b{9.85}
+		\addplot3 [samples=2, samples y=0, red, domain=1:6] (x, {\a*(x)+\b}, 0);
+		
+		
+		
+		\pgfplotstableforeachcolumnelement{X}\of\datatabletideal\as\S{%
+			\edef\i{\pgfplotstablerow}
+			\pgfmathsetmacro\valueY{\a*(\S)+\b}
+			\pgfmathtruncatemacro{\j}{\i+1}
+			\addplot3 [area plot, domain=0:40)] (\S, x, {100*normal(x, \valueY, 3)});
+			% Below commented lines generate error
+			\edef\temp{\noexpand\pgfonlayer{axis foreground}
+				\noexpand\draw [line width=0.2mm, red,dashed] (\S,\valueY,0) 
+				coordinate (i-\i) to (\S,\valueY,{100*normal(\valueY, \valueY, 3)});
+				\noexpand\endpgfonlayer}
+			\temp
+			\xdef\imax{\i}
+		}    
+		
+		\end{axis}
+		\foreach \X in {0,...,\imax}
+		\draw[line width=0.2mm, blue] (i-\X) -- (blob-\X);
+		
+		
+		\end{tikzpicture} 	
+		\caption{Fig 7: An ideal case} \label{fig:R007}	
+	\end{figure}   	
+   	   	
+   	Now when the samples deviate from such a hypothetical mean line, best bet then to find the mean line is to find one, that has \textit{least distance} from all the sample points. The sum of all the distances from all sample points to that line would be minimal compared to any other lines' similar sum of distances. The distances are illustrated in \ref{fig:R008}, where blue lines indicate the actual distance from the true regression line. Now, naturally, since the points could lie on either side of the line, would give rise to relatively positive or negative distances, and thus cancelling each others' distances out partly here and there. To avoid that, one could take absolute distances from the point to the line.
+   	
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}[scale=1.5]
+		\begin{axis}
+		[ set layers,   
+		view={130}{50},
+		samples=200,
+		samples y=0, 
+		xmin=1,xmax=6, ymin=5,ymax=40, zmin=0, zmax=10,
+		% ytick=\empty,xtick=\empty,ztick=\empty,
+		clip=false, axis lines = middle,
+		area plot/.style=   % for this: https://tex.stackexchange.com/questions/53794/plotting-several-2d-functions-in-a-3d-graph
+		{
+			fill opacity=0.25,
+			draw=none,
+			fill=orange,
+			mark=none,
+			smooth
+		}
+		]
+		% read out the transformation done by pgfplots
+		
+		\GetLocalFrame
+		\begin{scope}[transform shape]
+		\addplot3[only marks, fill=cyan,mark=fcirc,nodes near coords={},
+		nodes near coords style={anchor=center,opacity=0,inner sep=2pt},
+		name nodes near coords=blob] table {\datatablet};
+		\end{scope}
+		
+		\def\X{2.7}
+		\def\Y{23}
+		
+		\def\a{2.62}
+		\def\b{9.85}
+		\addplot3 [samples=2, samples y=0, red, domain=1:6] (x, {\a*(x)+\b}, 0);
+		
+		
+		
+		\pgfplotstableforeachcolumnelement{X}\of\datatablet\as\S{%
+			\edef\i{\pgfplotstablerow}
+			\pgfmathsetmacro\valueY{\a*(\S)+\b}
+			\pgfmathtruncatemacro{\j}{\i+1}
+			\addplot3 [area plot, domain=0:40)] (\S, x, {100*normal(x, \valueY, 3)});
+			% Below commented lines generate error
+			\edef\temp{\noexpand\pgfonlayer{axis foreground}
+				\noexpand\draw [line width=0.1mm, red, dashed] (\S,\valueY,0) 
+				coordinate (i-\i) to (\S,\valueY,{100*normal(\valueY, \valueY, 3)});
+				\noexpand\endpgfonlayer}
+			\temp
+			\xdef\imax{\i}
+		}    
+		
+		\end{axis}
+		\foreach \X in {0,...,\imax}
+		\draw[line width=0.2mm, blue] (i-\X) -- (blob-\X);
+		
+		
+		\end{tikzpicture} 
+		\caption{Fig 8: A practical case} \label{fig:R008}
+	\end{figure}   	
+   	
+   	 \subsection*{Principle of Least Squares} 	
+   	  
+   	However, instead of taking the absolute distances, we now, out of nowhere(?!) choose to take the square of the calculated distance and sum up to find the total distance. As per my current understanding, this was mearly a choice for algebraic convenience \footnote{http://www.bradthiessen.com/html5/docs/ols.pdf}. We also have other ways of measuring approaches (angled distance instead of vertical etc) but we shall not get in to it as this is only Simple Regression Model. 
+   	
+   	Now that we have fixated on finding the least sum of squares of the distances (note because we squared, there was no absoluteness to be considered in equation), let us look in to the mathematical form of it.  This principle which can be traced back to famous mathematician Guass, says that, a line provides a good fit to the data if the vertical distances (deviations) from the 	observed points to the line are small. The measure of the goodness
+   	of fit is the sum of the squares of these deviations. The best-fit line is then the one having the smallest possible sum of squared deviations.
+   	
+   	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Principle of Least Squares (from \citet{devore2011})]
+	The vertical deviation of the point $(x_i, y_i)$ from the line $y = b_0 + b_1x$ is   
+	\begin{center}
+		height of point - height of line = $y_i - (b_0 + b_1x_i)$
+	\end{center}
+	The sum of squared vertical deviations from the points $(x_1,y_1),\cdots,(x_m,y_m)$ to the line is then  		
+	\begin{equation}
+	f(b_0,b_1) = \sum\limits_{i=1}^n [y_i - (b_0 + b_1x_i)]^2  \label{eq:R005}
+	\end{equation}
+	The point estimates of $\beta_0$ and $\beta_1$, denoted by $\hat\beta_0$ and $\hat\beta_1$ and called the \textbf{least square estimates}, are those values that minimize $f(b_0,b_1)$. That is $(\hat\beta_0, \hat\beta_1)$ are such that, $f(\hat\beta_0, \hat\beta_1) \leq f(b_0,b_1)$ for any $(b_0.b_1)$. The \textbf{estimated regression line or least squares line} is then the line whose equation is 
+	\begin{equation}
+		y = \hat\beta_0 + \hat\beta_1x \label{eq:R006}
+	\end{equation}
+	\end{tcolorbox}
+   
+	Note that \ref{eq:R006} is same as expected mean line or true regression line as expressed in \ref{eq:R004}. Here we just devised a way to find those optimal $(\beta_0,\beta_1)$. 
+	
+  	\subsection*{Using Maximum Likelihood Estimation} 	
+	
+	We could also arrive at \ref{eq:R005} via Maximum Likelihood Estimation (which was the reason we had entire chapter on MLE before regression in first place). Recall each sample point as shown on figure \ref{fig:R008}, has the pdf $f(Y|x) = N(\beta_0 + \beta_1x, \sigma^2)$. Then, as per MLE, we would like to know what is the joint probability of all these samples points to be at their observed locations. It will be useful to recall MLE derivation for Normal distribution as we saw in \ref{eq:M011}. In similar fashion, for each sample point, the pdf could be written as, 
+	
+	$$
+	f(Y|x_i; \beta_0,\beta_1) = N(\beta_0 + \beta_1x_i, \sigma) = \dfrac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\Big\{ - \dfrac{ [y_i - (\beta_0 + \beta_1x_i)]^2}{2\sigma^2}  \Big\}
+	$$
+	
+	And as usual, assuming all these sample points are \textit{independent and identically distributed}, we could arrive at their likelihood function as 
+	
+	$$
+	\begin{aligned}
+	L(\beta_0, \beta_1) = f(Y|x_1;\beta_0,\beta_1 , Y|x_2; \beta_0,\beta_1, \cdots Y|x_m;\beta_0,\beta_1 ) \\ 
+	= f(Y|x_1; \beta_0,\beta_1)f(Y|x_2; \beta_0,\beta_1)\cdots f(Y|x_m; \beta_0,\beta_1) \\
+	= \prod_{i=1}^{m} \dfrac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\Big\{ - \dfrac{ [y_i - (\beta_0 + \beta_1x_i)]^2}{2\sigma^2}  \Big\} \\
+	= \Bigg\{ \Big( \dfrac{1}{2\pi\sigma^2} \Big)^\frac{m}{2} \Bigg\}
+	\Bigg\{ \prod_{i=1}^{m} \text{exp}\Big\{ - \dfrac{ [y_i - (\beta_0 + \beta_1x_i)]^2}{2\sigma^2}\Big\} \Bigg\} \\
+	= \big( 2\pi\sigma^2 \big)^{\frac{-m}{2}}
+	\Bigg\{  \text{exp}\Big\{ - \dfrac{ \sum_{i=1}^{m}[y_i - (\beta_0 + \beta_1x_i)]^2}{2\sigma^2}\Big\} \Bigg\} \\
+	\end{aligned}
+	$$
+
+	Note, using product rule of logarithms, for any function $f = p^ae^b$,  
+	
+	$$ln(p^ae^b) = aln(p) + b$$
+	
+	Thus, taking natural logarithm on both sides of likelihood function, 
+	
+	\begin{equation}
+	ln( L(\beta_0, \beta_1) ) = -\dfrac{m}{2}\big(ln(2\pi\sigma^2)\big) - \dfrac{ \sum_{i=1}^{m}[y_i - (\beta_0 + \beta_1x_i)]^2}{2\sigma^2} \label{eq:R007}
+	\end{equation}
+	
+	The function \ref{eq:R007} is a function of two variables $(\beta_0, \beta_1)$, thus graphically represents a 3D surface plot as shown in figure \ref{fig:R009}, with height of the surface at any point is the function value evaluated at that point. We need to find out a point on this surface, where the function reaches maximum. The value of $(\beta_0,\beta_1)$ at that point represents optimal values $(\hat\beta_0,\hat\beta_1)$. Why? Because, associated with those points, is the probability density function that yields maximum probability of getting all those sample sets in the places they are observed. 
+   	
+   	\begin{figure}
+   		\centering
+		\adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_Regression_files/plotly-reg-mle.pdf}
+		\caption{Fig 9: Log Likelihood function of given sample set}
+		\label {fig:R009}
+   	\end{figure}
+   
+   \subsection*{MLE leads to OLS}
+   	
+   	Before we find the optimal points, note that equation \ref{eq:R007} has the variables $(\beta_0,\beta_1)$ in the second term of RHS, and thus it is on that term we would be operating upon to find the optimal value. That is, when we derive w.r.t. $(\beta_0,\beta_1)$ , the first term on RHS is a constant so goes away and constants in 2nd term too, would not offer any information, which we will see shortly, due to which we would just be equating the numerator of 2nd term RHS, to find the optimal value. That is, let
+
+	\begin{equation}
+	   	H(\beta_0, \beta_1) = \sum_{i=1}^{m}[y_i - (\beta_0 + \beta_1x_i)]^2 \label{eq:R008}
+	\end{equation}
+   	
+	then, by attempting to find the critical points of log likelihood $ln L(\beta_0, \beta_1)$ of given sample set, we would essentially operate upon $H(\beta_0, \beta_1)$. Note that this $H(\beta_0, \beta_1)$ is exactly equivalent to the ordinary least squares equation we saw in \ref{eq:R005}. 
+   	
+   	\subsection*{Derivation}
+   	
+   	To find the critical points on the surface (which could be maximum or minimum or saddle point), let us take first order partial derivatives and equate to 0.  For details on why we do this, refer appendix \ref{surface-plots} where we have shortly explained the concept behind using derivatives for finding critical points. 
+   	
+	Keeping $\beta_0$ as constant and taking partial derivative with respect to $\beta_1$, we get,
+	
+	$$
+	\begin{aligned}
+	\dfrac{\partial ln(\beta_0, \beta_1)}{\partial \beta_1}\bigg|_{\beta_0=k}  = 0 - 2\Big\{ \dfrac{\sum_{i=1}^m [y_i - (\beta_0 + \beta_1x_i)(-x_i)]}{2\sigma^2} \Big\} \\
+	= \dfrac{1}{\sigma^2} \Big\{  \sum_{i=1}^m[y_i - \beta_0 - \beta_1x_i](x_i) \Big\}
+	\end{aligned}
+	$$
+	
+	
+	Keeping $\beta_1$ as constant and taking partial derivative with respect to $\beta_0$, we get,
+	
+	$$
+	\begin{aligned}
+	\dfrac{\partial ln(\beta_0, \beta_1)}{\partial \beta_0}\bigg|_{\beta_1=k}  = 0 - 2\Big\{ \dfrac{\sum_{i=1}^m [y_i - (\beta_0 + \beta_1x_i)]}{2\sigma^2} \Big\}(-1) \\
+	= \dfrac{1}{\sigma^2} \Big\{  \sum_{i=1}^m[y_i - \beta_0 - \beta_1x_i] \Big\}
+	\end{aligned}
+	$$	
+	
+	Equating both to 0, we get, (note, now the paramters are $(\hat\beta_0,\hat\beta_1)$) because they are the optimal \textit{values} we are going to find out by equating to 0. 
+	
+	\begin{align}
+	\sum_{i=1}^m[y_i - \hat\beta_0 - \hat\beta_1x_i] = 0 \label{eq:R008} \\
+	\sum_{i=1}^m[y_i - \hat\beta_0 - \hat\beta_1x_i]x_i = 0   \label{eq:R009}
+	\end{align}
+	
+	
+	Due to repeated use, for a while, let $\sum\limits_{i=1}^m \implies \sum_{i}$. 
+	
+	
+	We know $\overline{x} = \dfrac{1}{m}\sum_{i}x_i$, and $\overline{y} = \dfrac{1}{m}\sum_{i}y_i$. Thus, 
+	
+	\begin{align}
+	\sum_{i}x_i = m\overline{x} \\
+	\sum_{i}y_i = m\overline{y} 
+	\end{align}
+	
+	Substituting in \ref{eq:R008},
+	
+	\begin{align}
+	\sum_{i}[y_i - \hat\beta_0 - \hat\beta_1x_i] = 0 \nonumber \\
+	\sum_{i}y_i - m\hat\beta_0 - \hat\beta_1\sum_{i}x_i = 0 \nonumber \\
+	m\overline{y} -m\hat\beta_0 - m\hat\beta_1\overline{x} = 0 \nonumber \\
+	\overline{y} -\hat\beta_0 - \hat\beta_1\overline{x} = 0 \nonumber \\
+	\overline{y} = \hat\beta_ 0 + \hat\beta_1\overline{x} \label{eq:R010}
+	\end{align}
+	
+	For any $x_i$, let 
+	\begin{equation}
+	\hat y_i = \hat\beta_0 + \hat\beta_1x_i \label{eq:R011}
+	\end{equation}
+	
+	Substituting \ref{eq:R011} in \ref{eq:R009}, 
+	
+	\begin{align}
+	\sum_{i}[y_i - \hat\beta_0 - \hat\beta_1x_i]x_i = 0 \nonumber \\
+	\sum_{i}[y_i - (\hat\beta_0 + \hat\beta_1x_i)]x_i = 0 \nonumber \\
+	\sum_{i}(y_i - \hat{y_i})x_i = 0 \label{eq:R012}
+	\end{align}
+	
+	\subsection*{Solving for $\beta_1$}
+	
+	Subtract \ref{eq:R010} from \ref{eq:R011}, 
+	
+	\begin{align}
+	\hat y_i - \overline{y} = (\hat\beta_0 + \hat\beta_1x_i) - \hat\beta_ 0 + \hat\beta_1\overline{x} \nonumber \\
+	= \hat\beta_1(x_i - \overline{x})
+	\end{align}
+	
+	Adding and cancelling $y_i$ on LHS, 
+	$$\begin{aligned}
+	(\hat y_i - \overline{y}) + (y_i - y_i) = \hat\beta_1(x_i - \overline{x}) \\
+	(\hat y_i - y_i) + (y_i - \overline{y}) = \hat\beta_1(x_i - \overline{x})
+	\end{aligned}
+	$$
+	
+	Multipying both sides by $(x_i - \overline{x})$ and summing up
+	
+	\begin{align}
+	(\hat y_i - y_i)(x_i - \overline{x}) + (y_i - \overline{y})(x_i - \overline{x}) = \hat\beta_1(x_i - \overline{x})(x_i - \overline{x}) \nonumber \\
+	\sum_{i}(\hat y_i - y_i)(x_i - \overline{x}) + \sum_{i}(y_i - \overline{y})(x_i - \overline{x}) = \hat\beta_1\sum_{i}(x_i - \overline{x})^2 \label{eq:R013}
+	\end{align}
+	
+	\subsection*{Focussing on \boldmath $\sum_{i}(\hat y_i - y_i)(x_i - \overline{x})$}
+	
+	\begin{align}
+	\sum_{i}(\hat y_i - y_i)(x_i - \overline{x}) = \sum_{i}(\hat y_i-y_i)x_i - \overline{x}\sum_{i}(\hat y_i - y_i) \nonumber
+	\end{align}
+	
+	Note from \ref{eq:R012}, $\sum_{i}(\hat y_i-y_i)x_i$ is 0. Thus, 
+	
+	\begin{align}
+	\sum_{i}(\hat y_i - y_i)(x_i - \overline{x}) = - \overline{x}\sum_{i}(\hat y_i - y_i) \nonumber
+	\end{align}	
+	
+	Let us calculate $\sum_{i}(\hat y_i - y_i)$ separately,..
+	
+	\begin{align}
+	\sum_{i}(\hat y_i - y_i) = \sum_{i}\hat{y_i} - \sum_{i}y_i \nonumber \\
+	= \sum_{i}(\hat\beta_0 + \hat\beta_1x_i) - m\overline{y} \nonumber \\
+	= \sum_{i}\hat\beta_0 + \sum_{i}\hat\beta_1x_i - m\overline{y} \nonumber \\
+	= m\hat\beta_0 + m\hat\beta_1\overline{x} - m\overline{y} \nonumber \\
+	= m(\hat\beta_0 + \hat\beta_1\overline{x}) - m\overline{y} \nonumber \\
+	= m\overline{y} - m\overline{y} \nonumber \\
+	= 0  
+	\end{align}
+	
+	Thus, 
+	\begin{align}
+	\sum_{i}(\hat y_i - y_i)(x_i - \overline{x}) = 0 \label{eq:R014}
+	\end{align}
+	
+	Substituting \ref{eq:R014} in \ref{eq:R013}, 
+	
+	\begin{align}
+	\sum_{i}(y_i - \overline{y})(x_i - \overline{x}) = \hat\beta_1\sum_{i}(x_i - \overline{x})^2 \nonumber \\
+	\implies 
+	\hat\beta_1 = \dfrac{\sum_{i}(y_i - \overline{y})(x_i - \overline{x}) }{\sum_{i}(x_i - \overline{x})^2}	\nonumber 	
+	\end{align}
+	
+	From \ref{eq:R010}, 
+	\begin{align}
+	\hat\beta_0 = \overline{y} - \hat\beta_1\overline{x} \nonumber
+	\end{align}
+
+   	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Regression Parameters using MLE]   		
+   		For the true line of regression $E(Y|x) = \hat{\beta_0} + \hat{\beta_1}x$, 
+   		\begin{equation}
+   			\hat\beta_1 = \dfrac{\sum_{i}(y_i - \overline{y})(x_i - \overline{x}) }{\sum_{i}(x_i - \overline{x})^2} \label{eq:R015} 
+   		\end{equation}
+   		\begin{equation}   		   			
+   			\hat\beta_0 = \overline{y} - \hat\beta_1\overline{x} \label{eq:R016}
+   		\end{equation}
+   	\end{tcolorbox}   	
+
+	It is strongly advised to check out our interactive example \footnote{http://nbviewer.jupyter.org/gist/parthi2929/e092970b94ee6aeb99519457df41921a} where we have shown visually and also proven how close the results are, between direct formula we just derived and also if directly picking up point of maximum value from the log likelihood graph itself. 
+
+\end{document} 

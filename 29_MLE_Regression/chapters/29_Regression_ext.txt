@@ -1,0 +1,216 @@
+---
+author:
+- Parthiban Rajendran
+title: Regression
+---
+
+\[ch:chapter\_2\]
+
+Clarity on Terminology
+======================
+
+ Setup
+------
+
+Let given *observed* sample set be
+$\{(x_1,y_1),(x_2,y_2), \cdots (x_N,y_N)\}$.
+
+-   $X,Y$ are random variables that can take on any value $(x_i,y_i)$
+    within range of sample set.
+
+-   If $\hat{\theta}$ would be estimator of estimand $\theta$ then
+    $\hat{\theta}(x)$ would be estimate of estimand $\theta$ at $x$ [^1]
+
+-   One variable is always independent or *regressor or predictor*
+    variable, typically $X$ and another is dependent or *regressand or
+    predicted* variable, typically $Y$
+
+-   We *predict* $Y$, not estimate. Prediction is different from
+    Estimation [^2]
+
+Due to frequent usage, for simplicity, let us define,
+
+$$\begin{aligned}
+    & S_{xy} = S_{yx} = \sum_{i=1}^N (x_i - \overline{x})^2(y_i - \overline{y})^2  &    \text{constant} \\
+    & S_{xx} = \sum_{i=1}^N (x_i - \overline{x})^2 & \text{constant} \\
+    & S_{yy} = \sum_{i=1}^N (y_i - \overline{y})^2 & \text{constant} 
+    \end{aligned}$$
+
+Do not confuse them with sample standard deviation estimator $S$
+
+ Population Regression Function, PRF
+------------------------------------
+
+Given a population $(X,Y)$ we **hypothesize** underlying population has
+a regression line as follows. The **conditional expectation** is
+
+$$\begin{aligned}
+    & E(Y|x) = \beta_0 + \beta_1x       & \text{PRF}  
+    \end{aligned}$$
+
+The above equation is called Population Regression Function, PRF.
+Including the error $\varepsilon$, the *prediction* of dependent
+variable would be
+
+$$\begin{aligned}
+    & Y = E(Y|x) + \varepsilon  & \text{Prediction}  
+    \end{aligned}$$
+
+which is called simple linear regression model for population.$E(Y|x)$
+is often hypothetical because we would not know $\beta_0,\beta_1$ unless
+we know population. We do not care about distribution of
+$Y(\mu_Y, \sigma_Y^2)$ here as regression is always one sided [^3]. For
+$Y$, we do the other way, but that is another story in similar lines.
+
+-   RV(Parameters):
+    $\varepsilon(0, \sigma^2), \ \  X(\mu_X, \sigma_X^2), \ \ Y|x(\mu_{Y|x}, \sigma_{Y|x}^2)$
+
+-   Other Main Parameters: $\beta_0, \beta_1$
+
+-   All Parameters are constants (and typically unknown for population)
+
+-   Distribution: $\varepsilon$ assumed to have normal distribution
+    $N(0, \sigma^2)$
+
+ Sample Regression Function, SRF
+--------------------------------
+
+###  Point Estimates from single SRF
+
+Given a sample set $(X,Y)$, we **estimate** underlying population has a
+regression line as follows. $$\begin{aligned}
+    & \hat{Y} = \hat{\beta_0} + \hat{\beta_1}x  & \text{SRF, Estimator of RV } E(Y|x), {\color{blue} \text{ not } Y} \\
+    & \hat{\varepsilon} = Y - \hat{Y}   & \text{Estimator of RV } \varepsilon
+    \end{aligned}$$
+
+For given sample $(x_i, y_i)$ from sample set $(X,Y)$, a **fitted
+value** and **residual** are $$\begin{aligned}
+    & \hat{y_i} = \hat{Y}(x_i)= b_0 + b_1x_i    & \text{Fitted value, Estimate of RV } E(Y|x) \text{ at } x_i  \\
+    & \hat{\varepsilon_i} = y_i - \hat{y_i}           & \text{Residual, Estimate of RV } \varepsilon \text{ at } (x_i,y_i)
+    \end{aligned}$$
+
+Using OLS,
+
+$$\begin{aligned}
+    & \hat\beta_1 = \dfrac{\sum_{(x,y)}(y - \overline{Y})(x - \overline{X}) }{\sum_{x}(x - \overline{X})^2}  & \text{Slope RV, Estimator of RV } \beta_1  \\
+    & \hat\beta_0 = \overline{Y} - \hat\beta_1\overline{X}  & \text{y-intercept RV, Estimator of RV } \beta_0 \\
+    & b_1 = \dfrac{\sum_{i}(y_i - \overline{y})(x_i - \overline{x}) }{\sum_{i}(x_i - \overline{x})^2} = \dfrac{S_{xy}}{S_{xx}} & \text{Slope constant, Estimate of RV } \beta_1  \\
+    & b_0 = \overline{y} - b_1\overline{x}  & \text{y-intercept constant, Estimate of RV } \beta_0 
+    \end{aligned}$$
+
+-   $\hat{\beta_0},\hat{\beta_1}$ are estimators of $\beta_0,\beta_1$
+    for *any sample set*. $b_0,b_1$ are estimates of $\beta_0,\beta_1$
+    for *given sample set*
+
+-   Estimator(Estimates):
+    $\hat{\varepsilon}(0,s^{2}), \ \ \hat{X}(\overline{x}, s_X^2), \ \ \hat{Y}(\overline{\hat{y}}=\overline{y}, s_{Y|x}^2=s^2), \ \hat{\beta_1}(b_1), \ \hat{\beta_0}(b_0)$
+
+-   All Estimators are Random Variables. All Estimates are constants.
+
+-   Distribution: $\hat\varepsilon$ assumed to have normal distribution
+    $N(0, s^2)$
+
+$$\begin{aligned}
+    & \text{SSE} = \sum_{i=1}^N (y_i - \hat{y_i})^2 = \sum_{i=1}^N [y_i - (b_0 + b_1x_i)]^2 & \text{constant}
+    \end{aligned}$$
+
+:
+
+$$\begin{aligned}
+    & S^2 = \hat{\sigma}^2 = \dfrac{\sum_{y} (y - \hat{Y})^2}{n-2}  & \text{RV, Variance Estimator of RV } \varepsilon
+    \end{aligned}$$
+
+where $n-2$ is the degrees of freedom because it requires
+$\hat{\beta_0}, \hat{\beta_1}$ to be calculated (in other words,
+$\beta_0,\beta_1$ to be estimated) before summation.
+
+$$\begin{aligned}
+    & s^2 = \dfrac{\sum_{i=1}^N (y_i - \hat{y_i})^2}{n-2} = \dfrac{\text{SSE}}{n-2} & \text{constant, Variance Estimate of RV } \varepsilon
+    \end{aligned}$$
+
+-   $S^2$ is estimator of $\sigma^2$ for *any sample set*. $s^2$ is
+    estimate of $\sigma^2$ for *given sample set*
+
+-   $S^2$ is unbiased estimator (while $S$ is not).
+
+$$\begin{aligned}
+    & \text{SST} = S_{yy} = \sum_{i=1}^N (y_i - \overline{y})^2   & \text{constant}
+    \end{aligned}$$
+
+: (to differentiate from Pearson’s correlation coefficient $r$)
+
+$$\begin{aligned}
+    & r_d^2 = 1 - \dfrac{\text{SSE}}{\text{SST}}  & \text{constant} \\
+    & 0 \leq r_d \leq 1 \\
+    & r^2 = r_d^2 & \text{where $r$ is sample correlation coefficient}
+    \end{aligned}$$
+
+###  Estimates from Multiple SRFs
+
+Here, we wonder if $\hat{\beta_1}$ is a random variable, and when we
+have multiple estimates, what would be the point and interval estimates
+of resultant distribution.
+
+$$\begin{array}{ |c|c|c|c| } \hline
+    \text{Estimand} & \beta_1 & E(\hat{\beta_1}) = \mu_{\hat{\beta_1}} & V(\hat{\beta_1}) = \sigma_{\hat{\beta_1}}  \nonumber \\ \hline
+    \text{Estimator} & \hat{\beta_1} & \widehat{\mu_{\hat{\beta_1}}}  & \widehat{\sigma_{\hat{\beta_1}}}  \\ \hline
+    \text{Estimate} & b_1 & & s_{\hat{\beta_1}} \\ \hline
+    \end{array}$$
+
+Note in above table, for columns 2 and 3, the estimand is parameter of
+estimator $\hat{\beta_1}$ itself, not that of $\beta_1$. That is, we are
+interested in the mean and variance of estimator $\hat{\beta_1}$.
+
+: $X$ fixed for *all sample sets* so only corresponding $Y$ is RV.
+
+$$\begin{aligned}
+    & \hat\beta_1 = \dfrac{\sum_{(x,y)}(x - \overline{X})(y - \overline{Y}) }{\sum_{x}(x - \overline{X})^2} = \sum_{y}cy  & \text{Slope RV, Estimator of RV } \beta_1  \\
+    & c = \dfrac{x - \overline{X}}{\sum_{x}(x - \overline{X})^2}  & \text{constant}
+    \end{aligned}$$
+
+$$\begin{aligned}
+    & b_1 = \dfrac{\sum_{i}^N(x_i - \overline{x})(y_i - \overline{y}) }{\sum_{i}^N(x_i - \overline{x})^2} = \sum_{i}^Nc_iy_i  & \text{Slope constant, Estimate of RV } \beta_1  \\
+    & c_i = \dfrac{x_i - \overline{x}}{\sum_{i}^N(x_i - \overline{x})^2}  & \text{constant}
+    \end{aligned}$$
+
+Because each $Y_i$ is normal (as underlying $\varepsilon$ is normal),
+$\hat\beta_1$ also should be normal.
+
+$$\begin{aligned}
+    & \mu_{\hat{\beta_1}} = E(\hat{\beta_1}) = \beta_1 & \text{RV} 
+    \end{aligned}$$
+
+$$\begin{aligned}
+    & \sigma_{\hat\beta_1}^2 = V(\hat{\beta_1}) =  \dfrac{\sigma^2}{\sum_x (x - \overline{x})^2}    & \text{RV} \\
+    & S_{\hat{\beta_1}}^2 = \widehat{\sigma_{\hat{\beta_1}}} = \dfrac{S^2}{\sum_x (x - \overline{x})^2} & \text{RV, Variance Estimator of RV } \sigma_{\hat\beta_1}     \\
+    & s_{\hat{\beta_1}}^2 = \dfrac{s^2}{\sum_i^N (x_i - \overline{x})^2} = \dfrac{s^2}{S_{xx}} & \text{constant, Variance Estimate of RV } \sigma_{\hat\beta_1} 
+    \end{aligned}$$
+
+-   $S_{\hat{\beta_1}}^2$ is estimator of $\sigma_{\hat\beta_1}^2$ for
+    resultant *any sampling distribution* of $\hat{\beta_1}$ or multiple
+    SRFs
+
+-   $s_{\hat{\beta_1}}^2$ is estimate of $\sigma_{\hat\beta_1}^2$ for
+    resultant *given sampling distribution* of $\hat{\beta_1}$ or
+    multiple SRFs
+
+From here, Confidence intervals and Hypothesis testing procedures for
+$\beta_1$ could be built (immediate next step would be seeing
+standardized $\hat\beta_1$ having $t$ distribution with df $N-2$)
+
+Correlation Coefficient
+-----------------------
+
+Given a sample set $(X,Y)$, the **sample correlation coefficient** is
+given by
+
+$$\begin{aligned}
+    r = \dfrac{S_{xy}}{\sqrt{S_{xx}} \sqrt{S_{yy}} } 
+    \end{aligned}$$
+
+[^1]: https://en.wikipedia.org/wiki/Estimator
+
+[^2]: https://stats.stackexchange.com/a/17789/202481
+
+[^3]: unless we standardize dataset, which leads to symmetry and
+    correlation coefficient

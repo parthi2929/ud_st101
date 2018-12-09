@@ -1,0 +1,658 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage{xr-hyper} % Needed for external references
+\externaldocument{"24. Confidence Intervals - Theory"} 
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Deep Examples}\label{deep-examples}
+
+\subsection{Confidence Intervals for Sampling
+Proportions}\label{confidence-intervals-for-sampling-proportions}
+
+\subsubsection{Create Population}\label{create-population}
+
+Let us create a population of 10000 balls, with 60\% yellow balls.
+Programmatically, our population contains 1s and 0s, 1 indicating
+yellow.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}1}]:} \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{k+kn}{from} \PY{n+nn}{SDSPSM} \PY{k}{import} \PY{n}{get\PYZus{}metrics}\PY{p}{,} \PY{n}{drawBarGraph}
+        \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{create\PYZus{}bernoulli\PYZus{}population}
+        
+        \PY{n}{T} \PY{o}{=} \PY{l+m+mi}{4000}   \PY{c+c1}{\PYZsh{} total size of population}
+        \PY{n}{p} \PY{o}{=} \PY{l+m+mf}{0.6}    \PY{c+c1}{\PYZsh{} 60\PYZpc{} has yellow balls}
+        
+        \PY{c+c1}{\PYZsh{} create population}
+        \PY{n}{population}\PY{p}{,} \PY{n}{population\PYZus{}freq} \PY{o}{=} \PY{n}{create\PYZus{}bernoulli\PYZus{}population}\PY{p}{(}\PY{n}{T}\PY{p}{,}\PY{n}{p}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} population metrics}
+        \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{n}{population}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} visualize}
+        \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+        \PY{n}{drawBarGraph}\PY{p}{(}\PY{n}{population\PYZus{}freq}\PY{p}{,} \PY{n}{ax1}\PY{p}{,} \PY{p}{[}\PY{n}{T}\PY{p}{,} \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Population}
+        \PY{n}{Distribution}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{n}{Gumballs}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{, }\PY{l+s+s1}{\PYZsq{}}\PY{n}{Counts}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,xmin=0)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_1_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Deriving and visualizing the probability Mass function (the intermediate
+density function, where total area of bars will be 1, is just for
+fitting normal continous approximation later)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}2}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{mini\PYZus{}plot\PYZus{}SDSP}
+        
+        \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+        \PY{n}{mini\PYZus{}plot\PYZus{}SDSP}\PY{p}{(}\PY{n}{population}\PY{p}{,} \PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{,} \PY{n}{norm\PYZus{}off}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_3_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Sampling from the
+Population}\label{sampling-from-the-population}
+
+Let us sample from population, N no of times, each time with sample set
+of size n. If \(np \geq 30\) and \(nq \geq 30\), the resulting sampling
+distribution should be approximately normal. Remember, for Population
+described by random variable Y, we describe the sampling distribution by
+
+\begin{equation}
+\color {blue}{
+\begin{aligned}
+\text{for any sample set k, sample mean is} \ \ \overline{\widehat{Y_k}} = \dfrac {1}{n} \sum\limits_{i=1}^n Y_{ki} \\ \\
+\text{Random Variable} \ \ \widehat{p} =  \overline{\widehat{Y}} =  \overline{\widehat{Y_1}},\overline{\widehat{Y_2}},\cdots\overline{\widehat{Y_k}}\cdots\overline{\widehat{Y_N}} \\ \\
+\mu_{\widehat{p}} = \mu(\overline{\widehat{Y}}) \\ \\
+\sigma_{\widehat{p}} = \sigma(\overline{\widehat{Y}})
+\end{aligned}
+}
+\end{equation}
+
+where the hat \(\widehat{}\) indicates the statistical outcome. And
+statistically by CLT,
+
+\begin{equation}
+\color {blue} {
+\begin{aligned}
+\mu_{\widehat{p}} \approx 0.6 = \mu = p \\ \\
+\sigma_{\widehat{p}} \approx 0.0693 \approx \dfrac{0.4898}{\sqrt{50}} = \dfrac {\sigma}{\sqrt{n}} = \sqrt{\dfrac {p(1-p)}{n}}
+\end{aligned}
+}
+\end{equation}
+
+\begin{quote}
+Note we have sampled WITH REPLACEMENT, so the samples are independent.
+If you sample without replacement, you need to factor in FPC (finite
+population correction) for each sample set's SD.
+\end{quote}
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}3}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{sample\PYZus{}with\PYZus{}CI}
+        \PY{k+kn}{from} \PY{n+nn}{random} \PY{k}{import} \PY{n}{seed}
+        
+        \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{100}
+        \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{50}
+        
+        \PY{c+c1}{\PYZsh{}seed(0)}
+        
+        \PY{c+c1}{\PYZsh{} sample from population}
+        \PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,} \PY{n}{CI\PYZus{}list} \PY{o}{=} \PY{n}{sample\PYZus{}with\PYZus{}CI}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{population}\PY{p}{,} \PY{n}{sigma}\PY{o}{=}\PY{n}{sigma}\PY{p}{,} \PY{n}{mode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{z}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} sample metrics}
+        \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} visualize}
+        \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+        \PY{n}{mini\PYZus{}plot\PYZus{}SDSP}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{,}\PY{n}{width}\PY{o}{=}\PY{l+m+mf}{0.05}\PY{p}{,}  \PY{n}{norm\PYZus{}off}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        
+        \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{display}\PY{p}{,} \PY{n}{Math}
+        \PY{n}{display}\PY{p}{(}\PY{n}{Math}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{mu\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{sigma\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{mu}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    $$\mu_{\hat{p}}:0.6026 \ \ \ \ \sigma_{\hat{p}}:0.0624$$
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_5_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{\texorpdfstring{When \(\sigma\) is
+known}{When \textbackslash{}sigma is known}}\label{when-sigma-is-known}
+
+For each of above sample set of size 'n', let us calculate confidence
+interval using population SD \(\sigma\) as below. 1.96 is from Z
+tranformation for 95\% confidence interval, like we saw earlier in our
+theoretical section.
+
+\begin{equation}
+\color{blue}{CI = Y \pm 1.96 \dfrac{\sigma}{\sqrt{n}}}  
+\end{equation}
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}4}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}
+        
+        \PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}\PY{p}{(}\PY{n}{ax}\PY{p}{,} \PY{n}{CI\PYZus{}list}\PY{p}{,} \PY{n}{mu}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+CI containing pop.mean:96.0\%
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_7_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    As expected we observe that out of all CIs above, 95\% of them or above
+contain population mean.
+
+    \subsubsection{\texorpdfstring{When \(\sigma\) is not
+known}{When \textbackslash{}sigma is not known}}\label{when-sigma-is-not-known}
+
+For each sample mean \(\overline{X_k}\) calculated, the confidence
+interval is calculated as below. Note, the constant value \(t_{n-1}\)
+depends on degrees of freedom (n-1).
+
+\begin{equation}
+\color{blue}{CI = Y \pm t_{n-1} \dfrac{S_k}{\sqrt{n}}}
+\end{equation}
+
+Hope you noted. This time, for each sample mean, we also calculate
+unbiased sample variable of that set (that is, divided by n-1), and use
+that for calculating \(M_k\). We sample again, because, for each sample,
+this time, we calculate CI using t distribution.
+
+\textbf{t value for 95\% CI:}
+
+Degrees of Freedom \(df=n-1\). For 95\% confidence level, the confidence
+coefficient, \(1 - \alpha = 1 - 0.05 = 0.95\).
+
+To calculate \(t\) in python, we simply need to pass,
+\((1-\alpha, df)\). A sample calculation shown below for sample size
+\(n = 10\)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}5}]:} \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k}{import} \PY{n}{stats}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{t}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.025}\PY{p}{,} \PY{l+m+mi}{10}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+2.2621571627409915
+
+    \end{Verbatim}
+
+    Now to our sampling distribution. Note, we are getting an approximate
+normal distribution.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}6}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{sample\PYZus{}with\PYZus{}CI}
+        
+        \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{100}
+        \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{50}
+        
+        \PY{c+c1}{\PYZsh{}seed(0)}
+        
+        \PY{c+c1}{\PYZsh{} sample from population, this time in t mode,}
+        \PY{c+c1}{\PYZsh{} so CI intervals are calculated with t value 2.093}
+        \PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,} \PY{n}{CI\PYZus{}list} \PY{o}{=} \PY{n}{sample\PYZus{}with\PYZus{}CI}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{population}\PY{p}{,} \PY{n}{sigma}\PY{o}{=}\PY{n}{sigma}\PY{p}{,} \PY{n}{mode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{t}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} sample metrics}
+        \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} visualize}
+        \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+        \PY{n}{mini\PYZus{}plot\PYZus{}SDSP}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{,}\PY{n}{width}\PY{o}{=}\PY{l+m+mf}{0.05}\PY{p}{,}  \PY{n}{norm\PYZus{}off}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        
+        \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{display}\PY{p}{,} \PY{n}{Math}
+        \PY{n}{display}\PY{p}{(}\PY{n}{Math}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{mu\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{sigma\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{mu}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    $$\mu_{\hat{p}}:0.5976 \ \ \ \ \sigma_{\hat{p}}:0.0854$$
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_12_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}7}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}
+        
+        \PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}\PY{p}{(}\PY{n}{ax}\PY{p}{,} \PY{n}{CI\PYZus{}list}\PY{p}{,} \PY{n}{mu}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+CI containing pop.mean:93.0\%
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_13_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Generally we should get more than 95\% as above. Above result just
+means, if we take a sampling size, and calculate CI, and do that 100
+times, about 95 times our CI would contain population mean, and our
+result gave 97 times. We could expect at least 95\% most of the time.
+But can we get any idea, how that "success" of getting population mean
+in our CI, 95\% of time, depends on sample size? We get it, greater the
+sample size, better, but how it would be? Let us take our simulation to
+next scale as below, trying with various experiment and sample sizes.
+
+    \subsubsection{Digging deeper 1}\label{digging-deeper-1}
+
+What if I use Z distribution and unbiased sample SD even for CI? What
+happens when I use t distribution but population SD for CI? We will find
+out what happens in such cases below.
+
+\textbf{Environment:}\\
+1. Population size T, fixed\\
+2. Sample size n, varied\\
+3. Experiment size N, varied\\
+4. Sampling with or without replacement, varied.
+
+\textbf{Applied methods:}\\
+1. Z distribution and population SD\\
+2. Z distribution and unbiased sample SD\\
+3. T distribution and population SD\\
+4. T distribution and unbiased sample SD
+
+Note, in case of sampling without replacement, each sample SD is
+corrected with FPC (Finite Population Correction)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}8}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{plot\PYZus{}summary}
+        
+        
+        \PY{n}{max\PYZus{}sample\PYZus{}size} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{T}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 25\PYZpc{} of total population}
+        \PY{n}{N\PYZus{}list} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{500}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}
+        \PY{n}{n\PYZus{}list} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{max\PYZus{}sample\PYZus{}size}\PY{p}{,}\PY{l+m+mi}{50}\PY{p}{)}  \PY{c+c1}{\PYZsh{} different sample sizes}
+        
+        
+        \PY{n}{plot\PYZus{}summary}\PY{p}{(}\PY{n}{population}\PY{p}{,} \PY{n}{N\PYZus{}list}\PY{p}{,} \PY{n}{n\PYZus{}list}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_16_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Note that, as per color gradient used, lighter the dots, nearer they are
+to 95\%. And if green they are above 95\%. And if pink, they are below
+95\%. So more the green dots or lighter dots, the better, the CI
+performance.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compared to graphs using sample SDs on right hand side, the graphs
+  using population SDs on left hand side, has more dots that are green
+  and lighter indicating better CI performance on LHS. This is
+  especially very pronounced, when sample sizes are small (observe dark
+  dots at \(n=10\)). LHS almost always have green dots at \(n=10\) while
+  RHS has mostly pinky dots.
+\item
+  For a common SD usage, there is not much a difference between using Z
+  or t distribution when \(n \geq 30\) . For eg, compare figures 01 and
+  11 both using population SD. Or compare 02 and 12 both using sample
+  SD.
+\item
+  Comparing figures 01 and 11 at \(n=10\) we observe, figure 11 performs
+  better (more darker green dots). So when you know \(\sigma\), and if
+  \(n < 30\) using Z distribution is better.
+\item
+  Comparing figures 02 and 12 at \(n=10\) we observe, figure 12 performs
+  better (lighter pink dots). So when you do not know \(\sigma\) and if
+  \(n < 30\), using T distribution with unbiased sample SD is better.
+\item
+  Similar observation also applies to sampling with replacement.
+\end{enumerate}
+
+Though the limit 30 is not obvious from above graphs, this number has
+been arrived at by statisticians after extensive research
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Warning]
+The CI for proportions have been always blotchy. Though above formula are straight forward, they have been proven ineffective, effectively by \citet{dasgupta2001}. When you use CI for proportions problem in a practical scenario do use the alternatives provided there. In a nutshell, for smaller sizes, $n < 40$, Wilson
+or the equal-tailedJeffreys prior interval are recommended. For larger n, the Wilson, the Jeffreys andthe Agresti–Coull intervals are all comparable, and the Agresti–Coull interval is the simplest to present. 
+\end{tcolorbox}
+    \subsection{Confidence Intervals for Sample
+Means}\label{confidence-intervals-for-sample-means}
+
+\subsubsection{Create Population}\label{create-population}
+
+Let Y be the random variable indicating temperature over a distribution
+of certain values. If limiting values are say, 0 deg C to 40 deg C, our
+population would thus look like this:
+\([23,13,35,50,10,2,5,0,33, \cdots ,21]\) Unlike Sample proportions,we
+do not know or designate any proportion of temperatures in this example,
+but we know the mean and variance by simply calculating all values in
+the distribution. These would be our population parameters.
+
+Population mean \(\mu = \mu_y\)\\
+Population variance \(\sigma^2 = \sigma_y^2\)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}9}]:} \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+        \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{floor}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{k+kn}{from} \PY{n+nn}{random} \PY{k}{import} \PY{n}{random}\PY{p}{,} \PY{n}{seed}\PY{p}{,} \PY{n}{shuffle}
+        \PY{k+kn}{from} \PY{n+nn}{SDSPSM} \PY{k}{import} \PY{n}{get\PYZus{}metrics}\PY{p}{,} \PY{n}{drawBarGraph}\PY{p}{,} \PY{n}{getPopulationStatistics}
+        \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{createRandomPopulation}
+        
+        \PY{n}{seed}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+        
+        \PY{n}{popMin} \PY{o}{=} \PY{l+m+mi}{1}   \PY{c+c1}{\PYZsh{} Min population}
+        \PY{n}{popMax} \PY{o}{=} \PY{l+m+mi}{40}  \PY{c+c1}{\PYZsh{} Max population}
+        \PY{n}{freqMax} \PY{o}{=} \PY{l+m+mi}{200} \PY{c+c1}{\PYZsh{} freq of any set of population (for eg, no of occurances of temperatures}
+        \PY{n}{at} \PY{l+m+mi}{25} \PY{n}{deg} \PY{n}{C}\PY{p}{)}
+        
+        \PY{n}{population}\PY{p}{,} \PY{n}{population\PYZus{}freq} \PY{o}{=} \PY{n}{createRandomPopulation}\PY{p}{(}\PY{n}{popMax} \PY{o}{\PYZhy{}} \PY{n}{popMin} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{freqMax}\PY{p}{)}
+        
+        \PY{n}{N}\PY{p}{,} \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{n}{getPopulationStatistics}\PY{p}{(}\PY{n}{population\PYZus{}freq}\PY{p}{,} \PY{n}{popMin}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}visualize}
+        \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+        \PY{n}{drawBarGraph}\PY{p}{(}\PY{n}{population\PYZus{}freq}\PY{p}{,} \PY{n}{ax1}\PY{p}{,} \PY{p}{[}\PY{n}{N}\PY{p}{,} \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Population}
+        \PY{n}{Distribution}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{n}{Temperature}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{, }\PY{l+s+s1}{\PYZsq{}}\PY{n}{Counts}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_20_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Let us visualize the density function and PMF as usual.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}10}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{mini\PYZus{}plot\PYZus{}SDSM}
+         
+         \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+         \PY{n}{mini\PYZus{}plot\PYZus{}SDSM}\PY{p}{(}\PY{n}{population}\PY{p}{,} \PY{n}{ax1}\PY{p}{,} \PY{n}{ax2}\PY{p}{,} \PY{n}{ax3}\PY{p}{,} \PY{n}{popMax}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_22_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Sampling from the
+Population}\label{sampling-from-the-population}
+
+Let us sample from above population, N no of times, each time with
+sample set of size n. If \(n > 30\), the resulting sampling distribution
+should be approximately normal (always if population itself was normally
+distributed)
+
+Remember, for Population described by random variable Y, we describe the
+sampling distribution of sample means by
+
+\begin{equation}
+\color {blue}{
+\begin{aligned}
+\mu_{\overline{Y}} = \mu(\overline{\widehat{Y}}) \\ \\
+\sigma_{\overline{Y}} = \sigma(\overline{\widehat{Y}})
+\end{aligned}
+}
+\end{equation}
+
+where the \(\widehat{}\) indicates the statistical outcome. And
+statistically by CLT,
+
+\begin{equation}
+\color {blue} {
+\begin{aligned}
+\mu_{\overline{Y}} = 19.4 \approx 20 = \mu \\ \\
+\sigma_{\overline{Y}} \approx 1.52 \approx \dfrac{11.32}{\sqrt{50}} = \dfrac {\sigma}{\sqrt{n}}  
+\end{aligned}
+}
+\end{equation}
+
+\begin{quote}
+\(\overline{Y}\) is called the sample means which is a random variable.
+\end{quote}
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}11}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{sample\PYZus{}with\PYZus{}CI}
+         \PY{k+kn}{from} \PY{n+nn}{random} \PY{k}{import} \PY{n}{seed}
+         
+         \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{100}
+         \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{50}
+         
+         \PY{c+c1}{\PYZsh{}seed(0)}
+         
+         \PY{c+c1}{\PYZsh{} sample from population}
+         \PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,} \PY{n}{CI\PYZus{}list} \PY{o}{=} \PY{n}{sample\PYZus{}with\PYZus{}CI}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{population}\PY{p}{,} \PY{n}{sigma}\PY{o}{=}\PY{n}{sigma}\PY{p}{,} \PY{n}{mode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{z}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} sample metrics}
+         \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} visualize}
+         \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+         \PY{n}{mini\PYZus{}plot\PYZus{}SDSM}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,} \PY{n}{ax1}\PY{p}{,} \PY{n}{ax2}\PY{p}{,} \PY{n}{ax3}\PY{p}{,} \PY{n}{popMax}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{)}
+         
+         \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{display}\PY{p}{,} \PY{n}{Math}
+         \PY{n}{display}\PY{p}{(}\PY{n}{Math}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{mu\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{sigma\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{mu}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    $$\mu_{\hat{p}}:19.5912 \ \ \ \ \sigma_{\hat{p}}:1.5865$$
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_24_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{quote}
+Ok I get it, the resulting distribution and density functions look
+abnormal (ugly, slightly normal). Try increasing experiment size N, and
+you will see much better approximation of normal distribution. We had to
+stick with N=100 because we have to see how CI from each sample mean
+performs, so bear with me here.
+\end{quote}
+
+    \subsubsection{\texorpdfstring{When \(\sigma\) is
+known}{When \textbackslash{}sigma is known}}\label{when-sigma-is-known}
+
+For each of above sample set of size 'n', let us calculate confidence
+interval using population SD \(\sigma\) as below. 1.96 is from Z
+tranformation for 95\% confidence interval, like we saw earlier in our
+theoretical section.
+
+\begin{equation}
+\color{blue}{CI = Y \pm 1.96 \dfrac{\sigma}{\sqrt{n}}}  
+\end{equation}
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}12}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}
+         
+         \PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}\PY{p}{(}\PY{n}{ax}\PY{p}{,} \PY{n}{CI\PYZus{}list}\PY{p}{,} \PY{n}{mu}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+CI containing pop.mean:95.0\%
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_27_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{\texorpdfstring{When \(\sigma\) is not
+known}{When \textbackslash{}sigma is not known}}\label{when-sigma-is-not-known}
+
+\textbf{When we do not know population SD}
+
+Just like earlier, for each sample mean \(\overline{X_k}\) calculated,
+the confidence interval is calculated as below. Note, the constant value
+\(t_{n-1}\) depends on degrees of freedom (n-1).
+
+\begin{equation}
+\color{blue}{CI = Y \pm t_{n-1} \dfrac{S_k}{\sqrt{n}}}
+\end{equation}
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}13}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{sample\PYZus{}with\PYZus{}CI}
+         
+         \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{100}
+         \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{50}
+         
+         \PY{c+c1}{\PYZsh{}seed(0)}
+         
+         \PY{c+c1}{\PYZsh{} sample from population, this time in t mode,}
+         \PY{c+c1}{\PYZsh{} so CI intervals are calculated with t value 2.093}
+         \PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,} \PY{n}{CI\PYZus{}list} \PY{o}{=} \PY{n}{sample\PYZus{}with\PYZus{}CI}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{population}\PY{p}{,} \PY{n}{sigma}\PY{o}{=}\PY{n}{sigma}\PY{p}{,} \PY{n}{mode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{t}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} sample metrics}
+         \PY{n}{mu}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} visualize}
+         \PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,}\PY{n}{ax2}\PY{p}{,}\PY{n}{ax3}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+         \PY{n}{mini\PYZus{}plot\PYZus{}SDSM}\PY{p}{(}\PY{n}{Y\PYZus{}mean\PYZus{}list}\PY{p}{,} \PY{n}{ax1}\PY{p}{,} \PY{n}{ax2}\PY{p}{,} \PY{n}{ax3}\PY{p}{,} \PY{n}{popMax}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{)}
+         
+         \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{display}\PY{p}{,} \PY{n}{Math}
+         \PY{n}{display}\PY{p}{(}\PY{n}{Math}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{mu\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{sigma\PYZus{}}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{hat}\PY{l+s+s1}{\PYZob{}\PYZob{}}\PY{l+s+s1}{p\PYZcb{}\PYZcb{}\PYZcb{}\PYZcb{}:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{mu}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    $$\mu_{\hat{p}}:19.6824 \ \ \ \ \sigma_{\hat{p}}:1.5962$$
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_29_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}14}]:} \PY{k+kn}{from} \PY{n+nn}{ci\PYZus{}helpers} \PY{k}{import} \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}
+         
+         \PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{plot\PYZus{}ci\PYZus{}accuracy\PYZus{}1}\PY{p}{(}\PY{n}{ax}\PY{p}{,} \PY{n}{CI\PYZus{}list}\PY{p}{,} \PY{n}{mu}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+CI containing pop.mean:97.0\%
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_30_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Digging deeper 2}\label{digging-deeper-2}
+
+What if I use Z distribution and unbiased sample SD even for CI? What
+happens when I use t distribution but population SD for CI? We will find
+out what happens in such cases below.
+
+\textbf{Environment:}\\
+1. Population size T, fixed\\
+2. Sample size n, varied\\
+3. Experiment size N, varied\\
+4. Sampling with or without replacement, varied.
+
+\textbf{Applied methods:}\\
+1. Z distribution and population SD\\
+2. Z distribution and unbiased sample SD\\
+3. T distribution and population SD\\
+4. T distribution and unbiased sample SD
+
+Note, in case of sampling without replacement, each sample SD is
+corrected with FPC (Finite Population Correction)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}15}]:} \PY{n}{max\PYZus{}sample\PYZus{}size} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{T}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 25\PYZpc{} of total population}
+         \PY{n}{N\PYZus{}list} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{500}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}
+         \PY{n}{n\PYZus{}list} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{n}{max\PYZus{}sample\PYZus{}size}\PY{p}{,}\PY{l+m+mi}{50}\PY{p}{)}  \PY{c+c1}{\PYZsh{} different sample sizes}
+         
+         
+         \PY{n}{plot\PYZus{}summary}\PY{p}{(}\PY{n}{population}\PY{p}{,} \PY{n}{N\PYZus{}list}\PY{p}{,} \PY{n}{n\PYZus{}list}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24. Confidence Intervals - Deep Examples_files/24. Confidence Intervals - Deep Examples_32_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Note that, as per color gradient used, lighter the dots, nearer they are
+to 95\%. And if green they are above 95\%. And if pink, they are below
+95\%. So more the green dots or lighter dots, the better, the CI
+performance.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compared to graphs using sample SDs on right hand side, the graphs
+  using population SDs on left hand side, has more dots that are green
+  and lighter indicating better CI performance on LHS. This is
+  especially very pronounced, when sample sizes are small (observe dark
+  dots at \(n=10\)). LHS almost always have green dots at \(n=10\) while
+  RHS has mostly pinky dots.
+\item
+  For a common SD usage, there is not much a difference between using Z
+  or t distribution when \(n \geq 30\) . For eg, compare figures 01 and
+  11 both using population SD. Or compare 02 and 12 both using sample
+  SD.
+\item
+  Comparing figures 01 and 11 at \(n=10\) we observe, figure 11 performs
+  better (more darker green dots). So when you know \(\sigma\), and if
+  \(n < 30\) using Z distribution is better.
+\item
+  Comparing figures 02 and 12 at \(n=10\) we observe, figure 12 performs
+  better (lighter pink dots). So when you do not know \(\sigma\) and if
+  \(n < 30\), using T distribution with unbiased sample SD is better.
+\item
+  Similar observation also applies to sampling with replacement.
+\end{enumerate}
+
+Though the limit 30 is not obvious from above graphs, this number has
+been arrived at by statisticians after extensive research.
+
+Yes, the inferences are same as Section \ref{digging-deeper-1} except
+that the differences are much more clearer in this case. For eg, compare
+figures 02 and 12 at \(n=10\). It is very clear now, why figure 12
+(using t distribution) is far better at lower sample sizes.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

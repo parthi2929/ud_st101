@@ -1,0 +1,72 @@
+\documentclass[tikz = true, float=false, crop=false, 11pt]{standalone}
+
+% ANY PREAMBLE HERE IS REMOVED IF STANDALONE SO..
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+	\usepackage{../myipy2tex}
+	\usepackage{../myrawtex}
+	\usepackage{../myipy2tex_custom} 
+	\usepackage{../myrawtex_custom} 
+	\usepackage{../mytikz_custom}		
+	\setcounter{secnumdepth}{5}
+	\usepackage{xr-hyper}
+%	\externaldocument{30_Covariance_1}
+%	\externaldocument{30_Covariance_2}
+%	\externaldocument{30_Covariance_3}
+%	\externaldocument{30_Covariance_4}	
+%	\externaldocument{30_Correlation_1}		
+%	\externaldocument{30_Correlation_2}		
+%	\externaldocument{30_Appendix_1}		
+	\title{Correlation}
+\fi
+
+    
+\begin{document} 
+	
+	\section{Giving back to Regression}
+	
+	Now that we have correlation formula, this can be used to simplify our regression formula as well. Recalling the simple linear regression model formula (for both possible lines), 
+	
+	$$\begin{aligned}
+	\hat{Y}|x = \hat{\beta_0} + \dfrac{\mathrm{cov}(X,Y)}{s_X^2}x \\
+	\hat{X}|y = \hat{\beta_2} + \dfrac{\mathrm{cov}(X,Y)}{s_Y^2}y 
+	\end{aligned}$$
+	
+	where
+	
+	$$\begin{aligned}
+	\hat{\beta_0} = \overline{y} - \dfrac{\mathrm{cov}(X,Y)}{s_X^2}\overline{x} \\
+	\hat{\beta_2} = \overline{x} - \dfrac{\mathrm{cov}(X,Y)}{s_Y^2}\overline{y}
+	\end{aligned}$$
+	
+	Substituting, $r = \dfrac{\mathrm{cov}(X,Y)}{s_X s_Y}$, 
+	
+	$$\begin{aligned}
+	\hat{Y}|x &= \overline{y} - \dfrac{\mathrm{cov}(X,Y)}{s_X^2}\overline{x} + \dfrac{\mathrm{cov}(X,Y)}{s_X^2}x \\
+	&= \overline{y} + \dfrac{\mathrm{cov}(X,Y)}{s_X^2}(x - \overline{x}) \\
+	&= \overline{y} + \dfrac{rs_X s_Y}{s_X^2}(x - \overline{x}) \\
+	&= \overline{y} + r\dfrac{s_Y}{s_X}(x - \overline{x}) 
+	\end{aligned}$$
+	
+	Similarly, 
+	
+	$$\begin{aligned}
+	\hat{X}|y &= \overline{x} - \dfrac{\mathrm{cov}(X,Y)}{s_Y^2}\overline{y} + \dfrac{\mathrm{cov}(X,Y)}{s_Y^2}y \\
+	&= \overline{x} + \dfrac{\mathrm{cov}(X,Y)}{s_Y^2}(y - \overline{y}) \\
+	&= \overline{x} + \dfrac{rs_X s_Y}{s_Y^2}(y - \overline{y}) \\
+	&= \overline{x} + r\dfrac{s_X}{s_Y}(y - \overline{y})
+	\end{aligned}$$
+	
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Regression Alternate Form Via Correlation]
+		The true regression lines could also be expressed in terms of correlation as, 
+		\begin{align}
+		\hat{Y}|x = \overline{y} + r\dfrac{s_Y}{s_X}(x - \overline{x}) \nonumber \\
+		\hat{X}|y = \overline{x} + r\dfrac{s_X}{s_Y}(y - \overline{y}) 
+		\end{align}
+		Note above lines are not symmetric, their intercepts and slope differ. Symmetry happens after standardizing the dataset.
+	\end{tcolorbox}	
+	
+\end{document}

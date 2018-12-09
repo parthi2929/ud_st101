@@ -1,0 +1,174 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+	\usepackage{../myipy2tex}
+	\usepackage{../myrawtex}
+	\usepackage{../myipy2tex_custom} 
+	\usepackage{../myrawtex_custom} 
+	\usepackage{../mytikz_custom}
+    \setcounter{secnumdepth}{5}
+    \usepackage{xr-hyper} % Needed for external references   
+	\externaldocument{30_Covariance_1}
+	\externaldocument{30_Covariance_2}
+	\externaldocument{30_Covariance_3}
+	\externaldocument{30_Covariance_4}	
+	\externaldocument{30_Correlation_1}		
+	\externaldocument{30_Appendix_1}	
+\title{Covariance and Correlation}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Examples}\label{examples}
+
+\paragraph{Example 1: A single simple sample
+set}\label{example-1-a-single-simple-sample-set}
+
+Assume below is the given sample set. Let us plot both the direct simple
+regression line and standardized one to note the differences.
+
+    \begin{longtable}[]{@{}ll@{}}
+\toprule
+X & Y\tabularnewline
+\midrule
+\endhead
+2.2 & 14\tabularnewline
+2.7 & 23\tabularnewline
+3 & 13\tabularnewline
+3.55 & 22\tabularnewline
+4 & 15\tabularnewline
+4.5 & 20\tabularnewline
+4.75 & 28\tabularnewline
+5.5 & 23\tabularnewline
+\bottomrule
+\end{longtable}
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    ~
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}17}]:} \PY{n}{x\PYZus{}i} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{2.2}\PY{p}{,} \PY{l+m+mf}{2.7}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mf}{3.55}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mf}{4.5}\PY{p}{,} \PY{l+m+mf}{4.75}\PY{p}{,} \PY{l+m+mf}{5.5}\PY{p}{]}   \PY{c+c1}{\PYZsh{} a sample set}
+         \PY{n}{y\PYZus{}i} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{23}\PY{p}{,} \PY{l+m+mi}{13}\PY{p}{,} \PY{l+m+mi}{22}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{28}\PY{p}{,} \PY{l+m+mi}{23}\PY{p}{]}
+         
+         \PY{n}{fig}\PY{p}{,} \PY{n}{axr} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plot\PYZus{}regs}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{p}{,} \PY{n}{y\PYZus{}i}\PY{p}{,} \PY{n}{axr}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{std}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fig A: Raw Sample Set}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plot\PYZus{}regs}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{p}{,} \PY{n}{y\PYZus{}i}\PY{p}{,} \PY{n}{axr}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{std}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{std\PYZus{}full}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fig B: Fully Standardized}
+         \PY{n}{Sample} \PY{n}{Set}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Correlation_2_files/30_Correlation_2_4_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Note the regression line equations in both figures. In Figure B, as
+expected, both lines get the same slope which is \emph{standardized
+covariance} \(Cov(X_s,Y_s)\). Note the value of the common slope. It is
+positive and less than 1, this tells both sample sets are related
+linearly to an extent.
+
+    \paragraph{Example 2: Wikipedia Sample
+set}\label{example-2-wikipedia-sample-set}
+
+Let us try a perfectly covarying example.
+This is taken from Wikipedia's Pearson Correlation Coefficient article \footnote{https://en.wikipedia.org/wiki/Pearson\_correlation\_coefficient}
+    \begin{longtable}[]{@{}ll@{}}
+\toprule
+X & Y\tabularnewline
+\midrule
+\endhead
+1 & 0.11\tabularnewline
+2 & 0.12\tabularnewline
+3 & 0.13\tabularnewline
+5 & 0.15\tabularnewline
+8 & 0.18\tabularnewline
+\bottomrule
+\end{longtable}
+
+    ~
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}18}]:} \PY{n}{x\PYZus{}i} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{]}   \PY{c+c1}{\PYZsh{} a sample set}
+         \PY{n}{y\PYZus{}i} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.11}\PY{p}{,}\PY{l+m+mf}{0.12}\PY{p}{,}\PY{l+m+mf}{0.13}\PY{p}{,}\PY{l+m+mf}{0.15}\PY{p}{,}\PY{l+m+mf}{0.18}\PY{p}{]}
+         
+         \PY{n}{fig}\PY{p}{,} \PY{n}{axr} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plot\PYZus{}regs}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{p}{,} \PY{n}{y\PYZus{}i}\PY{p}{,} \PY{n}{axr}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{std}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Raw Sample Set}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plot\PYZus{}regs}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{p}{,} \PY{n}{y\PYZus{}i}\PY{p}{,} \PY{n}{axr}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{std}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{std\PYZus{}full}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fully Standardized Sample}
+         \PY{n}{Set}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Correlation_2_files/30_Correlation_2_10_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Aha! When the dataset is perfectly linearly related, we get the
+\emph{standardized covariance} slope as 1. Ain't we getting somewhere?
+
+    \paragraph{Example 3: With different linear
+relationships}\label{example-3-with-different-linear-relationships}
+
+To test the different values of standardized covariance, we shall
+generate different datasets, that has perfect linearity in both
+directions (positive and negative), and also some what in the middle,
+including no linearity.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Correlation_2_files/30_Correlation_2_13_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+Note carefully.  
+
+\begin{itemize}
+\item When the given dataset is perfectly negatively linearly related (Plot 00,01), cov$(X_s,Y_s) = -1$  
+\item When the given dataset is somewhat negatively linearly related (Plot 10,11), $-1 < \mathrm{cov}(X_s,Y_s) < 0$
+\item When the given dataset is totally not linearly related (Plot 20,21), cov$(X_s,Y_s) = 0$  
+\item When the given dataset is somewhat positively linearly related (Plot 30,31), $0 < \mathrm{cov}(X_s,Y_s) < 1$  
+\item When the given dataset is perfectly positively linearly related (Plot 40,41), cov$(X_s,Y_s) = 1$  
+\end{itemize}
+
+
+    Thus, not only that our standardized covariance got rid of units, but
+also retains value between \(\pm 1\), perfectly reflective of the linear
+relationship in the dataset. Thus we observe empirically via examples
+the range of standardized covariance.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

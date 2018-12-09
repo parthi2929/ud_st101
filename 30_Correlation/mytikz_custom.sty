@@ -1,0 +1,16 @@
+% This style package was created using hint from here: https://tex.stackexchange.com/questions/77/how-to-make-a-standard-preamble-into-a-package?rq=1
+
+% Declare that this style file requires at least LaTeX version 2e.
+\NeedsTeXFormat{LaTeX2e}
+
+% Provide the name of your page, the date it was last updated, and a comment about what it's used for
+\ProvidesPackage{mytikz_custom}[2018/09/06 Hardcoded preamble to be used in main tex to support subfiles (sub-files should include and refer here the preamble they need)]
+
+\usepackage{tikz}
+\usepackage{pgfplots, pgfplotstable}
+\usetikzlibrary{3d,calc,math, decorations.pathreplacing,angles,quotes,bending, arrows.meta, matrix, positioning}
+
+\usepackage{tikz-3dplot} 
+
+% Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.
+\endinput

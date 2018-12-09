@@ -1,0 +1,186 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage{xr-hyper} % Needed for external references
+    \externaldocument{24_Hypothesis_Testing_Main} 
+\title{Hypothesis Testing}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    As seen earlier in confidence intervals, using Wald's method for the
+sample proportions do not yield promising results as widely believed. So
+we will only stick to case when conditions are met to make the sampling
+distribution normalcy good enough.
+
+    \section{When sample sizes are high}\label{when-sample-sizes-are-high}
+
+Suppose that we have a normal \textbf{sampling distribution} described
+by random variable \(\dfrac{Y}{n} = N\Big(p_1, \dfrac{p_1q_1}{n}\Big)\)
+created from a population distribution which is a Bernoulli distribution
+with mean \(p_1\) and standard deviation \(p_1q_1\). Note that \(Y\)
+represents the sum of \emph{successes} in a sample set, and thus
+\(\dfrac{Y}{n}\) represents sample proportions. For example, for any
+\emph{kth} sample set of \(\dfrac{Y}{n}\), we calculate sample
+proportion statistic,
+\(\dfrac{Y_{k}}{n} = \dfrac {1}{n} \sum\limits_{i=1}^n Y_{ki}\), where
+\(Y_{ki}\) is \(i\)th sample in \(k\)th sample set of sampling
+distribution described by \(\dfrac{Y}{n}\). If \(\alpha\) is the
+significance level, then we could derive the conditions for hypothesis
+testing as follows. Below is our sampling distribution as null
+hypothesis, with \(\alpha\) as significance level. This is for alternate
+hypothesis being \(H_a: \mu > \mu_{y/n}\) so we consider the right tail
+area. One could try similar approach for left or both tails depending on
+if \(H_a\) is \(H_a: \mu < \mu_{y/n}\) or \(H_a: \mu \neq \mu_{y/n}\)
+respectively.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_1_proportion_files/24_HT_1_proportion_4_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The significance level \(\alpha\), corresponds to the rest of
+\(1-\alpha\) area, that is green area as shown above.
+
+    \begin{equation}
+    \begin{aligned}
+        P\Big(  \frac{Y}{n} \geq \mu_{y/n} + z_{\alpha}\sigma_{y/n} \Big) = \alpha \nonumber \\
+        \therefore P\Bigg(  \dfrac{\dfrac{Y}{n} -  \mu_{y/n}}{\sigma_{y/n}} - \geq z_{\alpha} \Bigg) = \alpha \nonumber \\
+        P\Bigg(  \dfrac{\dfrac{Y}{n} -  p_1}{ \sqrt{\frac{p_1q_1}{n}} } - \geq z_{\alpha} \Bigg) = \alpha \label{eq:201}
+    \end{aligned}
+\end{equation}
+
+    Let the z score be,
+\(z = \dfrac{\frac{Y}{n} - \mu_{y/n}}{\sigma_{y/n}}\), then
+\(P(z \geq z_{\alpha}) = \alpha\)
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_1_proportion_files/24_HT_1_proportion_8_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Our allowed critical region in sampling distribution is
+\((\mu_{y/n} + z_{\alpha}\sigma{y/n}, \infty)\), where the probability
+of making Type I error is \(\alpha\). Our allowed critical region in
+\emph{standardized} sampling distribution would be
+\((z_{\alpha}, \infty)\). So if our z score falls within
+\((z_{\alpha}, \infty)\), we could reject the null hypothesis. This is
+also equivalent to saying, if our sample set proportion \(y/n\) falls
+within \((\mu_{y/n} + z_{\alpha}\sigma{y/n}, \infty)\), we could reject
+the null hypothesis.
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Conditions]
+\begin{itemize}
+\item One of the main condition to apply hypothesis testing to sample proportions is to ensure the sampling distribution is normal. This is usually ensured when $(np, nq) > 10$ if not population is already normal. 
+\item You see, unlike sample means, there was no $\sigma$ not known case in proportions, because we are testing against hypothesized mean $p_1$, so the associated $\sigma$ would be simply $\sqrt{p_1q_1}$. So $p_1$ is a pre requisite against which we need to test, so that is usually given or implicit in case of one proportion, so no $\sigma$ unknown case arises here. 
+\end{itemize}
+\end{tcolorbox}
+    ~
+\subsection*{Example}
+    \emph{It was claimed that many commercially manufactured dice are not
+fair because the ``spots'' are really indentations, so that, for
+example, the 6-side is lighter than the 1-side. To test, in an
+experiment, several such dice were rolled, to yield a total of
+\(n=8000\) observations, out of which 6 resulted, \(1389\) times. Is
+there a significant evidence that dice favor a 6 far more than a fair
+die would? Assume \(\alpha = 0.05\)}
+
+    \textbf{Solution:}
+
+Let us assume null hypothesis as a fair die, nothing to doubt about. The
+probability of getting a 6 in fair die is \(p=1/6\). So
+
+\(H_0: \mu_{y/n} = p = 1/6\)\\
+\(H_a: \mu_{y/n} = p \neq 1/6\)
+
+We have a sample size of \(n=8000\), so
+\(np = (8000)(1/6) = 1333 >> 10, nq = (8000)(5/6) = 6666 >> 10\), so our
+normal condition is met. If we continue with sample sets of this size,
+we would get a good normal sampling distribution \(\dfrac{Y}{n}\)
+
+Our z score is
+\(z = \dfrac{\frac{Y}{n} - p_1}{\sqrt{\frac{p_1q_1}{n}}} = \dfrac{(1389/5000) - (1/6)}{\sqrt{\frac{(1/6)(5/6)}{8000}}}\)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}11}]:} \PY{n}{Y}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{p\PYZus{}1}\PY{p}{,}\PY{n}{q\PYZus{}1} \PY{o}{=} \PY{l+m+mi}{1389}\PY{p}{,} \PY{l+m+mi}{8000}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{5}\PY{o}{/}\PY{l+m+mi}{6}
+         \PY{n}{num} \PY{o}{=} \PY{p}{(}\PY{n}{Y}\PY{o}{/}\PY{n}{n}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{n}{p\PYZus{}1}\PY{p}{)}
+         \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+         \PY{n}{den} \PY{o}{=} \PY{n}{sqrt}\PY{p}{(}\PY{n}{p\PYZus{}1}\PY{o}{*}\PY{n}{q\PYZus{}1}\PY{o}{/}\PY{n}{n}\PY{p}{)}
+         \PY{n}{zs} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{num}\PY{o}{/}\PY{n}{den}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{zs}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+1.67
+
+    \end{Verbatim}
+
+    Our \textbf{allowed} critical region starts from \(z_{0.05} = 1.645\).
+The z score \(z = 1.67\) is greater that that, which means, if we select
+this sample set as critical region's starting point, our probability of
+making Type I error is smaller than allowed \(\alpha = 0.05\). So we
+\textbf{reject the null hypothesis} , thus suggesting there is stronger
+evidence for alternate \(H_a\).
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_1_proportion_files/24_HT_1_proportion_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \section{Conditions Summary}\label{conditions-summary}
+				\begin{tikzpicture}[node distance=2cm]
+		\node (start) [startstop] {Start};
+		\node (dec1) [decision, below of=start, yshift=-1cm] {$(np, nq) > 10?$};
+		\node (stop) [startstop, right of=dec1, xshift=3cm] {Stop};
+		
+		
+		\node (pro1) [process, below of=dec1, yshift=-1cm] {Use $z$\\$\newline\displaystyle\sigma_y = \frac{pq}{n}$};
+
+		
+        \draw [arrow] (start) -- (dec1);
+		\draw [arrow] (dec1) --  node[anchor=east] {yes} node[anchor=south, white, fill=black!30!green,xshift=-1.5cm, yshift=-0.20cm] {PR1} (pro1);
+		\draw [arrow] (dec1) --  node[anchor=south, xshift=-0.5cm] {no}  (stop);
+		
+        \end{tikzpicture}	
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

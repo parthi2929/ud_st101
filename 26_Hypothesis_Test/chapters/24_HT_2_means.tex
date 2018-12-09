@@ -1,0 +1,463 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage[numbers]{natbib}
+\bibliographystyle{abbrvnat}
+\usepackage{xr-hyper} % Needed for external references
+    \externaldocument{24_Hypothesis_Testing_Main} 
+\title{Hypothesis Testing}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    Note the pre requisite to understand below material is to know
+confidence intervals for difference between two means as we straight
+away use the definitions from there. In fact, entire hypothesis testing
+concept is always understood better after learning confidence intervals
+and is the typical order in many textbooks.
+
+\section{\texorpdfstring{\(\sigma\) known, sample sizes are
+high}{\textbackslash{}sigma known, sample sizes are high}}\label{sigma-known-sample-sizes-are-high}
+
+Suppose that we are interested in comparing two approximately normal
+sampling distributions described by random variables
+\(\overline{X} = N(\mu_{\overline{x}},\sigma_{\overline{x}}^2)\) and
+\(\overline{Y} = N(\mu_{\overline{y}}, \sigma_{\overline{y}}^2)\),
+created from population distributions described by random variables
+\(X(\mu_x,\sigma_x^2)\) and \(Y(\mu_y,\sigma_y^2)\). Note that
+\(\overline{X}\) represents collection of sample means from sampled sets
+sampled from X and similarly for \(\overline{Y}\). Since both
+\(\overline{X}\) and \(\overline{Y}\) are normally distributed, and
+assuming both are independent to each other, the distribution
+\(W = \overline{X} - \overline{Y}\) would be again a normal distribution
+\(W(\mu_w,\sigma_w^2)\), where
+\(\mu_w = \mu_{\overline{x}} - \mu_{\overline{y}}\) and
+\(\sigma_w^2 = \sigma_{\overline{x}}^2 + \sigma_{\overline{y}}^2\).
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_3_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Then, we already know the confidence intervals could be calculated as
+below.
+
+\(P\Bigg(-z_{\frac{\alpha}{2}} \leq \dfrac{ (\overline{X} - \overline{Y}) - (\mu_{\overline{x}} - \mu_{\overline{y}}) }{\sqrt{\frac{\sigma_{\overline{x}}^2}{n} + \frac{\sigma_{\overline{y}}^2}{m}}} \leq z_{\frac{\alpha}{2}}\Bigg) \approx 1 - \alpha\)
+
+For Hypothesis testing, let the problem at hand is to wonder, if one
+mean is greater than the other. For eg, if
+\(\mu_{\overline{x}} > \mu_{\overline{y}}\). This is another way of
+saying if \(\mu_w > 0\). Then we could formulate our hypothesis as
+follows.
+
+Null hypothesis: \(H_0: \mu_w = 0\)\\
+Alternate hypothesis: \(H_a: \mu_w > 0\)
+
+Then the probability of making Type I error \(\alpha\), would be right
+hand tail area as follows. Note \(z_{\frac{\alpha}{2}}\) becoming
+\(z_{\alpha}\) as now its one side area we are interested in.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{equation}
+    \begin{aligned}
+        P( w \geq \mu_w + z_{\alpha}\sigma_w) = \alpha \nonumber \\
+        P(w - \mu_w \geq z_{\alpha}\sigma_w) = \alpha \nonumber \\
+        P\Big(\dfrac{w - \mu_w}{\sigma_w} \geq z_{\alpha}\Big) = \alpha \nonumber \\
+        P\Bigg( \dfrac{ (\overline{X} - \overline{Y}) -(\mu_{\overline{x}} - \mu_{\overline{y}}) }{  \sqrt{ \frac{\sigma_x^2}{n} + \frac{\sigma_y^2}{m} }  } \geq  z_{\alpha} \Bigg) = \alpha \label{eq:101}
+    \end{aligned}
+\end{equation}
+
+    Since our null hypothesis is \(\mu_w = 0\) or
+\(\mu_{\overline{x}} = \mu_{\overline{y}}\), we could reduce the
+equation further as,
+
+    \begin{equation}
+    \begin{aligned}
+        P\Bigg( \dfrac{ \overline{X} - \overline{Y} }{  \sqrt{ \frac{\sigma_x^2}{n} + \frac{\sigma_y^2}{m} }  } \geq  z_{\alpha} \Bigg) = \alpha \label{eq:102}
+    \end{aligned}
+\end{equation}
+
+    So if Z score of difference between sample means
+\(Z = \dfrac{\overline{X} - \overline{Y}}{\sqrt{ \frac{\sigma_x^2}{n} + \frac{\sigma_y^2}{m}}}\),
+then the probability of making Type I error \(\alpha\) is
+\(P(Z \geq z_{\alpha})\). This is depicted below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_10_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    So if the calculate Z score from the sample set values
+\((\overline{x},\overline{y})\) exceeds \(z_{\alpha}\) we could straight
+away \textbf{reject null hypothesis} because there is a stronger
+evidence that the alternate could be true. And we could derive similar Z
+score for \(\mu\) decreasing or unequal, but it is much easier to
+directly tackling the problem than complicating the formula.
+
+    \section{Visual Summary}\label{visual-summary}
+
+Since we use the same components of confidence intervals in hypothesis
+testing, it helps to recall once the visual summary we have seen there.
+
+    ~
+				\begin{tikzpicture}[node distance=2cm]
+		\node (start) [startstop] {Start};
+		\node (dec1) [decision, below of=start, yshift=-1cm] {$(\sigma_x,\sigma_y)$ known?};
+		\node (dec2) [decision, right of=dec1, xshift=3cm] {$(n,m) > 30$?};
+		\node (dec3) [decision, below of=dec2, yshift=-3cm, xshift=4cm] {$\sigma_x == \sigma_y$?};
+		
+		\node (pro1) [process, below of=dec1, yshift=-1cm] {Use $z$\\$\newline\sigma_w = \sqrt{\frac{\sigma_x^2}{n} + \frac{\sigma_y^2}{m}}$};
+		\node (pro2) [process, below of=dec2, yshift=-1cm] {Use $z$\\$\newline\sigma_w = \sqrt{\frac{s_x^2}{n} + \frac{s_y^2}{m}}$};
+		\node (pro4) [process, below of=pro2, yshift=-3cm, xshift=-1cm] {Use $t$\\$\newline r=\frac{ (\frac{s_x^2}{n} + \frac{s_y^2}{m})^2 }{ \frac{1}{n-1}(\frac{s_x^2}{n})^2 + \frac{1}{m-1}(\frac{s_y^2}{m})^2 }$\\$\newline\newline\sigma_w=\sqrt{\frac{s_x^2}{n} + \frac{s_y^2}{m}}$};
+		\node (pro3) [process, right of=pro4, xshift=3cm, yshift=-1cm] {Use $t$\\$\newline r=n+m-2$\\$\newline\sigma_w =\newline 
+			S_p\sqrt{ \frac{ (n-1)s_x^2 +(m-1)s_y^2 }{ n+m-2 } }$\\$\newline S_p = \sqrt{\frac{1}{n} + \frac{1}{m}}$};
+		
+		
+        \draw [arrow] (start) -- (dec1);
+		\draw [arrow] (dec1) --  node[anchor=east] {yes} node[anchor=south, white, fill=black!30!green,xshift=-1.5cm, yshift=-0.20cm] {PR1} (pro1);
+		\draw [arrow] (dec1) -- node[anchor=south, xshift=-0.5cm] {no} (dec2);
+		\draw [arrow] (dec2) -- node[anchor=east] {yes} node[anchor=south, white, fill=black!30!green,xshift=-1.5cm, yshift=-0.20cm] {PR2} (pro2);
+		\draw [arrow] (dec2) -| node[anchor=south, xshift=-2cm] {no} (dec3);
+		\draw [arrow] (dec3) -- node[anchor=east] {yes} node[anchor=south, white, fill=black!30!green,xshift=-1.5cm, yshift=-0.18cm] {PR3} (pro3);
+		\draw [arrow] (dec3) -| node[anchor=south, xshift=3cm] {no} node[anchor=south, xshift=1cm, yshift=-1cm] {Welch's t} node[anchor=south, white, fill=black!30!green, xshift=-1.5cm, yshift=-1.025cm] {PR4} (pro4);
+        \end{tikzpicture}	
+    \section{Examples}\label{examples}
+
+\subsection{\texorpdfstring{\(\sigma\) unknown, sample sizes are
+high}{\textbackslash{}sigma unknown, sample sizes are high}}\label{sigma-unknown-sample-sizes-are-high}
+
+As seen in visual summary (\textbf{PR2}), in this case, we still could
+use Z distribution, while we use sample set's unbiased standard
+deviations \((s_x,s_y)\) in the place of \((\sigma_x,\sigma_y)\) as best
+estimators. Since sample sizes are high, due to CLT, the sampling
+distribution would still be approximately normal, and our hypothesis
+testing approximately valid.
+
+    \emph{Lets assume we have two different ways to lose wieght, and we have
+to figure out which one is the most effective. We have 10000 people who
+received treatment A and their average loss is 10 pounds. The standard
+deviation of their loss is also 10 pounds. Lets consider a second
+treatment, Treatment B. We also applied it to 10000 people. The average
+loss in this case is 20 pounds and we also have a standard deviation of
+20 pounds. Allowed false positive rate is 5\%}
+
+Also given is, null hypothesis \(H_0: \mu_A = \mu_B\)
+
+Alternate hypotheis is \(H_a: \mu_B > \mu_A\)
+
+    \textbf{\href{https://youtu.be/L3s-jrNJ3KQ}{Solution}}
+
+Whoa! Sample sizes are so high \(>>> 30\). Also \(W = B - A\) as we take
+the hint from alternate hypothesis. So we could rewrite equation
+\ref{eq:102} as per \textbf{PR2} in context as below
+
+    \begin{equation}
+    \begin{aligned}
+        P\Bigg( \dfrac{ \overline{B} - \overline{A} }{  \sqrt{ \frac{S_B^2}{n} + \frac{S_A^2}{m} }  } \geq  z_{\alpha} \Bigg) = \alpha \label{eq:103}
+    \end{aligned}
+\end{equation}
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_19_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \textbf{Given:}
+
+\emph{B}: \(n = 10000, \overline{b} = 20, s_B = 20\)\\
+\emph{A}: \(m = 10000, \overline{a} = 10, s_A = 10\)
+
+5\% False positive rate would mean, we could be false 5\% of the time
+while reality is true. This is type I error (rejecting null hypothesis,
+when null hypothesis is true in reality). Thus, \(\alpha = 0.05\). So
+what would be \(z_{\alpha} = z_{0.05}\)?
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}7}]:} \PY{k+kn}{import} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k}{as} \PY{n+nn}{st}
+        \PY{n}{z\PYZus{}a} \PY{o}{=} \PY{n}{st}\PY{o}{.}\PY{n}{norm}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{o}{.}\PY{l+m+mi}{05}\PY{p}{)}  \PY{c+c1}{\PYZsh{} as scipy is left tailed by default}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{z\PYZus{}a}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+1.6448536269514722
+
+    \end{Verbatim}
+
+    Therefore, \(z_{\alpha} = z_{0.05} = 1.645\).
+
+Let us try to create temporary critical region for W. Our given sample
+value \(\overline{w} = 20 - 10 = 10\). We could say, if our hypothetical
+next sample means are if or above 10, we would reject the null
+hypothesis, and then wonder if that is the case, what would be our
+probability of making Type I error? Will we be in allowed limit of 0.05?
+
+Note that, the critical region for permissible Type I probability of
+\(\alpha\) starts at \((\mu_w + z_{0.05}\sigma_w)\). Since this is when
+null hypothesis is assumed, it is \(z_{0.05}\sigma_w\) which is about
+0.367. So any difference beyond 0.367, we could simply reject null
+hypothesis, that \(\mu_A = \mu_B\).
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}8}]:} \PY{n}{s\PYZus{}a}\PY{p}{,} \PY{n}{s\PYZus{}b}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{m} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{10000}\PY{p}{,} \PY{l+m+mi}{10000}
+        \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+        \PY{n}{s\PYZus{}w} \PY{o}{=} \PY{n}{sqrt}\PY{p}{(} \PY{p}{(}\PY{n}{s\PYZus{}a}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{m} \PY{o}{+} \PY{p}{(}\PY{n}{s\PYZus{}b}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{n} \PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{s\PYZus{}w}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{s\PYZus{}w}\PY{o}{*}\PY{n}{z\PYZus{}a}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.22360679774997896
+0.3678004522900572
+
+    \end{Verbatim}
+
+    This situation is depicted below (not drawn at scale on x axis)
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_25_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Now it would be evident beyond doubt that, we are well within
+permissible limits of 0.05 for making Type I error, which in fact is
+almost 0, to choose to reject null hypothesis, and suggest
+\(\mu_B > \mu_A\). If we deployed equation \ref{eq:103} also we would
+have arrived at same conclusion. We could verify that as well. Rewriting
+\ref{eq:103},
+
+    \begin{equation}
+    \begin{aligned}
+        P\Bigg( \dfrac{ \overline{b} - \overline{a} }{  \sqrt{ \frac{s_B^2}{n} + \frac{s_A^2}{m} }  } \geq  1.645 \Bigg) = 0.05 \nonumber \\
+    \end{aligned}
+\end{equation}
+
+    Recall, once the sample set is observed, there is no more probability
+about it. The calculated Z value is either above \(Z_{\alpha}\) or not.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}10}]:} \PY{n}{b\PYZus{}bar}\PY{p}{,} \PY{n}{a\PYZus{}bar} \PY{o}{=} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{10}
+         \PY{n}{zs} \PY{o}{=} \PY{p}{(}\PY{n}{b\PYZus{}bar} \PY{o}{\PYZhy{}} \PY{n}{a\PYZus{}bar}\PY{p}{)}\PY{o}{/}\PY{n}{s\PYZus{}w}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{zs}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+44.721359549995796
+
+    \end{Verbatim}
+
+    Our Z score \(44 >> 1.645\), so this again means, while the probability
+of Z score to be \(\geq 1.645\) was just 5\%, provided null hypothesis
+was true. Looking at the rarity of this outcome if null hypothesis is
+true, it would be sane to conclude that this is a strong evidence that
+alternate hypothesis might be true. This strongly supports alternative
+hypothesis. This is depicted below (x axis not drawn at scale)
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_31_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We are thus in a very good position to reject null hypothesis and
+support alternate hypothesis \(H_a: \mu_B > \mu_A\)
+
+    \subsection{\texorpdfstring{\(\sigma\) unknown, unequal and sample sizes
+are
+low}{\textbackslash{}sigma unknown, unequal and sample sizes are low}}\label{sigma-unknown-unequal-and-sample-sizes-are-low}
+
+As seen in visual summary, we need to use \textbf{PR4}, that is Welch's
+t interval. Note the cumbersom calculation for calculating degrees of
+freedom.
+Some textbooks or platforms like Khan, \footnote{https://www.khanacademy.org/math/ap-statistics/two-sample-inference/two-sample-t-test-means/v/two-sample-t-test-for-difference-of-means} take conservative approach, that is, taking degrees of freedom $r = min(n,m)$. Nevertheless we will try to use Welch's and see what we get.  
+
+    \emph{Independent random samples of 17 sophomores and 13 juniors
+attending a large university yield the following data on grade point
+averages.At the 5\% significance level, do the data provide sufficient
+evidence to conclude that the mean GPAs of sophomores and juniors at the
+university differ?}
+
+\textbf{Sample Data:}\\
+sophomor: \(n = 17, \overline{x} = 2.84, s_x = 0.520\)\\
+juniors: \(m = 13, \overline{y} = 2.9808, s_x = 0.3093\)
+
+\textbf{\href{https://onlinecourses.science.psu.edu/stat500/node/50/}{Solution}:}
+
+The problem wonders if both the means \textbf{differ} so we would need
+to consider both tails.
+
+Null hypothesis: \(\mu_w = 0\) or \(\mu_x = \mu_y\)\\
+Alternate hypothesis: \(\mu_w \neq 0\) or \(\mu_x \neq \mu_y\)\\
+\(\alpha = 0.05\).
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_36_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    In welch's method, the degrees of freedom, \(r\) is the complicated one
+to calculate. It is given by integer part of below equation.
+
+\[
+\displaystyle
+r=\frac{ (\frac{s_x^2}{n} + \frac{s_y^2}{m})^2 }{ \frac{1}{n-1}(\frac{s_x^2}{n})^2 + \frac{1}{m-1}(\frac{s_y^2}{m})^2 }
+\]
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}13}]:} \PY{n}{s\PYZus{}x}\PY{p}{,} \PY{n}{s\PYZus{}y}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{m} \PY{o}{=} \PY{l+m+mf}{0.52}\PY{p}{,} \PY{l+m+mf}{0.3093}\PY{p}{,} \PY{l+m+mi}{17}\PY{p}{,} \PY{l+m+mi}{13}
+         
+         \PY{n}{num} \PY{o}{=} \PY{p}{(} \PY{n}{s\PYZus{}x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{n} \PY{o}{+} \PY{n}{s\PYZus{}y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{m} \PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         \PY{n}{den1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{p}{(} \PY{n}{s\PYZus{}x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{n} \PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         \PY{n}{den2} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{m}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{p}{(} \PY{n}{s\PYZus{}y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{m} \PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         \PY{n}{den} \PY{o}{=} \PY{n}{den1}\PY{o}{+}\PY{n}{den2}
+         \PY{n}{r} \PY{o}{=} \PY{n}{num}\PY{o}{/}\PY{n}{den}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{r}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+26.629678365237567
+
+    \end{Verbatim}
+
+    The degrees of freedom is the integer part of our result 26.629 which is
+\(r = 26\). Let us then calculate the 't' score for our significance
+level \(\alpha\),
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}14}]:} \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k}{import} \PY{n}{stats}
+         \PY{n}{ts} \PY{o}{=} \PY{n}{stats}\PY{o}{.}\PY{n}{t}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mf}{0.025}\PY{p}{,} \PY{l+m+mi}{26}\PY{p}{)} \PY{c+c1}{\PYZsh{} return value is left tailed by default..}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{ts}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+-2.0555294386428713
+
+    \end{Verbatim}
+
+    Therefore, \(t_{(\alpha/2,r)} = t_{(0.025,26)} = 2.055\). We could now
+calculate the limits above or below which Type I error is allowed.
+Assuming \(\mu_w = 0\) due to null hypothesis,
+\(t_{(0.025,26)}\sigma_w\) should give us the limits.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}15}]:} \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+         \PY{n}{s\PYZus{}w} \PY{o}{=} \PY{n}{sqrt}\PY{p}{(} \PY{p}{(}\PY{n}{s\PYZus{}x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{n} \PY{o}{+} \PY{p}{(}\PY{n}{s\PYZus{}y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{m}  \PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{s\PYZus{}w}\PY{p}{,} \PY{n}{s\PYZus{}w}\PY{o}{*}\PY{n}{ts}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.15252817156896606 -0.31352614688238034
+
+    \end{Verbatim}
+
+    Thus our critical region for given \(\alpha\) would be \(\pm 0.313\).
+Our situation could be depicted as below. We are allowed to reject null
+hypothesis, if our sample set mean difference is above 0.313 or below
+-0.313, with \(\alpha=0.05\) probability of making Type I error.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_44_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The difference of sample means we got is
+\(\overline{x} - \overline{y} = 2.84 - 2.9808 = -0.1408\). This is far
+above -0.313, so we \textbf{cannot reject null hypothesis}. Taking
+\(\pm 0.1408\) as critical region would increase of probability of Type
+I error \(\alpha\) enormously as shown below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_46_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We could have also taken the difference the other way
+\(\overline{y} - \overline{x} = 2.9808 - 2.84 = 0.1408\), and we still
+would have arrived at same conclusion because we are interested in only
+if the sample means of two sampling distributions differ or not (that is
+why two tails taken in above diagram).Also we could arrive at the same
+conclusion via 't' values only if we already know \(t_{\alpha/2,r}\). We
+indeed calculated that earlier as \(2.055\). This means, in units of
+'t', critical region allowed is \(\pm 2.055\) beyond which we are
+allowed to make Type I error, whose total probability in critical region
+would be 0.05. This is depicted below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_48_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{equation}
+    \begin{aligned}
+        P\Big( -t_{(\alpha/2,r)} \leq \dfrac{W - \mu_w}{\sigma_w} \leq t_{(\alpha/2,r)} \Big) = 1 - \alpha \nonumber \\ 
+        2P\Big( \Big| \dfrac{W-\mu_w}{\sigma_w} \Big|  \geq |t_{(\alpha/2,r)}| \Big) = \alpha \nonumber \\
+        P\Big( \Big| \dfrac{W-\mu_w}{\sigma_w} \Big|  \geq |t_{(\alpha/2,r)}| \Big) = \dfrac{\alpha}{2} \nonumber \\
+        P\Big( \Big| \dfrac{W-\mu_w}{\sigma_w} \Big|  \geq |t_{(0.025,r)}| \Big) = 0.025 \nonumber \\
+        P\Big( \Big| \dfrac{W-\mu_w}{\sigma_w} \Big|  \geq |t_{(0.025,26)}| \Big) = 0.025 \nonumber \\
+        P\Big( \Big| \dfrac{W-\mu_w}{\sigma_w} \Big|  \geq 2.055 \Big) = 0.025 \nonumber \\
+        P\Bigg( \Bigg| \dfrac{(\overline{X} - \overline{Y}) -( \mu_{\overline{x}} - \mu_{\overline{y}} )}{\sqrt{ \frac{s_x^2}{n} + \frac{s_y^2}{m} }  } \Bigg|  \geq 2.055 \Bigg) = 0.025 \nonumber \\
+        P\Bigg( \Bigg| \dfrac{(\overline{X} - \overline{Y})}{\sqrt{ \frac{s_x^2}{n} + \frac{s_y^2}{m} }  } \Bigg|  \geq 2.055 \Bigg) = 0.025 \nonumber \\
+    \end{aligned}
+\end{equation}
+
+    When the sample set is observed, we could check if we are in critical
+region or not by calculating its t score.
+
+\(t = \Bigg|\dfrac{\overline{x} - \overline{y}}{\sqrt{ \frac{s_x^2}{n} + \frac{s_y^2}{m} }}\Bigg| = \Big|\dfrac{2.84−2.9808}{0.1525}\Big| = 0.9232\)
+
+Our t score is 0.9232. This is well outside the critical region towards
+the null hypothesized zero mean difference, so if we assume this as
+critical region, we would be making high Type I error, beyond 0.05 as
+depicted below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_HT_2_means_files/24_HT_2_means_51_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    So our conclusion is similar like earlier. We \textbf{cannot reject the
+null hypothesis}.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

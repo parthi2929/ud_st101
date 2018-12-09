@@ -1,0 +1,39 @@
+\documentclass[float=false, crop=false,11pt,oneside]{book}
+\usepackage{standalone}
+\usepackage{import}
+\usepackage{xr-hyper} % Needed for external references
+
+
+\usepackage{myipy2tex}
+\usepackage{myrawtex}
+\usepackage{myipy2tex_custom} 
+
+    
+\title{Hypothesis Testing}
+\author{Parthiban Rajendran}
+
+    
+\begin{document}
+    
+    \maketitle 
+
+    \tableofcontents
+
+   
+    \chapter{Testing hypotheses about a mean}
+	\import{chapters/}{24_HT_1_mean}   
+	
+	\chapter{Testing the difference between two means} 
+	\import{chapters/}{24_HT_2_means}
+	
+	\chapter{Testing hypotheses about a proportion} 
+	\import{chapters/}{24_HT_1_proportion}
+
+	\chapter{Testing the difference between two proportions} 
+	\import{chapters/}{24_HT_2_proportions}
+	
+	
+	\nocite{*}
+	\bibliography{references} 	
+
+\end{document} 

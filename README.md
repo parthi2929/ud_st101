@@ -1,0 +1,1 @@
+This contains my detailed study notes for the course [Intro To Statistics](https://classroom.udacity.com/courses/st101) from Udacity.  

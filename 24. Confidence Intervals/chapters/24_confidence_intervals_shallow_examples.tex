@@ -1,0 +1,740 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage{xr-hyper} % Needed for external references
+\externaldocument{"24. Confidence Intervals - Theory"} 
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Shallow Examples}\label{shallow-examples}
+
+\subsection{\texorpdfstring{\(\sigma\) Known, Population Normal, Low
+Sample
+Size}{\textbackslash{}sigma Known, Population Normal, Low Sample Size}}\label{sigma-known-population-normal-low-sample-size}
+
+    \emph{Let X equal the length of life of a 60-watt light bulb marketed by
+a certain manufacturer. Assume that the distribution of X is
+\(N(\mu, 1296)\). If a random sample of n = 27 bulbs is tested until
+they burn out, yielding a sample mean of x = 1478 hours, find 95\%
+confidence interval for \(\mu\)}.
+
+\textbf{Solution:}
+Here, its given that the population is Normal and also its population SD $\sigma$. So we could use equation \ref{eq:n4} right away. 
+    Given\\
+\(\sigma^2 = 1296 \therefore \sigma = 36\),\\
+\(x = 1478\), \(1-\alpha = 0.95\),\\
+\(z_{\frac{\alpha}{2}} = z_{0.025} = 1.96\), \(n = 27 \geq 5\)
+
+Though sample size is \(< 30\), the population distribution is given as
+normal already. Thus, our sampling distribution would still be a normal
+distribution as below with 95\% confidence interval area.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+The tikzmagic extension is already loaded. To reload it, use:
+  \%reload\_ext tikzmagic
+
+    \end{Verbatim}
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_confidence_intervals_shallow_examples_files/24_confidence_intervals_shallow_examples_6_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We already know, in this sampling distribution, the mean
+\(\overline{X} \to \mu\) and SD \(S \to \dfrac{\sigma}{\sqrt{n}}\). Thus
+as we have already derived earlier,
+
+\[
+            \begin{aligned}
+            Pr\Big( {\color{blue}{\overline{X}}} - 1.96S \leq x_0 \leq {\color{blue}{\overline{X}}} + 1.96S\Big) = 1-\alpha \nonumber \\
+            Pr\Big( x_0 - 1.96S \leq {\color{blue}{\overline{X}}} \leq x_0 + 1.96S\Big) = 1-\alpha \nonumber \\            
+            Pr\Big( x_0 - 1.96\frac{\sigma}{\sqrt{n}} \leq {\color{blue}{\mu}} \leq x_0 + 1.96\frac{\sigma}{\sqrt{n}}\Big) = 1-\alpha \nonumber \\
+            \implies Pr\Big( 1478 - 1.96\frac{36}{\sqrt{27}} \leq \mu \leq 1478 + 1.96\frac{36}{\sqrt{27}}\Big) = 0.95 \nonumber \\
+            Pr\Big( 1478 - 13.58 \leq \mu \leq 1478 + 13.58\Big) = 0.95 \nonumber \\
+            Pr\Big( 1464.42 \leq \mu \leq 1491.58\Big) = 0.95 \nonumber \\
+            \end{aligned}
+\]
+
+Thus the 95\% CI intervals are \([1464.42,1491.58]\). This does not
+mean, \(\mu\) is inside this interval 95\% of the time. But simply, if
+we are to take many such samples and their CIs, 95\% of those CIs would
+contain \(\mu\). We do not know what those CIs would be because we do
+not know the real \(\mu\).
+
+    \subsection{\texorpdfstring{\(\sigma\) Known, Population not Normal,
+High Sample
+Size}{\textbackslash{}sigma Known, Population not Normal, High Sample Size}}\label{sigma-known-population-not-normal-high-sample-size}
+
+    \emph{The operations manager of a large production plant would like to
+estimate the mean amount of time a worker takes to assemble a new
+electronic component. Assume that the standard deviation of this
+assembly time is 3.6 minutes. After observing 120 workers assembling
+similar devices, the manager noticed that their average time was 16.2
+minutes. Construct a 92\% confidence interval for the mean assembly
+time}.
+
+    \textbf{\href{https://www.utdallas.edu/~mbaron/3341/Practice12.pdf}{Solution}:}
+
+Given \(n = 120\) which is \(> 30\). The measurement in population is
+\emph{mean amount of time} which is \emph{continuous}. Due to CLT, the
+resulting sampling distribution of sample means from all sample sets of
+size \(n=120\) would result in a normal continuous distribution. Since
+population distribution is not normal (at least not given specifically),
+we could expect our confidence interval to be \textbf{approximate} only.
+Population SD \(\sigma\) is given as known which is 3.6 minutes. The
+sample mean of sample set is 16.2 minutes, thus \(x = 16.2\)
+
+Summarizing,
+
+\(x = 16.2, n = 120, \sigma = 3.6\)\\
+\(1 - \alpha = 0.92, \alpha = 0.08, \dfrac{\alpha}{2} = 0.04\)
+
+Since resulting sampling distribution is normal,we could use Z
+distribution. Remember, we use right tailed Z table here.
+Recall \ref{sc:generalized-ci}. 
+    Using
+\href{http://www2.stat.duke.edu/~rcs46/lectures_2015/14-bayes1/z-table.pdf}{this}
+table, we get
+
+\[
+z_\frac{\alpha}{2} = z_{0.04} = 1.75
+\]
+Using \ref{eq:n5}, 
+    \[
+\begin{aligned}
+            Pr\Big( x - z_{\frac{\alpha}{2}}\frac{\sigma}{\sqrt{n}} \leq \mu \leq x + z_{\frac{\alpha}{2}}\frac{\sigma}{\sqrt{n}}\Big) \approx 1-\alpha \nonumber \\
+            Pr\Big( 16.2 - 1.75\frac{3.6}{\sqrt{120}} \leq \mu \leq 16.2 + 1.75\frac{3.6}{\sqrt{120}}\Big) \approx 0.92 \nonumber \\
+            Pr\Big( 16.2 - 0.575 \leq \mu \leq 16.2 + 0.575\Big) \approx 0.92 \nonumber \\
+            Pr\Big( 15.625 \leq \mu \leq 16.775\Big) \approx 0.92 \nonumber \\
+\end{aligned}
+\]
+
+Thus the 92\% confidence intervals for given sample set is
+{[}15.625,16.775{]}
+
+    \subsection{\texorpdfstring{\(\sigma\) Unknown, Population Normal, Low
+Sample
+Size}{\textbackslash{}sigma Unknown, Population Normal, Low Sample Size}}\label{sigma-unknown-population-normal-low-sample-size}
+
+    To assess the accuracy of a laboratory scale, a standard weight that is
+known to weigh 1 gram is repeatedly weighed 4 times. The resulting
+measurements (in grams) are: 0.95, 1.02, 1.01, 0.98. Assume that the
+weighings by the scale when the true weight is 1 gram are normally
+distributed with mean \(\mu\). Use these data to compute a 95\%
+confidence interval for \(\mu\)
+
+\textbf{\href{https://www.utdallas.edu/~mbaron/3341/Practice12.pdf}{Solution}:}
+
+The population is given as normally distributed with \(\sigma\) unknown.
+Due to low sample size \(n=4 < 30\), the resultant sampling distribution
+would be of student's \emph{t} distribution, than normal, so we need to
+use that.
+
+    Parameters of the sample set:
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}22}]:} \PY{n}{x} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.95}\PY{p}{,} \PY{l+m+mf}{1.02}\PY{p}{,} \PY{l+m+mf}{1.01}\PY{p}{,} \PY{l+m+mf}{0.98}\PY{p}{]}
+         
+         \PY{k}{def} \PY{n+nf}{get\PYZus{}metrics}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+             \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+             \PY{n}{n} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)} \PY{c+c1}{\PYZsh{} sample size}
+             \PY{n}{x\PYZus{}bar} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{o}{/}\PY{n}{n}  \PY{c+c1}{\PYZsh{} unbiased sample mean}
+             \PY{n}{var} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(} \PY{p}{[}\PY{p}{(}\PY{n}{x\PYZus{}i} \PY{o}{\PYZhy{}} \PY{n}{x\PYZus{}bar}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{k}{for} \PY{n}{x\PYZus{}i} \PY{o+ow}{in} \PY{n}{x}\PY{p}{]} \PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+             \PY{n}{s} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{sqrt}\PY{p}{(}\PY{n}{var}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} unbiased sample SD}
+             \PY{k}{return} \PY{n}{n}\PY{p}{,} \PY{n}{x\PYZus{}bar}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{s}
+         
+         \PY{n}{n}\PY{p}{,}\PY{n}{x\PYZus{}bar}\PY{p}{,}\PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{s} \PY{o}{=} \PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{n:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{  x\PYZus{}bar:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{  s:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{n}{x\PYZus{}bar}\PY{p}{,}\PY{n}{s}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+n:4  x\_bar:0.99  s:0.032
+
+    \end{Verbatim}
+
+    Summarizing,
+
+\(n = 4, \ x = 0.99, \ s = 0.032, \ 1-\alpha = 0.95\)
+
+\(t_{\frac{\alpha}{2},(n-1)} = t_{\frac{0.05}{2},3} = t_{0.025,3}\)
+
+Using
+\href{http://pages.stat.wisc.edu/~ifischer/Intro_Stat/Lecture_Notes/APPENDIX/A5._Statistical_Tables/A5.2_-_t-distribution.pdf}{right
+tailed t table}, \(t_{0.025,3} = 3.182\)
+
+If we continued taking sample sets of this size \(n=4\), we would end up
+getting a sampling distribution that has student's t distribution as
+below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_confidence_intervals_shallow_examples_files/24_confidence_intervals_shallow_examples_21_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    Thus, using \ref{eq:n6}, 
+    \[
+\begin{aligned}
+    Pr\Big( x - t_{\frac{\alpha}{2},(n-1)}\frac{s}{\sqrt{n}} \leq \mu \leq x + t_{\frac{\alpha}{2},(n-1)}\frac{s}{\sqrt{n}}\Big) = 1-\alpha \nonumber \\
+    Pr\Big( 0.99 - t_{(0.025,3)}\frac{0.032}{\sqrt{4}} \leq \mu \leq 0.99 + t_{(0.025,3)}\frac{0.032}{\sqrt{4}}\Big) = 0.95 \nonumber \\
+    Pr\Big( 0.99 - 3.182\frac{0.032}{\sqrt{4}} \leq \mu \leq 0.99 + 3.182\frac{0.032}{\sqrt{4}}\Big) = 0.95
+\end{aligned} \nonumber \\
+\]
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}25}]:} \PY{k}{def} \PY{n+nf}{get\PYZus{}CI}\PY{p}{(}\PY{n}{x\PYZus{}bar}\PY{p}{,} \PY{n}{zrt}\PY{p}{,} \PY{n}{s}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{:}
+             \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+             \PY{n}{m} \PY{o}{=} \PY{n}{zrt}\PY{o}{*}\PY{p}{(}\PY{n}{s}\PY{o}{/}\PY{p}{(}\PY{n}{sqrt}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             \PY{k}{return} \PY{p}{[}\PY{n}{x\PYZus{}bar}\PY{o}{\PYZhy{}}\PY{n}{m}\PY{p}{,}\PY{n}{x\PYZus{}bar}\PY{o}{+}\PY{n}{m}\PY{p}{]}
+         
+         \PY{n}{t} \PY{o}{=} \PY{l+m+mf}{3.182}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}CI}\PY{p}{(}\PY{n}{x\PYZus{}bar}\PY{p}{,} \PY{n}{t}\PY{p}{,} \PY{n}{s}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+[0.939088, 1.040912]
+
+    \end{Verbatim}
+
+    \(\therefore\) the 95\% CI in our case are, \[
+\begin{aligned}
+Pr\Big( 0.94 \leq \mu \leq 1.04\Big) = 0.95 \nonumber \\
+\end{aligned}
+\]
+
+    \subsection{\texorpdfstring{\(\sigma\) Unknown, Population not Normal,
+High Sample
+Size}{\textbackslash{}sigma Unknown, Population not Normal, High Sample Size}}\label{sigma-unknown-population-not-normal-high-sample-size}
+
+    \emph{In order to ensure efficient usage of a server, it is necessary to
+estimate the mean number of concurrent users. According to records, the
+sample mean and sample standard deviation of number of concurrent users
+at 100 randomly selected times is 37.7 and 9.2, respectively.Construct a
+90\% confidence interval for the mean number of concurrent users}.
+
+    \textbf{\href{https://www.utdallas.edu/~mbaron/3341/Practice12.pdf}{Solution}}
+
+The measurement at hand is mean number of concurrent users. This is a
+continuous random variable. Irrespective of population distribution, if
+sample size is large enough, due to CLT, eventually the sampling
+distribution formed will be normal. Here \(n=100 > 30\), so we would at
+least approximately could get good enough CI with 90\% confidence level
+as asked.
+
+Summarizing,
+
+\(n=100, \ x = 37.7, \ s = 9.2\)\\
+\(1 - \alpha = 0.9, \ \alpha=0.1, \ \frac{\alpha}{2} = 0.05\)\\
+This time, we shall use code to find the right tailed z area,..
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}26}]:} \PY{k}{def} \PY{n+nf}{get\PYZus{}z}\PY{p}{(}\PY{n}{cl}\PY{p}{)}\PY{p}{:}
+             \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k}{import} \PY{n}{stats}
+             \PY{n}{alpha} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{cl}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+             \PY{k}{return} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n+nb}{round}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{norm}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} right tailing..}
+         
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}z}\PY{p}{(}\PY{l+m+mf}{0.90}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+1.645
+
+    \end{Verbatim}
+
+    Thus, \(z_{0.05} = 1.645\)
+Using \ref{eq:n7}, but also using approximation as we do not know population distribution,
+    \[
+\begin{aligned}
+    Pr\Big( x - z_{\frac{\alpha}{2}}\frac{s}{\sqrt{n}} \leq \mu \leq x + z_{\frac{\alpha}{2}}\frac{s}{\sqrt{n}}\Big) \approx 1-\alpha \nonumber \\
+    Pr\Big( 37.7 - z_{0.05}\frac{9.2}{\sqrt{100}} \leq \mu \leq 37.7 + z_{0.05}\frac{9.2}{\sqrt{100}}\Big) \approx 0.9 \nonumber \\
+    Pr\Big( 37.7 - 1.645\frac{9.2}{\sqrt{100}} \leq \mu \leq 37.7 + 1.645\frac{9.2}{\sqrt{100}}\Big) \approx 0.9 
+\end{aligned}
+\]
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}27}]:} \PY{n}{x}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{s}\PY{p}{,} \PY{n}{n} \PY{o}{=} \PY{l+m+mf}{37.7}\PY{p}{,} \PY{l+m+mf}{1.645}\PY{p}{,} \PY{l+m+mf}{9.2}\PY{p}{,} \PY{l+m+mi}{100}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}CI}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{s}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+[36.186600000000006, 39.2134]
+
+    \end{Verbatim}
+
+    Thus the desired 90\% CI intervals are {[}36.2,39.2{]}
+
+Note: Since the sample size is high, even if \(t\) distribution is used,
+result would be almost same, because at such high sample sizes, \(t\)
+distribution would be almost identical to \(z\) distribution.
+
+    \subsection{Difference between two means, Welch's 't'
+interval}\label{difference-between-two-means-welchs-t-interval}
+
+    \emph{The species, the deinopis and menneus, coexist in eastern
+Australia. The following summary statistics were obtained on the size,
+in millimeters, of the prey of the two species. Calculate the 95\%
+confidence interval for the difference in their means. }
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Adult Dinopis & Adult Menneus\tabularnewline
+\midrule
+\endhead
+n=10 & m=10\tabularnewline
+\(\overline{x}=10.26 mm\) & \(\overline{y}=9.02 mm\)\tabularnewline
+\(s^2_x = (2.51)^2\) & \(s^2_y = (1.90)^2\)\tabularnewline
+\bottomrule
+\end{longtable}
+
+    \textbf{\href{https://onlinecourses.science.psu.edu/stat414/node/203/}{Solution}}
+
+\textbf{Given:}\\
+Let \(\overline{X} = N(\mu_{\overline{x}},\sigma_{\overline{x}}^2)\) be
+the random variable of sampling distribution for Adult Dinopis. And so
+is \(\overline{Y} = N(\mu_{\overline{y}},\sigma_{\overline{y}}^2)\) for
+Adult Menneus. Then we are given one sample set data frame from each
+species.
+
+\(\overline{x}_{1} = 10.26 mm, \ \ s_{\overline{x}}=2.51\ mm, \ \ n = 10\)\\
+\(\overline{y}_{1} = 9.02 mm, \ \ s_{\overline{y}}=1.90\ mm, \ \ m = 10\)\\
+\(1-\alpha = 0.95, \alpha = 0.05, \frac{\alpha}{2} = 0.025\)
+
+\textbf{Approach:}\\
+Note the \(\sigma_{x},\sigma_{y}\) are unknown. Also both \(n,m\) are
+small \(n < 30, m < 30\). It is totally not needed that \(n=m\), but in
+this case we have that.
+Recalling \ref{eq:n10} and \ref{eq:n11},
+    \[
+    \begin{aligned}
+        Pr\Big(  (\overline{X} - \overline{Y}) - t_{(\frac{\alpha}{2},r)}s_w \leq (\mu_{\overline{x}} - \mu_{\overline{y}}) \leq    (\overline{X} - \overline{Y}) + t_{(\frac{\alpha}{2},r)}s_w\Big) \approx 1-\alpha  \nonumber        
+    \end{aligned}   
+\]
+
+\[
+\begin{aligned}
+\overline{x}_{1} - \overline{y}_{1} = 10.26 - 9.02 \nonumber \\
+s_w = \sqrt{ {\dfrac{s_{\overline{x}}^2}{n}}   +  {\dfrac{s_{\overline{y}}^2}{m}}} = 
+\sqrt{ {\dfrac{{2.51}^2}{10}}   +  {\dfrac{{1.90}^2}{10}}  } \nonumber \\
+r = \dfrac{  \Big(  \dfrac{s_x^2}{n} + \dfrac{s_y^2}{m}   \Big)^2  }{ \dfrac{1}{n-1}\Big(\dfrac{s_x^2}{n}\Big)^2 + \dfrac{1}{m-1}\Big(\dfrac{s_y^2}{m}\Big)^2  } = 
+\dfrac{  \Big(  \dfrac{{2.51}^2}{10} + \dfrac{{1.90}^2}{10}   \Big)^2  }{ \dfrac{1}{9}\Big(\dfrac{{2.51}^2}{10}\Big)^2 + \dfrac{1}{9}\Big(\dfrac{{1.90}^2}{10}\Big)^2  }
+\end{aligned}
+\]
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}28}]:} \PY{n}{x\PYZus{}1}\PY{p}{,} \PY{n}{y\PYZus{}1}\PY{p}{,} \PY{n}{s\PYZus{}xbar}\PY{p}{,} \PY{n}{s\PYZus{}ybar}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{m} \PY{o}{=} \PY{l+m+mf}{10.26}\PY{p}{,} \PY{l+m+mf}{9.02}\PY{p}{,} \PY{l+m+mf}{2.51}\PY{p}{,} \PY{l+m+mf}{1.90}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}
+         
+         \PY{n}{w\PYZus{}1} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{x\PYZus{}1} \PY{o}{\PYZhy{}} \PY{n}{y\PYZus{}1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         \PY{k}{def} \PY{n+nf}{get\PYZus{}s\PYZus{}w}\PY{p}{(}\PY{n}{s\PYZus{}x}\PY{p}{,} \PY{n}{s\PYZus{}y}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{m}\PY{p}{)}\PY{p}{:}
+             \PY{n}{v\PYZus{}x}\PY{p}{,} \PY{n}{v\PYZus{}y} \PY{o}{=} \PY{p}{(}\PY{n}{s\PYZus{}x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{n}\PY{p}{,} \PY{p}{(}\PY{n}{s\PYZus{}y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{m}
+             \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+             \PY{k}{return} \PY{n+nb}{round}\PY{p}{(}\PY{n}{sqrt}\PY{p}{(}\PY{n}{v\PYZus{}x} \PY{o}{+} \PY{n}{v\PYZus{}y}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}
+         
+         \PY{n}{s\PYZus{}w} \PY{o}{=} \PY{n}{get\PYZus{}s\PYZus{}w}\PY{p}{(}\PY{n}{s\PYZus{}xbar}\PY{p}{,} \PY{n}{s\PYZus{}ybar}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{m}\PY{p}{)}
+         
+         \PY{k}{def} \PY{n+nf}{get\PYZus{}r}\PY{p}{(}\PY{n}{s\PYZus{}x}\PY{p}{,} \PY{n}{s\PYZus{}y}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{m}\PY{p}{)}\PY{p}{:}
+             \PY{n}{v\PYZus{}x}\PY{p}{,} \PY{n}{v\PYZus{}y} \PY{o}{=} \PY{p}{(}\PY{n}{s\PYZus{}x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{n}\PY{p}{,} \PY{p}{(}\PY{n}{s\PYZus{}y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{m}
+             \PY{n}{num} \PY{o}{=} \PY{p}{(}\PY{n}{v\PYZus{}x} \PY{o}{+} \PY{n}{v\PYZus{}y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+             \PY{n}{den\PYZus{}1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{v\PYZus{}x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+             \PY{n}{den\PYZus{}2} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{m}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{v\PYZus{}y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+             \PY{n}{r} \PY{o}{=} \PY{n}{num} \PY{o}{/} \PY{p}{(}\PY{n}{den\PYZus{}1} \PY{o}{+} \PY{n}{den\PYZus{}2}\PY{p}{)}
+             \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{modf}
+             \PY{k}{return} \PY{n}{modf}\PY{p}{(}\PY{n}{r}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+         
+         \PY{n}{r} \PY{o}{=} \PY{n}{get\PYZus{}r}\PY{p}{(}\PY{n}{s\PYZus{}xbar}\PY{p}{,} \PY{n}{s\PYZus{}ybar}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{m}\PY{p}{)}
+         
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}bar \PYZhy{} y\PYZus{}bar:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{, s\PYZus{}w:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{, r:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{w\PYZus{}1}\PY{p}{,} \PY{n}{s\PYZus{}w}\PY{p}{,} \PY{n}{r}\PY{p}{)}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} calculate t value}
+         \PY{n}{cl} \PY{o}{=} \PY{l+m+mf}{0.95}
+         \PY{n}{half\PYZus{}alpha} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{cl}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k}{import} \PY{n}{stats}
+         \PY{n}{t} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{t}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}alpha}\PY{p}{,} \PY{n}{r}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{t:}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+x\_bar - y\_bar:1.24, s\_w:0.9955, r:16.0
+t:2.12
+
+    \end{Verbatim}
+
+    \[
+    \begin{aligned}
+        Pr\Big(  (\overline{X} - \overline{Y}) - t_{(\frac{\alpha}{2},r)}s_w \leq (\mu_{\overline{x}} - \mu_{\overline{y}}) \leq    (\overline{X} - \overline{Y}) + t_{(\frac{\alpha}{2},r)}s_w\Big) \approx 1-\alpha  \nonumber \\    
+        Pr\Big(  1.24 - (2.12)(0.9955) \leq (\mu_{\overline{x}} - \mu_{\overline{y}}) \leq      1.24 + (2.12)(0.9955)\Big) \approx 0.95  \nonumber \\    
+    \end{aligned}   
+\]
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}29}]:} \PY{n}{cilow}\PY{p}{,} \PY{n}{cihigh} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{n}{w\PYZus{}1} \PY{o}{\PYZhy{}} \PY{n}{t}\PY{o}{*}\PY{n}{s\PYZus{}w}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{,}\PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{n}{w\PYZus{}1} \PY{o}{+} \PY{n}{t}\PY{o}{*}\PY{n}{s\PYZus{}w}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{cilow}\PY{p}{,} \PY{n}{cihigh}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+-0.8705 3.3505
+
+    \end{Verbatim}
+
+    \[
+    \begin{aligned}
+        Pr( -0.87 \leq (\mu_{\overline{x}} - \mu_{\overline{y}}) \leq   3.35) \approx 0.95  \nonumber \\    
+    \end{aligned}   
+\]
+
+Thus the 95\% confidence intervals for the difference of sample means of
+given problem is \$(-0.87, 3.35)
+
+    \subsection{Difference between two
+proportions}\label{difference-between-two-proportions}
+
+\emph{Duncan is investigating if residents of a city support the
+construction of a new high school. He's curious about the difference of
+opinion between residents in the North and South parts of the city. He
+obtained separate random samples of voters from each region. Here are
+the results:}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Supports Construction? & North & South\tabularnewline
+\midrule
+\endhead
+Yes & 54 & 77\tabularnewline
+No & 66 & 63\tabularnewline
+Total & 120 & 140\tabularnewline
+\bottomrule
+\end{longtable}
+
+\emph{Duncan wants to use these results to construct a 90\% confidence
+interval to estimate the difference in the proportion of residents in
+these regions who support the construction project \((p_S-p_N)\). Assume
+that all of the conditions for inference have been met. Calculate 90\%
+confidence interval based on Duncan's samples}
+
+    \textbf{\href{https://www.khanacademy.org/math/ap-statistics/two-sample-inference/two-sample-z-interval-proportions/v/calculating-two-sample-z-interval-confidence-interval-for-difference-of-proportions}{Solution}:}
+
+Conveniently the sample sizes are high, so we could assume normal
+approximations for sampling distributions of sample proportions for both
+North and South parts of the city.
+
+\textbf{Given:}\\
+Let \(\dfrac{Y_S}{n_S} = N\Big(p_1, \dfrac{p_1q_1}{n_1}\Big)\) represent
+sampling distribution for South. Similarly,
+\(\dfrac{Y_N}{n_N} = N\Big(p_2, \dfrac{p_2q_2}{n_2}\Big)\) for North.
+
+We have the test statistic as follows.\\
+\(\hat{p_S} = \dfrac{y_S}{n_S} = \dfrac{77}{140}, \hat{q_S} = \dfrac{y_S}{n_S} = 1 - \dfrac{77}{140}\)\\
+\(\hat{p_N} = \dfrac{y_N}{n_N} = \dfrac{54}{120}, \hat{q_N} = 1 - \dfrac{y_N}{n_N} = 1 - \dfrac{54}{120}\)\\
+\(1 - \alpha = 0.90, \alpha = 0.1, \dfrac{\alpha}{2} = 0.05\)
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}12}]:} \PY{n}{t\PYZus{}s} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{77}\PY{o}{/}\PY{l+m+mi}{140}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{l+m+mi}{77}\PY{o}{/}\PY{l+m+mi}{140}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{54}\PY{o}{/}\PY{l+m+mi}{120}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{l+m+mi}{54}\PY{o}{/}\PY{l+m+mi}{120}\PY{p}{)}\PY{p}{]}
+         \PY{n}{t\PYZus{}s} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}0.3f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n}{e} \PY{k}{for} \PY{n}{e} \PY{o+ow}{in} \PY{n}{t\PYZus{}s}\PY{p}{]}
+         \PY{n}{t\PYZus{}s} \PY{o}{=} \PY{p}{[}\PY{n+nb}{float}\PY{p}{(}\PY{n}{i}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{t\PYZus{}s}\PY{p}{]}
+         \PY{p}{[}\PY{n}{p\PYZus{}s}\PY{p}{,} \PY{n}{q\PYZus{}s}\PY{p}{,} \PY{n}{p\PYZus{}n}\PY{p}{,} \PY{n}{q\PYZus{}n}\PY{p}{]} \PY{o}{=} \PY{n}{t\PYZus{}s}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{p\PYZus{}s}\PY{p}{,} \PY{n}{q\PYZus{}s}\PY{p}{,} \PY{n}{p\PYZus{}n}\PY{p}{,} \PY{n}{q\PYZus{}n}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.55 0.45 0.45 0.55
+
+    \end{Verbatim}
+
+    \(\therefore \hat{p_S} = 0.55,\hat{q_S} = 0.45,\hat{p_N} = 0.45,\hat{p_N} = 0.55\)
+Recalling \ref{eq:n13}, we need to find,
+    \[
+    \begin{aligned}
+    Pr\Bigg(  -z_{\frac{\alpha}{2}} \leq \dfrac{(\hat{p_S} - \hat{p_N}) - (p_S - p_N) }{\sqrt{ {\frac{\hat{p_S}\hat{q_S}}{n_S}}   +  {\frac{\hat{p_N}{\hat{q_N}}}{n_N}}  }} \leq    z_{\frac{\alpha}{2}}\Bigg) \approx 1-\alpha = 0.90  \nonumber
+    \end{aligned}  
+\]
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}16}]:} \PY{n}{diff} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{p\PYZus{}s} \PY{o}{\PYZhy{}} \PY{n}{p\PYZus{}n}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         \PY{n}{n\PYZus{}s}\PY{p}{,} \PY{n}{n\PYZus{}n} \PY{o}{=} \PY{l+m+mi}{140}\PY{p}{,}\PY{l+m+mi}{120}
+         \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}
+         \PY{n}{w\PYZus{}sd} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{sqrt}\PY{p}{(}\PY{p}{(}\PY{n}{p\PYZus{}s}\PY{o}{*}\PY{n}{q\PYZus{}s}\PY{o}{/}\PY{n}{n\PYZus{}s}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{n}{p\PYZus{}n}\PY{o}{*}\PY{n}{q\PYZus{}n}\PY{o}{/}\PY{n}{n\PYZus{}n}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         
+         \PY{c+c1}{\PYZsh{} get Z}
+         \PY{n}{cl} \PY{o}{=} \PY{l+m+mf}{0.90}
+         \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k}{import} \PY{n}{stats}
+         \PY{n}{alpha} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{cl}
+         \PY{n}{z} \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n+nb}{round}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{norm}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{n}{alpha}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{diff}\PY{p}{,} \PY{n}{w\PYZus{}sd}\PY{p}{,} \PY{n}{z}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+0.1 0.062 1.645
+
+    \end{Verbatim}
+
+    Substituting, we get,
+
+\[
+    \begin{aligned}
+    Pr\Big(  -1.645 \leq \dfrac{0.1 - (p_S - p_N) }{0.062} \leq  1.645 \Big) \approx 0.90  \nonumber \\
+    Pr\Big(  (-1.645)0.062 \leq 0.1 - (p_S - p_N) \leq  (1.645)0.062 \Big) \approx 0.90 \nonumber \\
+    Pr\Big(  0.1 - (1.645)0.062 \leq (p_S - p_N) \leq  0.1 + (1.645)0.062 \Big) \approx 0.90 \nonumber \\
+    \end{aligned}  
+\]
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}18}]:} \PY{n}{cilow}\PY{p}{,} \PY{n}{cihigh} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{diff} \PY{o}{\PYZhy{}} \PY{n}{z}\PY{o}{*}\PY{n}{w\PYZus{}sd}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{n}{diff} \PY{o}{+} \PY{n}{z}\PY{o}{*}\PY{n}{w\PYZus{}sd}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{cilow}\PY{p}{,} \PY{n}{cihigh}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+-0.002 0.202
+
+    \end{Verbatim}
+
+    Thus the 90\% CI intervals for the difference between proportions are
+\((-0.002, 0.202)\). That is,
+
+\[
+\begin{aligned}
+Pr\Big(  -0.002 \leq (p_S - p_N) \leq  0.202 \Big) \approx 0.90 \nonumber 
+\end{aligned}
+\]
+
+    \section{Useful Snippets}\label{useful-snippets}
+
+\subsection{Python}\label{python}
+
+\textbf{Get t score}
+
+Could be useful, when you have significance level \(\alpha\) and degrees
+of freedom \(df = n-1\), and have to calculate corresponding t score
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}30}]:} \PY{k}{def} \PY{n+nf}{get\PYZus{}t}\PY{p}{(}\PY{n}{cl}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{:}
+             \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k}{import} \PY{n}{stats}
+             \PY{n}{half\PYZus{}alpha} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{cl}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+             \PY{k}{return} \PY{n+nb}{round}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{t}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{half\PYZus{}alpha}\PY{p}{,} \PY{n}{n}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         \PY{n}{cl} \PY{o}{=} \PY{l+m+mf}{0.95}  \PY{c+c1}{\PYZsh{} confidence level}
+         \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{4}      \PY{c+c1}{\PYZsh{} sample size}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}t}\PY{p}{(}\PY{n}{cl}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+3.182
+
+    \end{Verbatim}
+
+    \textbf{Get Z score}
+
+Could be useful, when you have significance level \(\alpha\) and have to
+calculate corresponding Z score. Remember to always check if you need
+left tailed area or right tailed.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}31}]:} \PY{k}{def} \PY{n+nf}{get\PYZus{}z}\PY{p}{(}\PY{n}{cl}\PY{p}{)}\PY{p}{:}
+             \PY{c+c1}{\PYZsh{}NOTE:returns right tailed area as that is mostly used in CI}
+             \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k}{import} \PY{n}{stats}
+             \PY{n}{alpha} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{cl}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+             \PY{k}{return} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n+nb}{round}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{norm}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}  \PY{c+c1}{\PYZsh{} right tailing..}
+         
+         \PY{n}{cl} \PY{o}{=} \PY{l+m+mf}{0.95}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{get\PYZus{}z}\PY{p}{(}\PY{n}{cl}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+1.96
+
+    \end{Verbatim}
+
+    \textbf{Z and T distribution}
+
+Plotting a z and t distribution.
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}32}]:} \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+         \PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k}{import} \PY{n}{t}\PY{p}{,} \PY{n}{norm}
+         \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+         \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+         
+         \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{3}
+         \PY{n}{df} \PY{o}{=} \PY{n}{n}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+         \PY{n}{fig}\PY{p}{,}\PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{n}{t}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mf}{0.01}\PY{p}{,}\PY{n}{df}\PY{p}{)}\PY{p}{,} \PY{n}{t}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mf}{0.99}\PY{p}{,}\PY{n}{df}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}
+         \PY{n}{ax}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{t}\PY{o}{.}\PY{n}{pdf}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{df}\PY{p}{)}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{C0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}  \PY{c+c1}{\PYZsh{} blue is t distribution}
+         \PY{n}{ax}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{norm}\PY{o}{.}\PY{n}{pdf}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{C1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}  \PY{c+c1}{\PYZsh{} red}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_confidence_intervals_shallow_examples_files/24_confidence_intervals_shallow_examples_59_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsection{Tikz in Ipython}\label{tikz-in-ipython}
+
+Some parts of this book including this section are created using ipython
+notebooks and thus few figures which needed to be constructed via tikz
+needed an extension. Below figures are created via tikz by using an
+ipython extension called
+\href{https://github.com/mkrphys/ipython-tikzmagic}{tikzmagic}, so the
+format is slightly different for preamble. However, for tikz users, the
+essence could be easily captured.
+
+For first time usage (or after reset and clear of notebook), always load
+tikz as below.
+
+\begin{verbatim}
+%load_ext tikzmagic
+\end{verbatim}
+
+Also note, preamble is placed in a separate code cell above, because
+ipython needs magic commands to start as first line in cells. Here, tikz
+execution needs a magic command in subsequent cell.
+
+\textbf{Z distribution:}
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}33}]:} \PY{n}{preamble} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}\PYZsq{}\PYZsq{}}
+         \PY{l+s+s1}{    }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{pgfmathdeclarefunction}\PY{l+s+si}{\PYZob{}gauss\PYZcb{}}\PY{l+s+si}{\PYZob{}3\PYZcb{}}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{\PYZpc{}}
+         \PY{l+s+s1}{      }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{pgfmathparse}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{1/(\PYZsh{}3*sqrt(2*pi))*exp(\PYZhy{}((\PYZsh{}1\PYZhy{}\PYZsh{}2)\PYZca{}2)/(2*\PYZsh{}3\PYZca{}2))\PYZcb{}}\PY{l+s+s1}{\PYZpc{}}
+         \PY{l+s+s1}{    \PYZcb{}}
+         \PY{l+s+s1}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\end{InVerbatim}
+    
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}34}]:} \PY{o}{\PYZpc{}\PYZpc{}}\PY{k}{tikz} \PYZhy{}p pgfplots \PYZhy{}x \PYZdl{}preamble
+         \PYZpc{} had to be this size to have a normal size in latex
+             \PYZbs{}begin\PYZob{}axis\PYZcb{}[
+                 no markers,
+                 domain=0:6,
+                 samples=100,
+                 ymin=0,
+                 axis lines*=left,
+                 xlabel=\PYZdl{}x\PYZdl{},
+                 ylabel=\PYZdl{}f(x)\PYZdl{},
+                 height=5cm,
+                 width=12cm,
+                 xtick=\PYZbs{}empty,
+                 ytick=\PYZbs{}empty,
+                 enlargelimits=false,
+                 clip=false,
+                 axis on top,
+                 grid = major,
+                 axis lines = middle
+               ]
+         
+             \PYZbs{}def\PYZbs{}mean\PYZob{}3\PYZcb{}
+             \PYZbs{}def\PYZbs{}sd\PYZob{}1\PYZcb{}
+             \PYZbs{}def\PYZbs{}cilow\PYZob{}\PYZbs{}mean \PYZhy{} 1.96*\PYZbs{}sd\PYZcb{}
+             \PYZbs{}def\PYZbs{}cihigh\PYZob{}\PYZbs{}mean + 1.96*\PYZbs{}sd\PYZcb{}
+             \PYZbs{}addplot [draw=none, fill=yellow!25, domain=\PYZbs{}cilow:\PYZbs{}cihigh] \PYZob{}gauss(x, \PYZbs{}mean, \PYZbs{}sd)\PYZcb{}
+         \PYZbs{}closedcycle;
+             \PYZbs{}addplot [very thick,cyan!50!black] \PYZob{}gauss(x, 3, 1)\PYZcb{};
+         
+             \PYZbs{}pgfmathsetmacro\PYZbs{}valueA\PYZob{}gauss(1,\PYZbs{}mean,\PYZbs{}sd)\PYZcb{}
+             \PYZbs{}draw [gray] (axis cs:\PYZbs{}cilow,0) \PYZhy{}\PYZhy{} (axis cs:\PYZbs{}cilow,\PYZbs{}valueA) (axis cs:\PYZbs{}cihigh,0) \PYZhy{}\PYZhy{}
+         (axis cs:\PYZbs{}cihigh,\PYZbs{}valueA);
+             \PYZbs{}draw [yshift=0.3cm, latex\PYZhy{}latex](axis cs:\PYZbs{}cilow, 0) \PYZhy{}\PYZhy{} node [above] \PYZob{}Area = \PYZdl{}0.95\PYZdl{}\PYZcb{}
+         (axis cs:\PYZbs{}cihigh, 0);
+         
+             \PYZbs{}node[below] at (axis cs:\PYZbs{}cilow, 0)  \PYZob{}\PYZdl{}\PYZbs{}overline\PYZob{}X\PYZcb{} \PYZhy{} 1.96S\PYZdl{}\PYZcb{};
+             \PYZbs{}node[below] at (axis cs:\PYZbs{}mean, 0)  \PYZob{}\PYZdl{}\PYZbs{}overline\PYZob{}X\PYZcb{}\PYZdl{}\PYZcb{};
+             \PYZbs{}node[below] at (axis cs:\PYZbs{}cihigh, 0)  \PYZob{}\PYZdl{}\PYZbs{}overline\PYZob{}X\PYZcb{} + 1.96S\PYZdl{}\PYZcb{};
+         
+             \PYZbs{}node[below=0.75cm,text width=4cm] at (axis cs:\PYZbs{}mean, 0)\PYZob{}Sampling Distribution\PYZcb{};
+         
+         \PYZbs{}end\PYZob{}axis\PYZcb{}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_confidence_intervals_shallow_examples_files/24_confidence_intervals_shallow_examples_63_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \textbf{\(t\) distribution}:
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}35}]:} \PY{n}{preamble}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}\PYZsq{}\PYZsq{}}
+         \PY{l+s+s1}{    }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{pgfmathdeclarefunction}\PY{l+s+si}{\PYZob{}gamma\PYZcb{}}\PY{l+s+si}{\PYZob{}1\PYZcb{}}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{\PYZpc{}}
+         \PY{l+s+s1}{        }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{pgfmathparse}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{2.506628274631*sqrt(1/\PYZsh{}1)+ 0.20888568*(1/\PYZsh{}1)\PYZca{}(1.5)+}
+         \PY{l+s+s1}{0.00870357*(1/\PYZsh{}1)\PYZca{}(2.5)\PYZhy{} (174.2106599*(1/\PYZsh{}1)\PYZca{}(3.5))/25920\PYZhy{}}
+         \PY{l+s+s1}{(715.6423511*(1/\PYZsh{}1)\PYZca{}(4.5))/1244160)*exp((\PYZhy{}ln(1/\PYZsh{}1)\PYZhy{}1)*\PYZsh{}1\PYZcb{}}\PY{l+s+s1}{\PYZpc{}}
+         \PY{l+s+s1}{\PYZcb{}}
+         
+         \PY{l+s+s1}{    }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{pgfmathdeclarefunction}\PY{l+s+si}{\PYZob{}student\PYZcb{}}\PY{l+s+si}{\PYZob{}2\PYZcb{}}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{\PYZpc{}}
+         \PY{l+s+s1}{        }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{pgfmathparse}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{gamma((\PYZsh{}2+1)/2.)/(sqrt(\PYZsh{}2*pi) *gamma(\PYZsh{}2/2.))}
+         \PY{l+s+s1}{*((1+(\PYZsh{}1*\PYZsh{}1)/\PYZsh{}2)\PYZca{}(\PYZhy{}(\PYZsh{}2+1)/2.))\PYZcb{}}\PY{l+s+s1}{\PYZpc{}}
+         \PY{l+s+s1}{\PYZcb{}}
+         \PY{l+s+s1}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\end{InVerbatim}
+    ~
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}36}]:} \PY{o}{\PYZpc{}\PYZpc{}}\PY{k}{tikz} \PYZhy{}p pgfplots \PYZhy{}x \PYZdl{}preamble
+         \PYZbs{}begin\PYZob{}axis\PYZcb{}[
+                 no markers,
+                 domain=\PYZhy{}6:6,
+                 samples=100,
+                 ymin=0,
+                 axis lines*=left,
+                 xlabel=\PYZdl{}x\PYZdl{},
+                 height=5cm,
+                 width=12cm,
+                 xtick=\PYZbs{}empty,
+                 ytick=\PYZbs{}empty,
+                 enlargelimits=false,
+                 clip=false,
+                 axis on top,
+                 grid = major,
+                 axis lines = middle,
+                 y axis line style=\PYZob{}draw opacity=0.25\PYZcb{}
+         ]
+             \PYZbs{}def\PYZbs{}mean\PYZob{}0\PYZcb{}
+             \PYZbs{}def\PYZbs{}sd\PYZob{}1\PYZcb{}
+             \PYZbs{}def\PYZbs{}df\PYZob{}3\PYZcb{}
+             \PYZbs{}def\PYZbs{}cilow\PYZob{}\PYZhy{}3.182\PYZcb{}
+             \PYZbs{}def\PYZbs{}cihigh\PYZob{}3.182\PYZcb{}
+         
+             \PYZbs{}addplot [draw=none, fill=yellow!25, domain=\PYZbs{}cilow:\PYZbs{}cihigh] \PYZob{}student(x, \PYZbs{}df)\PYZcb{}
+         \PYZbs{}closedcycle;
+             \PYZbs{}addplot [very thick,cyan!50!black] \PYZob{}student(x, \PYZbs{}df)\PYZcb{} node [pos=0.6, anchor=mid
+         west, xshift=2em, append after command=\PYZob{}(\PYZbs{}tikzlastnode.west) edge [thin, gray]
+         +(\PYZhy{}2em,0)\PYZcb{}] \PYZob{}\PYZdl{}df=3\PYZdl{}\PYZcb{};;
+         
+             \PYZpc{}https://tex.stackexchange.com/questions/453059/pgfmathsetmacro\PYZhy{}creates\PYZhy{}dimensions\PYZhy{}
+         too\PYZhy{}large\PYZhy{}for\PYZhy{}t\PYZhy{}distribution/453062
+             \PYZbs{}addplot [ycomb, gray, no markers, samples at=\PYZob{}\PYZbs{}cilow, \PYZbs{}cihigh\PYZcb{}] \PYZob{}student(x, \PYZbs{}df)\PYZcb{};
+             \PYZbs{}draw [yshift=0.2cm, latex\PYZhy{}latex](axis cs:\PYZbs{}cilow, 0) \PYZhy{}\PYZhy{} node [above] \PYZob{}Area = \PYZdl{}0.95\PYZdl{}\PYZcb{}
+         (axis cs:\PYZbs{}cihigh, 0);
+         
+             \PYZbs{}node[below] at (axis cs:\PYZbs{}cilow, 0)  \PYZob{}\PYZbs{}cilow\PYZcb{};
+             \PYZbs{}node[below] at (axis cs:\PYZbs{}mean, 0)  \PYZob{}0\PYZcb{};
+             \PYZbs{}node[below] at (axis cs:\PYZbs{}cihigh, 0)  \PYZob{}\PYZbs{}cihigh\PYZcb{};
+         
+         
+             \PYZbs{}node[below=0.75cm,align=center, text width=10cm] at (axis cs:\PYZbs{}mean, 0)\PYZob{}Sampling
+         Distribution has \PYZdl{}t\PYZdl{} distribution for low sample sizes\PYZcb{};
+         
+         \PYZbs{}end\PYZob{}axis\PYZcb{}
+\end{InVerbatim}
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{24_confidence_intervals_shallow_examples_files/24_confidence_intervals_shallow_examples_67_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

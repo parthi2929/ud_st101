@@ -1,0 +1,236 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+\usepackage{../mytikz_custom}
+\usepackage{xr-hyper} % Needed for external references   
+    \externaldocument{30_Covariance_1} 
+    \externaldocument{30_Correlation_Main} 
+\title{Covariance and Correlation}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    % remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+The tikzmagic extension is already loaded. To reload it, use:
+  \%reload\_ext tikzmagic
+
+    \end{Verbatim}
+
+    \section{Visualization}\label{visualization}
+
+Now that we have seen TIA is already doing a good job on giving us a
+measure of the linearity, we shall come to the core of this section. We
+have not yet visualized the totality of the rectangles. We could have
+done this earlier, but I wanted to instill a strong sense of what
+rectangles are we dealing with and why they are whole representative of
+the dataset though we have taken only half of all possible rectangles.
+We initially decided how do we color the rectangles, based on positive
+or negative relationship as a convention, and then looked in detail,
+what are the rectangles to be plotted. Let us consider the sample sets
+as below. Recall these were the same sample sets we saw in the beginning
+of this section. Note the TIA is already calculated indicating us the
+kind of relationship.
+\begin{figure}
+\centering% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_3_files/30_Covariance_3_4_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \caption{Figure 1: The Sample Sets} \label{fig:C3_002}
+\end{figure}
+    As per TIA from Figure \(\ref{fig:C3_002}\), Plot 1 is highly negatively
+correlated, Plot 2 is somewhat negative, and Plot 3 is positively
+correlated. Though visually Plots 1 and 3 look like not having much
+difference in their \emph{slope} or \emph{rate}, our TIA gives a wide
+difference in value. This is because, TIA between sample sets are not
+comparable (we will solve that soon in correlation, but remember this
+problem). That is, given a sample set, say Plot 1, having -148859 is one
+of infinite no of possibilities among that sample set, with perfectly
+linear positive, negative and 0 TIA as one of those. Simiarly for sample
+set in Plot 2 and so on. Below are the sample sample plots with colored
+rectangles laid over them. Remember, if N is the size of sample set, or
+no of \((x,y)\) pairs, then the number of rectangles we have drawn is
+\(N(N-1)/2\). And as we already saw, only because of this limited
+rectangles, we get the output as below without neutralization issues.
+
+\begin{figure}
+\centering% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_3_files/30_Covariance_3_8_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \caption{Figure 2: The Visualization of Covariance} \label{fig:C3_002}
+\end{figure}
+    I think, Figure \(\ref{fig:C3_002}\) speaks for itself :) Plot 1,which
+has highly negative linear relationship among its sample sets, has more
+red rectangles than green. Plot 2, which is very less linearity in any
+direction, shows an almost equal mix of red and green, of course the
+accurate measure is reflected in its TIA though. Plot 3, which has a
+positive linear relationship, obviously has lot more green. Figure
+\(\ref{fig:C3_003}\) gives total area of red and green separately,
+giving us better glimpse of the \emph{net} relationship underneath. The
+TIA is just the difference between the total green area and red area.
+
+\begin{figure}
+\centering% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_3_files/30_Covariance_3_12_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \caption{Figure 3: The separated total area \\Green indicates Positive} \label{fig:C3_003}
+\end{figure}
+    \section{Expected value of TIA}\label{expected-value-of-tia}
+
+For any given sample set, we are typically interested not in the total
+of the sample set, but most probable or best representative candidate of
+that sample set. In our case, our sample set of TIA, is not individual
+pairs \((x_i,y_i)\), but a function of them, a product
+\((x_i-x_j)(y_i-y_j)\). That is, using \(\ref{eq:C002}\) if,\\
+\[
+h(X,Y) = \sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j)
+\]
+
+then, we are interested in \(E[h(X,Y)]\)
+
+As per expectation formula,
+
+\begin{equation}
+E[h(X,Y)] =  \sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j)p(x_i , y_i) \label{eq:C3_001}
+\end{equation}
+
+\begin{quote}
+Note, we are not interested in expected value of \emph{number of
+rectangles} or \emph{red colored rectangles} etc. The area of rectangles
+carry the measure and each rectangle might have different area. We are
+thus interested in the \emph{expected value} of the area, given the
+\emph{total} interested area.
+\end{quote}
+
+\emph{Expectation} needs a \emph{joint probability mass function}
+\(p(X,Y)\) associated with \(h(X,Y)\). Recall the rectangle graph for
+\(N=6\) and replace with area \(A_{ij}\) (could also call as product,
+\(P_{ij}\) but just to avoid notational confusion with probability let
+us stick with area).
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    ~
+
+\begin{figure}
+\centering% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_3_files/30_Covariance_3_18_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \caption{Figure 4: The Number of Area Components} \label{fig:C3_004}
+\end{figure}
+    Assuming each \emph{area} has equal probability, given the number of
+area, each \(A_{ij}\) will have a probability of \(\dfrac{1}{N^2}\) as
+there are \(N^2\) area components possible. Thus, \(\ref{eq:C3_001}\)
+becomes,
+
+    \begin{equation}
+E[h(X,Y)] =  \sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j)p(x_i , y_i) =  \dfrac{1}{N^2}\sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j) \label{eq:C3_002}
+\end{equation}
+
+    Ladies and Gentlemen. That \(E[h(X,Y)]\) is called \textbf{Covariance}
+of X and Y , shortly called \(\mathbf{\mathrm{Cov}(X,Y)}\). Also note,
+the alternative form we saw earlier in equation \(\ref{eq:C003}\), could
+also be used to derive covariance as below.
+
+    \begin{equation}
+E[h(X,Y)] =  \sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j)p(x_i , y_i) =  \dfrac{1}{2N^2}\sum\limits_{i=1}^N\sum\limits_{j=1}^{N}(x_i - x_j)(y_i - y_j) \label{eq:C3_003}
+\end{equation}
+
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Covariance of discrete X and Y with p(X\,Y) uniform]
+Given X and Y are discrete variables of sample size N, and $p(X,Y) = \dfrac{1}{N^2}$, 
+\begin{equation}
+    \mathrm{Cov}(X,Y) = \dfrac{1}{N^2}\sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j) \label{eq:C3_004}
+\end{equation}
+\begin{equation}
+    \mathrm{Cov}(X,Y) = \dfrac{1}{2N^2}\sum\limits_{i=1}^N\sum\limits_{j=1}^{N}(x_i - x_j)(y_i - y_j) \label{eq:C3_005}
+\end{equation}
+\end{tcolorbox}
+    \section{Standard Formula}\label{standard-formula}
+
+What we have seen so far, is a deformed form of covariance which
+numerically gave us the same results as a standard formula. It is
+mathematically possible to show that,
+
+\begin{equation}
+\mathrm{Cov}(X,Y) = \sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j)p(x_i , y_i) = \sum\limits_{i=1}^{N}(x_i - \overline{x})(y_i - \overline{y}) p(x_i , y_i)
+\end{equation}
+
+The derivation is proven by \citet{yuli2012}. 
+    At the time of this writing, the
+\href{https://math.stackexchange.com/questions/2982674/single-to-double-summation-via-vector-matrix-problem}{doubts}
+in the derivation is not yet cleared, if and once it is done, this
+section should be enriched with a proper derivation. Till then, this is
+a discontinuity in our understanding. The visualization of standard
+formula is slightly different because it involves mean, so all
+rectangles have one corner at mean position
+\((\overline{x},\overline{y})\). The visualization is shown in figure
+\(\ref{fig:C3_005}\). The top 3 rows from our deformed formula and
+bottom 3 using standard formula. One could observe, the rectangles in
+plots 3,4,and 5 are centered around the mean (shown in dotted lines),
+thus giving a better viusal perception of the measure (no of red or
+green rectangles, which is more). We did not start with this
+visualization only because, there was no intuition to introduce mean in
+the equation out of no where.
+
+\begin{figure}
+\centering% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_3_files/30_Covariance_3_29_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \caption{Figure 5: The Visualization of deformed and standard formula\\for Covariance} \label{fig:C3_005}
+\end{figure}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

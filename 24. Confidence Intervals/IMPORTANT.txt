@@ -1,0 +1,12 @@
+In raw tex files,
+
+1. includegraphics shall not have any width as, its restricted by default in jupyter's preamble by a hardcoded value of 80%. If you still include, main build will fail
+2. The float and crop options are to be specified in documentclass of main.tex just like they are in sub-files (along with more options like onesided for book type) else main build will fail.
+3. As per standalone package rule, the sub-files should refer to main template. So do not create preamble, instead whatever you need, insert in myrawtex.sty, the common style file for raw tex.
+
+
+In auto generated tex files from ipython notebook,
+
+1. Remove the preamble, instead make it refer the style document created in template
+2. In code cells, do not have any quotes inside comments.
+3. In code cells, have short comments. The wrapped comments other than first line are again not hashed (to make it look like comment). 

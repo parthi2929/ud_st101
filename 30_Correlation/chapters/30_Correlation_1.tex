@@ -1,0 +1,447 @@
+\documentclass[tikz = true, float=false, crop=false, 11pt]{standalone}
+
+% ANY PREAMBLE HERE IS REMOVED IF STANDALONE SO..
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+	\usepackage{../myipy2tex}
+	\usepackage{../myrawtex}
+	\usepackage{../myipy2tex_custom} 
+	\usepackage{../myrawtex_custom} 
+	\usepackage{../mytikz_custom}		
+	\setcounter{secnumdepth}{5}
+	\usepackage{xr-hyper}
+	\externaldocument{30_Covariance_1}
+	\externaldocument{30_Covariance_2}
+	\externaldocument{30_Covariance_3}
+	\externaldocument{30_Covariance_4}	
+	\externaldocument{30_Appendix_1}		
+	\title{Correlation}
+\fi
+
+    
+\begin{document} \label{ch:chapter_2}
+	
+	\pgfplotstableread{
+		X Y
+		2.2 14
+		2.7 23
+		3 13
+		3.55 22
+		4 15
+		4.5 20
+		4.75 28
+		5.5 23
+	}\datatable
+
+	\pgfplotstableread{
+		X Y
+		-1.503 -1.163
+		-1.026 0.657
+		-0.739 -1.365
+		-0.215 0.455
+		0.215 -0.961
+		0.692 0.051
+		0.93 1.669
+		1.646 0.657
+	}\datatableS
+	
+	\section{Why} 
+	
+	Covariance has some painful disadvantages.  There is no standard scale with which we could compare and say, the number obtained is high correlation. When we measure, say a distance of 10m, we do not just have the measure 10, we also \textit{understand the size} of it because we have a standard scale for 1m. This allows us to compare with another distance, say 15m, and accurately understand the difference between them. This type of \textbf{standardization} or normalization is missing in our Covariance value.   
+	
+	Further, it is highly unit dependent as we are just multiplying two RVs of different units (the 3rd factor probability we multiply with, anyway is unitless). This means, if units change, our measure also could drastically change. Imagine the last example. If $X$ and $Y$, the deductibles were in cents, then they just scale by 100 times in the summation. Note what this leads to.  
+	
+	$$\begin{aligned}
+	& \mathrm{Cov}(X,Y) = \sum\limits_{x}\sum\limits_{y}(100x - 17500)(100y - 12500)p(x,y) \\
+	& = (100)(100)\sum\limits_{x}\sum\limits_{y}(x - 175)(y - 125)p(x,y) \\
+	& = 10000(1875) \\
+	& = 18750000 \ \ \text{cents}^2
+	\end{aligned}$$
+	
+	Apart from a very high value, note the ugly units tag sticking with it. Though a covariance could give us a measure, this is not as useful as a unit like meters. Ideally, we would wish, our measure is units independent. Summarizing, 
+	
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Covariance's main disadvantages]
+		\begin{itemize}
+			\item Critically dependent on units of random variables being compared
+			\item Not comparable with other covariance values 
+		\end{itemize}
+	\end{tcolorbox}		
+
+	\section{What}
+	
+	The idea to tackle the issue is by, well as said, \textit{standardization or normalization with something}, thereby making it a ratio, due to which the units cancel out between numerator and denominator. This already suggests we need two quantities of same units of $X$ and $Y$ in the denominator of Covariance. Let us recall the equation of simple linear regression model between two Random variables (figure \ref{fig:C5_001}). 	
+	
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=1,
+		xmax=6,
+		ymin=5,
+		ymax=40,
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		axis on top,
+		grid = major,
+		axis lines = middle        
+		]
+		\addplot [only marks, cyan, mark = *] table {\datatable};
+		\addplot [thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear regression from the input table
+		% \addlegendentry{$y(x)$}
+		% \addlegendentry{%
+		% $\pgfmathprintnumber{\pgfplotstableregressiona} \cdot x
+		% \pgfmathprintnumber[print sign]{\pgfplotstableregressionb}$}
+		\def\X{2.7}
+		\def\Y{23}
+		\draw [-latex] (2.2,30) node[left]{$(x_1,y_1)$} to[out=350,in=160] (\X,\Y);  % floating arrow
+		\draw [-latex] (5.5,30) node[right, align=left]{\scriptsize True Regression Line\\ \scriptsize $y = \hat{\beta_0} + \hat{\beta_1} x$} to[out=160,in=90] (5,22.7);  % floating arrow
+		\draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1) -- (\X,17) node [midway, anchor=west, xshift=0.5mm]{\scriptsize $\Delta y_1$}; % brace 
+		% \draw[thick, -latex] (\X, 2.5) to (\X,5) ; % x point arrow
+		
+		\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (1,17.1) -- (\X,17.1);
+		\draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+		\node[below] at (\X,4) {$x_1$};
+		\node[left, align=left] at (1,17.1) {$E(Y|x_1)$ \\ $=\mu_{Y.x_1}$};
+		
+		\end{axis}
+		
+		
+		\end{tikzpicture}		
+		\caption{Figure \ref*{fig:C5_001}: Recalling the regression line} \label{fig:C5_001}
+	\end{figure}
+	
+	The regression line is given by 
+	
+	
+	\begin{align}
+		E(Y|x) = \beta_0 + \beta_1 x \nonumber \\
+		\hat{Y}|x = \hat{\beta_0} + \hat{\beta_1}x \nonumber \\		
+		\text{where} \ \ \ \ \hat{\beta_1} = \dfrac{\sum_i(y_i - \overline{y})(x_i - \overline{x}) }{\sum_i(x_i - \overline{x})^2}	\nonumber \\ 
+		\hat{\beta_0} = 	\overline{y} - \hat{\beta_1}\overline{x} \label{eq:C5_001}	
+	\end{align}
+	
+	What would it mean, when the slope $\hat{\beta_1}$ is 0 for this regression line? 
+	
+	$$\begin{aligned}
+	\hat{\beta_1} = 0 \\
+	\implies \hat{Y}|x = \hat{\beta_0} = \overline{y}
+	\end{aligned}$$
+	
+	This is simply an horizontal line drawn parallel to x axis, cutting at $y = \overline{y}$. So, if such is the case, that for given sampe, $\hat{\beta_1}$ is 0, we could already say, their covariance is 0, because for any $x$, $y$ remains constant at $\overline{y}$. This is illustrated in Figure \ref{fig:C5_002}.  
+	
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=1,
+		xmax=6,
+		ymin=5,
+		ymax=40,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		axis on top,
+		grid = major,
+		axis lines = middle        
+		]
+		\addplot [only marks, cyan, mark = *] table {\datatable};
+		\addplot [thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear regression from the input table
+		% \addlegendentry{$y(x)$}
+		% \addlegendentry{%
+		% $\pgfmathprintnumber{\pgfplotstableregressiona} \cdot x
+		% \pgfmathprintnumber[print sign]{\pgfplotstableregressionb}$}
+		\def\X{2.7}
+		\def\Y{23}
+		% \draw [-latex] (2.2,30) node[left]{$(x_1,y_1)$} to[out=350,in=160] (\X,\Y);  % floating arrow
+		\draw [-latex] (5.5,30) node[right, align=left]{\scriptsize True Regression Line\\ \scriptsize $y = \beta_0 + \beta_1 x$} to[out=160,in=90] (5,22.7);  % floating arrow
+		% \draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1) -- (\X,17) node [midway, anchor=west, xshift=0.5mm]{\scriptsize $\Delta y_1$}; % brace 
+		% \draw[thick, -latex] (\X, 2.5) to (\X,5) ; % x point arrow
+		
+		% \draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (1,17.1) -- (\X,17.1);
+		% \draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+		% \node[below] at (\X,4) {$x_1$};
+		% \node[left, align=left] at (1,17.1) {$E(Y|x_1)$ \\ $=\mu_{Y.x_1}$};
+		
+		\def\Xb{3.775}
+		\def\Yb{19.75}
+		\def\Xmin{1}
+		\def\Ymin{5}
+		\def\Xmax{6}
+		\draw [thick, gray, dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\Xb, \Yb) -- (\Xb, \Ymin);
+		\draw [thick, red, dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\Xmin, \Yb) -- (\Xmax, \Yb);
+		\node[below] at (\Xb, \Ymin) {\scriptsize $\overline{x}$};
+		\node[left, align=left] at (\Xmin, \Yb) {\scriptsize $\overline{y}$};
+		\node[right, align=left] at (\Xmax, \Yb) {\scriptsize $y = \overline{y}$};
+		\node[below right, align=left] at (\Xb, \Yb) {\scriptsize $C(\overline{x}, \overline{y})$};
+		
+		\end{axis}
+		
+		
+		\end{tikzpicture}		
+		\caption{Figure \ref*{fig:C5_002}: When the slope is zero..} \label{fig:C5_002}
+	\end{figure}
+	
+	Note in case of regression line, we took a variable $X$ and evaluated the relationship of another variable $Y$ via $E(Y|x)$. Thus naturally the reversed case is also possible that is $E(X|y)$. This is simply achieved by reversing the variables in regression line equation \ref{eq:C5_001}
+	
+
+	\begin{align}
+		E(X|y) = \beta_2 + \beta_3 y \nonumber \\
+		\hat{X}|y = \hat{\beta_2} + \hat{\beta_3}y  \nonumber \\  
+		\text{where} \ \ \ \ \hat{\beta_3} = \dfrac{\sum_i(y_i - \overline{y})(x_i - \overline{x}) }{\sum_i(y_i - \overline{y})^2}	\nonumber \\
+		\hat{\beta_2} = 	\overline{x} - \hat{\beta_3}\overline{y} \label{eq:C5_002}			
+	\end{align}
+
+	Again, when $\beta_3 = 0$, that is slope of regression line $E(X|y)$ is 0, we get,
+	
+	$$\begin{aligned}
+	\hat{\beta_3} = 0 \\
+	\implies \hat{X}|y = \hat{\beta_2} = \overline{x}
+	\end{aligned}$$	
+	
+	Figure \ref{fig:C5_003} illustrates plotting of both lines, along with zero correlation lines.
+	
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=1,
+		xmax=6,
+		ymin=5,
+		ymax=40,
+		xlabel = {X}, ylabel = {Y}, 
+		ytick=\empty,
+		xtick=\empty,
+		clip=false, 
+		axis on top,
+		grid = major,
+		axis lines = middle        
+		]
+		\addplot [only marks, cyan, mark = *] table {\datatable};
+		\addplot [thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear regression from the input table
+		\draw[thick, domain=10:30,red, variable=\y,blue]  plot ({1.445 + 0.118*\y},{\y});
+		% \addplot [thick, red, variable=\y]  table[x={create col/linear regression={x=X}}] {\datatable};
+		% \addlegendentry{$y(x)$}
+		% \addlegendentry{%
+		% $\pgfmathprintnumber{\pgfplotstableregressiona} \cdot x
+		% \pgfmathprintnumber[print sign]{\pgfplotstableregressionb}$}
+		\def\X{2.7}
+		\def\Y{23}
+		% \draw [-latex] (2.2,30) node[left]{$(x_1,y_1)$} to[out=350,in=160] (\X,\Y);  % floating arrow 
+		\draw [-latex] (5.5,30) node[right, align=left]{\scriptsize True Regression Line\\ \scriptsize $E(Y|x) = \beta_0 + \beta_1 x$} to[out=160,in=90] (5,22.7);  % floating arrow
+		\draw [-latex] (5.5,37) node[right, align=left]{\scriptsize True Regression Line\\ \scriptsize $E(X|y) = \beta_2 + \beta_3 y$} to[out=160,in=90] (5,30);  % floating arrow
+		% \draw [decorate, decoration={brace,amplitude=3pt}, xshift=0.5mm] (\X,\Y-0.1) -- (\X,17) node [midway, anchor=west, xshift=0.5mm]{\scriptsize $\Delta y_1$}; % brace 
+		% \draw[thick, -latex] (\X, 2.5) to (\X,5) ; % x point arrow
+		
+		% \draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (1,17.1) -- (\X,17.1);
+		% \draw [thick,dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\X,17.1) -- (\X,5);
+		% \node[below] at (\X,4) {$x_1$};
+		% \node[left, align=left] at (1,17.1) {$E(Y|x_1)$ \\ $=\mu_{Y.x_1}$};
+		
+		\def\Xb{3.775}
+		\def\Yb{19.75}
+		\def\Xmin{1}
+		\def\Ymin{5}
+		\def\Xmax{6}
+		\def\Ymax{40}
+		\draw [thick, blue, dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\Xb, \Ymax) -- (\Xb, \Ymin);
+		\draw [thick, red, dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\Xmin, \Yb) -- (\Xmax, \Yb);
+		\node[below] at (\Xb, \Ymin) {\scriptsize $\overline{x}$};
+		\node[left, align=left] at (\Xmin, \Yb) {\scriptsize $\overline{y}$};
+		\node[right, align=left] at (\Xmax, \Yb) {\scriptsize $y = \overline{y}$};
+		\node[right, align=left] at (\Xb, \Ymax) {\scriptsize $x = \overline{x}$};
+		\node[below right, align=left] at (\Xb, \Yb) {\scriptsize $C(\overline{x}, \overline{y})$};
+		
+		\end{axis}
+		
+		\end{tikzpicture}
+		\caption{Figure \ref*{fig:C5_003}: Two possible regression lines $E(Y|x), E(X|y)$} \label{fig:C5_003}
+	\end{figure}
+
+	Summarizing, in current case of regression, we have, 
+	
+	\begin{itemize}
+		\item $E(Y|x)$ gives $Y$ variation which is not same as variation indicated by $E(X|x)$
+		\item $y = \overline{y}$ indicates zero variation of $Y$ for any x, and $x = \overline{x}$, vice versa. 
+	\end{itemize}
+
+	What we need is a single unified quantitative measure for reducing the disadvantages of Covariance. Note that we are dealing with samples, so our formula for \textit{unbiased} sample covariance and variance, as referenced in \citet{charles2013}, would be
+		
+	$$\begin{aligned}
+	\mathrm{cov}(X,Y) = \dfrac{1}{N-1}\sum_i^{N} (x_i - \overline{x})(y_i - \overline{y}) \\
+	\mathrm{var}(X) = s_x^2 = \dfrac{1}{N-1}\sum_i^{N} (x_i - \overline{x})^2 \\
+	\mathrm{var}(Y) = s_y^2 = \dfrac{1}{N-1}\sum_i^{N} (y_i - \overline{y})^2 \\
+	\end{aligned}$$
+	
+	Using them in the slopes, we get, 
+	
+	$$\begin{aligned}
+	\hat{\beta_1} = \dfrac{\sum_i(y_i - \overline{y})(x_i - \overline{x}) }{\sum_i(x_i - \overline{x})^2} 
+	= \dfrac{ \dfrac{1}{N-1}\sum_i (y_i - \overline{y})(x_i - \overline{x})  }{ \dfrac{1}{N-1} \sum_i(x_i - \overline{x})^2} \\
+	= \dfrac{\mathrm{cov}(X,Y)}{s_x^2}
+	\end{aligned}$$
+	
+	Similary for $\hat{\beta_3}$. Summarizing, now we have, slopes in terms of sample covariance and variances, 
+	
+	\begin{align}
+		\hat{\beta_1} = \dfrac{\mathrm{cov}(X,Y)}{s_x^2} \ \ , \ \ 
+		\hat{\beta_3} = \dfrac{\mathrm{cov}(X,Y)}{s_y^2} \label{eq:C5_003}
+	\end{align}
+
+	Thus,
+	$$\begin{aligned}
+		\hat{Y}|x = \hat{\beta_0} + \dfrac{\mathrm{cov}(X,Y)}{s_x^2}x \\
+		\hat{X}|y = \hat{\beta_2} + \dfrac{\mathrm{cov}(X,Y)}{s_y^2}y
+	\end{aligned}$$	
+	
+	Now, covariance is symmetric. $X$ is as covariant with $Y$ as $Y$ is with $X$. Check the formula again. 
+	
+	$$\begin{aligned}
+	\mathrm{cov}(X,Y) = \dfrac{1}{N-1}\sum_i^{N} (x_i - \overline{x})(y_i - \overline{y}) 
+	=  \dfrac{1}{N-1}\sum_i^{N} (y_i - \overline{y})(x_i - \overline{x}) = \mathrm{cov}(Y,X)
+	\end{aligned}$$
+	
+	However, as we saw, this cannot be said for $\hat{Y}|x$ and $\hat{X}|y$. But imagine below form for a moment. 
+	
+	$$\begin{aligned}
+	\hat{Y}|x = 0 + \dfrac{\mathrm{cov}(X,Y)}{1}x \\
+	\hat{X}|y = 0 + \dfrac{\mathrm{cov}(X,Y)}{1}y
+	\end{aligned}$$	
+	
+	If we some how magically make the y-intercept of $\hat{Y}|x$, and x-intercept of $\hat{X}|y$ go away, and make the variance 1, we could have a symmetry effect for both $\hat{Y}|x$ and $\hat{X}|y$. This could be done by \textit{standardizing} the sample set. Recall during Z transformation, we did the same. By shifting the sample set or distribution to its mean, and scaling by the standard deviation, we essentially
+	achieve a standard distribution which could be comparable to any other standardized distribution (Recall Z scores). Such a standardized distribution will have 0 mean and variance as 1. 
+	
+	\subsection*{Lemma} \label{le:C5_001}
+	
+		For a population described by RV, $X(\mu, \sigma^2)$
+		
+		$$\begin{aligned}
+		Z &= \dfrac{X - \mu}{\sigma} \\
+		E(Z) &= E\bigg(\dfrac{X - \mu}{\sigma} \bigg) = \dfrac{1}{\sigma} \big( E(X) - \mu \big) = \dfrac{1}{\sigma} \big( \mu - \mu \big) = 0 \\
+		\mathrm{Var}(Z) &= \mathrm{Var}\bigg(\frac{X-\mu}{\sigma}\bigg) 
+		= \mathrm{Var}\bigg(\frac{X}{\sigma}-\frac{\mu}{\sigma}\bigg)=\mathrm{Var}\bigg(\frac{X}{\sigma}\bigg)
+		=\frac{1}{\sigma^2}\mathrm{Var}(X)=\frac{\sigma^2}{\sigma^2}=1
+		\end{aligned}$$
+		
+	\subsection*{Standardizing our sample set}
+	
+	Applying the same principles to our sample set, if we transform as follows, 
+	
+	$$\begin{aligned}
+	X_s = \dfrac{X - \overline{x}}{s_X} \ \ , \ \ Y_s = \dfrac{Y - \overline{y}}{s_Y} \\	
+	\end{aligned}$$
+	
+	where $s_X, s_Y$ are the standard deviation of X and Y respectively, then, we have new samples set $(X_s, Y_s)$, where
+	
+	$$\begin{aligned}
+	\overline{x_s} = \overline{y_s} = 0 \\
+	s_{X_s} = s_{Y_s} = 1
+	\end{aligned}$$
+	
+	The new standardized set gives rise to new regression lines as follows. 
+	
+	$$\begin{aligned}
+	\hat{Y_s}|x_s = \hat{\beta_{0s}} + \dfrac{\mathrm{cov}(X_s,Y_s)}{s_{X_s}^2}x_s \\
+	\hat{X_s}|y_s = \hat{\beta_{2s}} + \dfrac{\mathrm{cov}(X_s,Y_s)}{s_{Y_s}^2}y_s 
+	\end{aligned}$$
+	
+	Using equations \ref{eq:C5_001}, and \ref{eq:C5_002} we get, 
+	
+	$$\begin{aligned}
+	\hat{\beta_{0s}} = \overline{x_s} - \hat{\beta_{1s}}\overline{y_s} = 0 - \hat{\beta_{1s}}(0) = 0 \\
+	\hat{\beta_{2s}} = \overline{y_s} - \hat{\beta_{3s}}\overline{x_s} = 0 - \hat{\beta_{3s}}(0) = 0
+	\end{aligned}$$
+	
+	Using that, and since $s_{X_s} = s_{Y_s} = 1$, we finally get new regression lines as, 
+	
+	\begin{align}
+	\hat{Y_s}|x_s = \mathrm{cov}(X_s,Y_s)x_s	\nonumber \\
+	\hat{X_s}|y_s = \mathrm{cov}(X_s,Y_s)y_s  \nonumber 
+	\end{align}
+
+	Figure \ref{fig:C5_004} illustrates the resultant regression lines. One could notice both these lines are symmetric because they both have same slope with respect to their independent axis. 
+
+	\begin{figure}[!hpt]
+		\centering
+		\begin{tikzpicture}
+				
+		
+		\begin{axis}[
+		% legend pos=outer north east,
+		xmin=-4,
+		xmax=4,
+		ymin=-4,
+		ymax=4,
+		xlabel = {$X_s$}, ylabel = {$Y_s$}, 
+		ytick=\empty,xtick=\empty,
+		clip=false, 
+		axis on top,
+		grid = major,
+		axis lines = middle        
+		]
+		\addplot [only marks, cyan, mark = *] table {\datatableS};
+		% \addplot [thick, red] table[y={create col/linear regression={y=Y}}] {\datatable}; % compute a linear regression from the input table
+		\draw[thick, domain=-3:3,red, red]  plot ({\x},{0.556*\x});
+		\draw[thick, domain=-3:3,red, variable=\y,blue]  plot ({0.556*\y},{\y});
+		
+		
+		
+		\def\Xb{0}
+		\def\Yb{0}
+		\def\Xmin{-4}
+		\def\Ymin{-4}
+		\def\Xmax{4}
+		\def\Ymax{4}
+		
+		\draw [-latex] (\Xmax-1.5,\Ymax-1.5) node[right, align=left]{\scriptsize $E(Y_s|x_s) = \mathrm{cov}(X_s,Y_s) x_s$} to[out=160,in=100] (\Xmax-1.5,\Ymax - 2.6);  % floating arrow
+		\draw [-latex] (\Xmax-2.25,\Ymax-0.25) node[right, align=left]{\scriptsize $E(X_s|y_s) = \mathrm{cov}(X_s,Y_s) y_s$} to[out=160,in=90] (\Xmax-2.5,\Ymax - 1.2);  % floating arrow        
+		
+		% \draw [thick, blue, dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\Xb, \Ymax) -- (\Xb, \Ymin);
+		% \draw [thick, red, dash pattern={on 7pt off 2pt on 1pt off 3pt}] (\Xmin, \Yb) -- (\Xmax, \Yb);
+		% \node[below] at (\Xb, \Ymin) {\scriptsize $\overline{x}$};
+		% \node[left, align=left] at (\Xmin, \Yb) {\scriptsize $\overline{y}$};
+		\node[right, align=left] at (\Xmax, \Yb) {\scriptsize $y_s = \overline{y_s} = 0$};
+		\node[above, align=left] at (\Xb, \Ymax) {\scriptsize $x_s = \overline{x_s} = 0$};
+		\node[below right, align=left] at (\Xb, \Yb) {\scriptsize $C(0, 0)$};
+		
+		\end{axis}
+		
+		\end{tikzpicture}
+		\caption{Figure \ref*{fig:C5_004}: Two standardized regression lines $E(Y_s|x_s), E(X_s|y_s)$} \label{fig:C5_004}
+	\end{figure}
+
+	The new \textit{standardized} sample covariance $\mathrm{cov}(X_s,Y_s)$ has very useful properties we have been longing so far. 
+	
+	\begin{itemize}
+		\item  $\mathrm{cov}(X_s,Y_s)$ would be now unitless and would vary between $\pm 1$ as we would observe shortly
+		\item  the covariance is now made symmetric, that is $X_s$ is as covariant with $Y_s$ as $Y_s$ is with $X_s$
+		\item  this does not mean, the new regression lines are same. They just have same slope meaning they are \textit{symmetric}
+	\end{itemize}
+
+	All the above points would become evident, once we observe a detailed example. 
+	
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Covariance of Standardized Sample Sets]
+		By standardizing the sample set, we are able to achieve interesting \textit{symmetric} regression lines of same slope
+		\begin{align}
+		\hat{Y_s}|x_s = \mathrm{cov}(X_s,Y_s)x_s	\nonumber \\
+		\hat{X_s}|y_s = \mathrm{cov}(X_s,Y_s)y_s  \label{eq:C5_004}
+		\end{align}
+		where $\mathrm{cov}(X_s,Y_s)$ is unitless and varies between $\pm 1$
+	\end{tcolorbox}		
+
+	
+	\ifstandalone
+	\bibliography{../references}
+	\fi
+	
+		
+\end{document}

@@ -1,0 +1,1039 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage[numbers]{natbib}
+\bibliographystyle{abbrvnat}
+\usepackage{xr-hyper} % Needed for external references
+    \externaldocument{29_appendix_1}
+    \externaldocument{29_appendix_2}
+    \externaldocument{29_MLE_Regression_Main} 
+\title{Hypothesis Testing}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Introduction}\label{introduction}
+
+\paragraph{Encrypted Introduction as in
+textbooks}\label{encrypted-introduction-as-in-textbooks}
+
+Suppose that we have a random variable \(X\), whose pdf or pmf is known
+but the distribution depends on an unknown parameter, say \(\theta\),
+that may have any value in a \textbf{parameter space} \(\Omega\). For
+instance, it might be \(f(x;\theta) = \theta^2(1-\theta)^{1-x}\),
+\(0<x<\infty\) and \(\theta \ \epsilon \ \Omega\). In certain instances,
+an experiments needs \textbf{to select one member} of the entire
+possibilities of \(\theta\) family,
+\(\{f(x;\theta),\theta \ \epsilon \ \Omega\}\). That is, he needs a
+\textbf{point estimate} \(\hat\theta\), the value of the parameter that
+corresponds to selected pdf or pmf.
+
+One of the most common estimation scenario is to take a random sample
+set from the selected distribution (pdf or pmf) and try to estimate
+\(\theta\) of the distribution. That is, we repeat the experiment to
+take \(m\) number of samples, observe the sample
+\(X_1, X_2, \cdots X_m\), and try to estimate \(\theta\) by using
+observations \(x_1,x_2,\cdots,x_m\)
+
+The function we will use to estimate the \(\theta\), is called,
+\textbf{estimator}, \(u(X_1,X_2,\cdots,X_n)\), and we represent the
+computed \textbf{estimate} as \(u(x_1,x_2,\cdots,x_m)\). Our expectation
+is, this estimate should be as close to \(\theta\) as possible. Since we
+are estimating only one of all possible
+\(\theta \ \ \epsilon \ \ \Omega\), \(u(x_1,x_2,\cdots,x_m)\) is called
+a \textbf{point estimator}
+
+\paragraph{Decrypting it}\label{decrypting-it}
+
+Suppose we flip a coin. The outcome of how many heads we get, is a
+Bernoulli distribution. Let us describe it with random variable \(X\),
+that is, X denotes number of heads in an outcome and since we flip only
+once, its values are \(X = 0,1\). That is, getting no heads or 1 head.
+We do know its pmf as \(f(x;p) = p^2(1-p)^{1-x}\), \(0<x<\infty\) and
+\(0 \leq p \leq 1\). Note, \(p\) here is the mystic \(\theta\) we just
+talked about, and the \textbf{parameter space} \(\Omega\) is from 0 to
+1. \textbf{There is always one \(p\) associated with any Bernoulli
+distribution} which we need to find out of all possibilities between 0
+and 1 inclusive. The given Bernoulli distribution depends on this \(p\)
+and we set out to find that out one \(p\) value. That is, we need a
+\textbf{point estimate} \(\hat{p}\), the value of the paramter that
+corresponds to selected Bernoulli distribution.
+
+One of the most common estimation scenario is to take a random sample
+set from the Bernoulli distribution and try to estimate \(p\) of the
+distribution. That is, we flip the coin to take \(m\) number of samples,
+observe the sample \(X_1, X_2, \cdots X_m\), and try to estimate \(p\)
+by using observations \(x_1,x_2,\cdots,x_m\). The observations might be
+something like \(1,0,0,1,0,1,\cdots,1\), 1 indicating heads and tails
+otherwise.
+
+The function we will use to estimate the \(p\) is called
+\textbf{estimator} \(u(X_1,X_2,\cdots,X_n)\) and we represent the
+computed \textbf{estimate} as \(\hat{p} = u(x_1,x_2,\cdots,x_m)\). Our
+expectation is \(\hat{p}\) should be as close to real \(p\) as possible.
+Since we are estimating only one \(\hat{p}\) of all possible \([0,1]\)
+range, \(\hat{p} = u(x_1,x_2,\cdots,x_m)\) is called a \textbf{point
+estimator}
+
+    \section{Bernoulli Distribution}\label{bernoulli-distribution}
+
+\subsection{Theory}\label{theory}
+
+Suppose we flip a coin, \textbf{only once}. Then,
+
+\paragraph{Probability Mass Function}\label{probability-mass-function}
+
+\(f(x;p) = P(X = x) = p^{x}(1-p)^{1-x} \ \ \ \ x=0,1\)
+
+\paragraph{Mean}\label{mean}
+
+\(\overline{X } = E[X] = \sum\limits_{k=0}^1X_k \cdot p(X_k) = p\)
+
+\paragraph{Variance}\label{variance}
+
+\(\sigma^2 = Var(X) = \sum\limits_{k=0}^1 (X_{k}-\bar{X})^2p(X_k) = E(X^2) - [E(X)]^2 = p(1-p)\)
+
+\subsection{Example: Fair coin}\label{example-fair-coin}
+
+Let us flip a \textbf{fair coin}, so we know \(p = 0.5\). If X is a
+random variable indicating no of heads in the final outcome, then the
+probability mass function of X, would be as below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+
+The mean:0.5
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_MLE_files/29_MLE_3_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \textbf{Probability Mass Function for X=1}\\
+\(f(x;p) = P(X = x) = p^{x}q^{n-x} = (0.5)^{1}(0.5)^{1-1} = 0.5\)
+
+\textbf{Mean}\\
+\(\overline{X} = E[X] = \sum\limits_{k=0}^1X_k \cdot p(X_k) = p = 0.5\)
+
+\textbf{Variance}\\
+\(\sigma^2 = Var(X) = \sum\limits_{k=0}^1 (X_{k}-\bar{X})^2p(X_k) = E(X^2) - [E(X)]^2 = p(1-p) = (0.5)(0.5) = 0.25\)
+
+    \subsubsection{Statistical Outcome}\label{statistical-outcome}
+
+Above example was for a fair coin, so \(p=0.5\), but \(p\) could have
+varied anywhere between 0 and 1 in reality (that is, coin might be
+loaded). \(0 \leq p \leq 1\). So the question is if we observe a set of
+samples \(X_1, X_2, \cdots, X_m\), with values \(x_1,x_2, \cdots, x_m\)
+how do we determine the best value for \(p\)? We need a statistical
+procedure to determine the maximum likelihood of value \(p\), given
+\(X_1, X_2, \cdots, X_m\).
+
+Suppose we have conducted such an experiment and turns out below is the
+frequency distribution of the outcome (Note this is similar to Fig A we
+just saw above). It reads, we got 50 heads and 50 tails out of \(m=100\)
+trails.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_MLE_files/29_MLE_6_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    One could then \emph{estimate} the underlying \(p\) as simply the mean
+value as below. If \(X_1,X_2,\cdots,X_m\) are the total \(m\) number of
+samples, then
+
+\(\hat{p} = \dfrac{\sum\limits_{i=0}^1X_in(X_i)}{m} = \dfrac{ 0(50) + 1(50)}{50 + 50} = 0.5\)
+
+Thus the point estimator \(\hat{p}\) for \(p\) from given sample set is
+\(0.5\). Since we already know the theoretical \(p\) of fair coin, we
+are sure how best is our estimation \(\hat{p}\). This function which we
+just used is the maximum likelihood estimation function.
+
+    \subsection{Example: Loaded coin}\label{example-loaded-coin}
+
+Suppose we have a \textbf{loaded coin}, and assume, we hypotheticall
+know, \(p = 0.75\). If X is a random variable indicating no of heads in
+the final outcome, then the probability mass function of X, would be as
+below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+The mean:0.75
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_MLE_files/29_MLE_9_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \textbf{Probability Mass Function for X=1}\\
+\(f(x;p) = P(X = x) = p^{x}q^{n-x} = (0.75)^{1}(0.75)^{1-1} = 0.75\)
+
+\textbf{Mean}\\
+\(\overline{X} = E[X] = \sum\limits_{k=0}^1X_k \cdot p(X_k) = 0(0.25) + 1(0.75) = 0.75 = p\)
+
+\textbf{Variance}\\
+\(\sigma^2 = Var(X) = \sum\limits_{k=0}^1 (X_{k}-\bar{X})^2p(X_k) = E(X^2) - [E(X)]^2 = p(1-p) = (0.75)(0.25) = 0.1875\)
+
+    \subsubsection{Statistical Outcome}\label{statistical-outcome}
+
+You see, Fig A above actually represents how a frequency distribution of
+an experiment would be, provided the coin was loaded. So we could
+directly calculate the estimate as below.
+
+\(\hat{p} = \dfrac{\sum\limits_{i=0}^1X_in(X_i)}{m} = \dfrac{0(25) + 1(75)}{25 + 75} = 0.75\)
+
+Thus, from the sample observations \(x_1, x_2,.. ,x_m\), we are able to
+calculate \(\hat{p}\). Thus, for Bernoulli distributions, the mean
+\(\overline{X}\) of the sample set is the MLE of \(p\).
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Bernoulli Distribution; $m$ trials]
+\begin{equation}
+    \begin{aligned}
+        \hat{p} = u(x_1,x_2,\cdots,x_m) = \dfrac{\sum\limits_{i=0}^1X_in(X_i)}{m} \to p \label{eq:M001}
+    \end{aligned}
+\end{equation}
+\end{tcolorbox}
+    \subsection{MLE Derivation}\label{mle-derivation}
+
+\subsubsection{Establishing the likelihood
+function}\label{establishing-the-likelihood-function}
+
+We are just empirically convinced that the \textbf{estimator}
+\(u(X_1,X_2,\cdots,X_m) = \dfrac{\sum\limits_{i=0}^{1}X_in(X_i)}{m}\)
+gives us maximum likelihood value \(\hat{p}\) of \(p\). Here we try to
+prove mathematically that is the best estimator indeed out of all
+possibilities of \(p\) for given sample set.
+
+We start with the sample set. Remember, that is all we have to look at
+and try backwards to find maximum likelihood of \(p\) that would have
+resulted in that sample set. Let us take our loaded coin example above.
+Out of \(m=100\) trials, we got about 75 as heads(1) and 25 as tails(0).
+Our entire sample set might look like this: \(\{ 1,0,1,1,0,\cdots,1\}\)
+with length of \(m\).
+
+We will try to figure out the probability mass function of this sample
+result and see, when that \emph{joint pmf} maxes out for a given \(p\).
+Why? because, that is the best case, where we would have gotten all
+these values one after another. Any other \textbf{joint pmf} value,
+would have given lesser probability for all these values to occur
+simultaneously.
+
+Let me break it down. Here we are wondering \emph{I have this series of
+outcomes} and I need to find the probability of this occurance. This is
+a joint occurance, thus we would find the joint probability. Remember,
+each trial is independent.
+
+Suppose you have events A and B, and then asked, what is the probability
+of both A and B happeningn, that is \(A\cap B\), then you would say,
+\(p(A,B) = p(A \cap B) = p(A)p(B)\). Similarly, for
+\(\{ 1,0,1,1,0,\cdots,1\}\),
+
+\[
+p(X_1=1, X_2=0, X_3=1,\cdots,X_m=1) = p(X_1=1)p(X_2=0)p(X_3=1)\cdots p(X_m=1)
+\]
+
+Generalizing for any sample set, \[
+p(X_1=x_1, X_2=x_2, X_3=x_3,\cdots,X_m=x_m) = p(X_1=x_1)p(X_2=x_2)p(X_3=x_3)\cdots p(X_m=x_m) 
+\]
+
+We already know, \[
+p(X_i=x_i) = f(x_i;p) = p^{x_i}(1-p)^{1 - x_i}, \ \ \ \ x_i=0,1 \ \ \ \ 0 \leq p \leq 1
+\]
+
+Combining above two equations, we get,
+
+\begin{equation}
+\begin{aligned}
+    p(X_1=x_1, X_2=x_2, X_3=x_3,\cdots,X_m=x_m) = \prod_{i=1}^{m}p^{x_i}(1-p)^{1 - x_i} \\
+    = p^{x_1 + x_2 + \cdots + x_m}(1-p)^{(1_1+1_2+1_3\cdots+1_m) - (x_1 + x_2 + \cdots + x_m)} \\
+    = p^{y}(1 - p)^{m - y}, \ \ \ \ \text{where} \ \  y = \sum\limits_{i=1}^{m}x_i
+\end{aligned}
+\end{equation}
+
+Now, given the sample set, we have arrived at a \emph{joint pmf}
+function of \(p\). This is called the \textbf{likelihood function}. Let
+us denote it by \(L(p)\). So for a Bernoulli distribution we just
+established the likelihood function as
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Bernoulli Distribution; $m$ trials]
+The likelihood function,
+\begin{equation}
+\begin{aligned}
+    L(p) = p^{y}(1 - p)^{m - y}, \ \ \ \ \text{where} \ \  y = \sum\limits_{i=1}^{m}x_i \ \ \ \ 0 \leq p \leq 1 \label{eq:M002}
+\end{aligned}
+\end{equation}
+\end{tcolorbox}
+    \subsubsection{\texorpdfstring{Establishing the \(p\)
+range}{Establishing the p range}}\label{establishing-the-p-range}
+
+We now need to find out, what is the \(p\) value for which, we would get
+\(L(p)\) to max out. Why? Recall, that is the maximum probability our
+combination of sample values would have occurred. That is the best value
+we could find. (eh, as long as there is only one peak or maximum for
+\(L(p)\), but that is another problem for another time).
+
+Let us check out what happens to \(L(p)\) for edge values.
+
+\paragraph{Case 1: Getting all tails in sample
+set}\label{case-1-getting-all-tails-in-sample-set}
+
+This means,
+
+\[
+y = \sum\limits_{i=1}^{m}x_i = \sum\limits_{i=1}^{m}0 = 0 \\
+\therefore L(p) = p^0(1-p)^{m-0} = (1-p)^m
+\]
+
+The above function \((1-p)^m\) will have its maximum when \(p=0\).
+Logically for any \(p>0\), \(1-p\) would be lesser. We got all tails,
+that means, the probability of getting heads should be 0 which also
+makes sense (for other values of \(p\), there is still a chance to get
+all tails, but comparitively lesser chance. \(p=0\) has the maximum
+probability of getting us all tails, so that is our best estimate in
+this case)
+
+\[
+\therefore \text{when} \ \ y = 0, \ \ \ \ L_{max}(p) = 1 \ \ \ \ \implies \ \ \hat{p} = 0  
+\]
+
+\paragraph{Case 2: Getting all heads in sample
+set}\label{case-2-getting-all-heads-in-sample-set}
+
+This means
+
+\[
+y = \sum\limits_{i=1}^{m}x_i = \sum\limits_{i=1}^{m}1 = m \\
+\therefore L(p) = p^{m}(1-p)^{m-m} = p^m
+\]
+
+The above function \(p^m\) will have its maximum value when \(p=1\)
+because, the maximum value of \(p\) is 1. So maximum of \(p^m\) is also
+1. Any \(p < 1\) will result in reduced \(p^m\) also accordingly.
+
+\[
+\therefore \text{when} \ \ y = m, \ \ \ \ L_{max}(p) = 1 \ \ \ \ \implies \ \ \hat{p} = 1  
+\]
+
+\paragraph{Case 3: Neither Case 1 or Case
+2}\label{case-3-neither-case-1-or-case-2}
+
+This means, \(y\) is neither \(0\) nor \(m\). That is, \(0 < y < m\)
+
+\paragraph{\texorpdfstring{Case 3.1: When
+\(\hat{p} = 0\)}{Case 3.1: When \textbackslash{}hat\{p\} = 0}}\label{case-3.1-when-hatp-0}
+
+\[
+L(0) = 0^y(1-0)^{m-y} = 0
+\]
+
+\paragraph{\texorpdfstring{Case 3.2: When
+\(\hat{p} = 1\)}{Case 3.2: When \textbackslash{}hat\{p\} = 1}}\label{case-3.2-when-hatp-1}
+
+\[
+L(1) = 1^y(1-1)^{m-y} = 1^y0^{m-y} = 0
+\]
+
+    In fact, we could already check for any sample set of \(m=100\), how the
+function \(L(p)\) behaves. Only by observing where the function reaches
+maximum,
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In Fig A, when \(y=0\), potential candidate for \(\hat{p}\) is 0
+  because that is where \(L(p)\) reaches maximum of 1, and then quickly
+  faded to 0 thereafter.
+\item
+  In Fig B, when \(y=m\), potential candidate for \(\hat{p}\) is 1
+  because that is where \(L(p)\) reaches maximum of 1, and was 0 till
+  then.
+\item
+  In Fig C, when \(0<y<m\), potential candidate for \(\hat{p}\) is
+  \(y/m\) because that is where \(L(p)\) reaches maximum (though not 1
+  but dependent on \(p,y\)). Note, at \(p=0\) and \(p=1\), \(L(p)\) is 0
+  already. In fact, it is 0 for most of \(p\) which is an interesting
+  insight. It is only when we near the \(y/m\) the \(L(p)\) rises and
+  falls.
+\end{enumerate}
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_MLE_files/29_MLE_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Bernoulli Distribution; $m$ trials]
+\begin{itemize}
+\item When $y=0$, we already know best estimate as $\hat{p}=0$ as $L(p)$ reaches maximum value 1.
+\item When $y=m$, we already know best estimate as $\hat{p}=1$ as $L(p)$ reaches maximum value 1.
+\item When $0<y<m$, we already know $L(p)$ reaches minimum value 0, when $\hat{p} = 0$ or $\hat{p} = 1$. Since we set out to find the $\hat{p}$ at which $L(p)$ reaches maximum, we could ignore $\hat{p} = 0$ and $\hat{p} = 1$ for $0<y<m$
+\item Combining above points, we could say, we need to focus only on cases $0 < y < m$, and in that, only where $0 < p < 1$, because that is where $L(p)$ attains maximum for which we need to find respective $\hat{p}$. In other words, if you get all tails or all heads in a sample set, you know your best estimate $\hat{p}$ already. We set out to find for rest of the cases where $0 < p < 1$ 
+\end{itemize}
+\end{tcolorbox}
+    \subsubsection{Finding the optimal
+estimate}\label{finding-the-optimal-estimate}
+
+We just saw via graph (Fig C), the nature of \(L(p)\) where we could
+once again convinced of the optimality of \(y/m\) as best candidate for
+point estimator \(\hat{p}\), however we also could and should prove
+mathematically that is the case. From calculus, we know that the
+derivative \(\dfrac{dL(p)}{dp}\) will be 0 when \(L(p)\) reaches
+maximum (one could refer to appendix \ref{applying-derivatives-to-analyze-functions} for a quick recap on this concept). So by taking the derivative and equating to 0, we could derive
+the optimal \(p\).
+
+\[
+\begin{aligned}
+L(p) = p^{y}(1 - p)^{m - y} \\ \\
+\dfrac{dL(p)}{dp} = \dfrac{d\{ p^{y}(1 - p)^{m - y} \}}{p}
+\end{aligned}
+\]
+
+From \href{https://en.wikipedia.org/wiki/Product_rule}{product\_rule} of
+derivatives, in Leibniz's notation, \[
+\dfrac{d(u.v)}{dx} = \dfrac{du}{dx}.v + u.\dfrac{dv}{dx}
+\]
+
+    So,\\
+\[
+\begin{aligned}
+\dfrac{dL(p)}{dp} = \dfrac{d{(p^y)}}{dp}.(1-p)^{m-y} + \dfrac{d\{(1-p)^{m-y}\}}{dp}.p^y \\ \\ 
+\end{aligned}
+\]
+
+The term \(\dfrac{d\{(1-p)^{m-y}\}}{dp}\) is little tricky.
+
+Let \(u = (1-p),\ \  k = (m-y)\), then by using chain rule
+
+\[
+\begin{aligned}
+\dfrac{d\{(1-p)^{m-y}\}}{dp} = \dfrac{d\{u^k\}}{dp} = \dfrac{\partial u^k}{\partial u}\dfrac{\partial u}{\partial p} = ku^{k-1}\dfrac{\partial (1-p)}{\partial p} \\
+= ku^{k-1}(-1) = -ku^{k-1} \\
+= -(m-y)(1-p)^{m-y-1}
+\end{aligned}
+\]
+
+    Substituting,
+
+\[
+\begin{aligned}
+\dfrac{dL(p)}{dp} = yp^{y-1}.(1-p)^{m-y} - (m-y)(1-p)^{m-y-1}.p^y \\
+= yp^yp^{-1}.(1-p)^{m-y} - (m-y)(1-p)^{m-y}(1-p)^{-1}.p^y \\
+= p^y(1-p)^{m-y}\Big(yp^{-1} - (m-y)(1-p)^{-1}\Big) \\
+= p^y(1-p)^{m-y}\Big(\dfrac{y}{p} - \dfrac{m-y}{1-p}\Big)
+\end{aligned}
+\]
+
+\(\therefore\)
+
+\[
+\dfrac{dL(p)}{dp} = L(p)\Big(\dfrac{y}{p} - \dfrac{m-y}{1-p}\Big)
+\]
+
+Equating it to 0, and noting that, when the derivative is 0, \(L(p)\)
+reaches maximum, so it cannot be 0, we get,
+
+\[
+\begin{aligned}
+    \dfrac{dL(p)}{dp} = L(p)\Big(\dfrac{y}{p} - \dfrac{m-y}{1-p}\Big) = 0 \\
+    \implies \Big(\dfrac{y}{p} - \dfrac{m-y}{1-p}\Big)  = 0 \\
+    = y - yp - mp + yp = 0 \\
+    = y - mp = 0
+    \implies y = mp
+\end{aligned}
+\]
+
+    \(\therefore\), at \(\dfrac{dL(p)}{dp} = 0\), \(L(p)\) reaches maximum
+at \(y = mp\) or equivalently, in terms of \(p\), \(p = y/m\). Replacing
+\(y\) with its original summation \(\sum\limits_{i=1}^{m}x_i\), we
+finally get,
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Bernoulli Distribution; $m$ trials]
+\begin{equation}
+    \begin{aligned}
+        \hat{p} = \dfrac{y}{m} = \dfrac{\sum\limits_{i=1}^{m}x_i}{m} = \overline{x} \to p \label{eq:M003}
+    \end{aligned}
+\end{equation}
+\end{tcolorbox}
+    Thus, proved. Note it would have been easier to prove with taking
+logarithm on both sides of \(L(p)\). Also note this is same as
+\(\ref{eq:M001}\) except that, earlier we used frequency distribution's
+data so formula looks slightly different.
+
+    \section{Binomial Distribution}\label{binomial-distribution}
+
+Let us try similar approach for a Binomial distribution. Remember,
+binomial distribution is simply Bernoulli distributions repeated. When
+each Bernoulli event is independent, the resultant combined distribution
+(or the associated pmf) would be a Binomial distribution
+
+\subsection{Theory}\label{theory}
+
+Suppose we flip a coin, \(n\) no of times. Then,
+
+\paragraph{Probability Mass Function}\label{probability-mass-function}
+
+\(f(x;p) = P(X = x) = \dfrac {n!}{x!(n-x)!}p^{x}(1-p)^{n-x} \ \ \ \ x=0,1,\cdots,n\)
+
+\paragraph{Mean}\label{mean}
+
+\(\overline{X} = E[X] = \sum\limits_{k=0}^nX_k \cdot p(X_k) = np\)
+
+\paragraph{Variance}\label{variance}
+
+\(\sigma^2 = Var(X) = \sum\limits_{k=0}^n (X_{k}-\bar{X})^2p(X_k) = E(X^2) - [E(X)]^2 = np(1-p)\)
+
+\subsection{Example: Fair coin}\label{example-fair-coin}
+
+Let us flip a \textbf{fair coin} (so we know \(p = 0.5\)), \(n=4\)
+times. If X is a random variable indicating no of heads in the final
+outcome, then the probability mass function of X, for \(n=4\) would be
+as below.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+
+
+
+
+The mean:2.0
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_MLE_files/29_MLE_26_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \textbf{Probability Mass Function for X=2}\\
+\(f(x;p) = P(X = x) = \dfrac {n!}{x!(n-x)!}p^{x}q^{n-x} = \dfrac{4!}{2!(4-2)!}(0.5)^{2}(0.5)^{4-2} = 0.375\)
+
+\textbf{Mean}\\
+\(\overline{X} = E[X] = \sum\limits_{k=0}^nX_k \cdot p(X_k) = np = 4(0.5) = 2\)
+
+\textbf{Variance}\\
+\(\sigma^2 = Var(X) = \sum\limits_{k=0}^n (X_{k}-\bar{X})^2p(X_k) = E(X^2) - [E(X)]^2 = npq = 4(0.5)(0.5) = 1\)
+
+    \subsubsection{Statistical Outcome}\label{statistical-outcome}
+
+Suppose we conduct an experiment of flipping the fair coin \(n=4\) times
+and observe the result \(x_1 = \{ 0,0,1,0 \}\) this would mean, \(TTHT\)
+or \(X=1\) heads. So frequency of (X=1) adds by 1. Similarly, we repeat
+the experiment \(m=160\) times (just for convenience of numbers which
+you will realize shortly). So our samples would be
+\(X_1,X_2,\cdots,X_m\). We note down the frequency of \(X=x\) in each
+experiment and plot the graph. Suppose we get a discrete frequency
+distribution graph as below (left one and we could derive right one from
+frequency data).
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+The mean:2.0
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_MLE_files/29_MLE_29_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Let us calculate the mean value of above frequency distribution,
+\(\overline{X}\).
+
+\(\overline{X} = \dfrac{\sum\limits_{i=0}^{n}X_in(X_i)}{m} = \dfrac{ 0(10) + 1(40) + 2(60) + 3(40) + 4(10) }{ 10 + 40 + 60 + 40 + 10 } = \dfrac{320}{160} = 2 \nonumber\)
+
+Wait a minute, our theoretical \(p\) was 0.5?! Yes, in case of Binomial,
+we go further as dividing the mean \(\overline{X}\) by no of flips
+\(n\).
+
+\(\hat{p} = \dfrac{\overline{X}}{n} = \dfrac{\sum\limits_{i=0}^{n}X_in(X_i)}{nm} = \dfrac{2}{4} = 0.5\)
+
+It happens that, in case of binomial distribution, the best estimator
+\(\hat{p}\) for \(p\) would be \(\overline{X}/n\). Thus, from the sample
+observations \(x_1, x_2,.. ,x_m\), we are able to calculate \(\hat{p}\).
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Binomial Distribution; $n$ flips; $m$ trials]
+\begin{equation}
+    \begin{aligned}
+        \hat{p} = u(x_1,x_2,\cdots,x_m) = \dfrac{\sum\limits_{i=0}^{n}X_in(X_i)}{nm} \to p \label{eq:M004}
+    \end{aligned}
+\end{equation}
+\end{tcolorbox}
+    \textbf{Note:} By substituting, \(n=1\) in above equation we get the MLE
+for Bernoulli as expected. We now need to wonder how to prove, if this
+is the best MLE.
+
+    \subsection{MLE Derivation}\label{mle-derivation}
+
+    Let \(n\) be the number of flips and \(m\) be the number of trials. Then
+our sample set could be looking something like this:
+
+\[
+\begin{aligned}
+X_1 = \{0,1,...x_{1n}\} = 1 \text{ heads} \\
+X_2 = \{1,1,...x_{2n}\} = 4 \text{ heads} \\
+\cdots \\
+\cdots \\
+X_m = \{1,0,...x_{mn}\} = 2 \text{ heads} \\
+\end{aligned}
+\]
+
+Generalizing,
+
+\[
+\begin{aligned}
+X_1 = \{x_{11},x_{12},...x_{1n}\} = x_1 \text{ heads}\\
+X_2 = \{x_{21},x_{22},...x_{2n}\} = x_2 \text{ heads}\\
+\cdots \\
+\cdots \\
+X_m = \{x_{m1},x_{m2},...x_{mn}\} = x_m \text{ heads} \\
+\end{aligned}
+\]
+
+We already know, for a single Bernoulli distribution, the pmf is given
+by
+
+\[
+P(X = x) = {n \choose x}p^{x}(1-p)^{n-x}
+\]
+
+Therefore, \emph{given} an observed sample set \(X\), the combined or
+joint probability of all sample observations in the sample set could be
+given by, as likelihood function
+
+    \begin{equation}
+\begin{aligned}
+L(p) = P(X_1 = x_1; X_2 = x_2; \cdots X_m=x_m) = P(X_1 = x_1)P(X_2 = x_2)\cdots P(X_m=x_m) \\
+= \prod_{i=1}^{m} P(X_i= x_i) \\
+= \prod_{i=1}^{m} {n \choose x_i}p^{x_i}(1-p)^{n-x_i} \\
+= \Bigg\{ \prod_{i=1}^{m}{n \choose x_i} \Bigg\}\Bigg\{ \prod_{i=1}^{m}p^{x_i}(1-p)^{n-x_i} \Bigg\} \label{eq:M005}
+\end{aligned}
+\end{equation}
+
+    This time we will use natural logarithms to find the maximum. Recalling
+product rule of natural logarithms \ref{eq:MA04}
+
+\begin{equation}
+\begin{aligned}
+\Bigg\{ \prod_{i=1}^{m}{n \choose x_i} \Bigg\} = \Bigg\{ {n \choose x_1}{n \choose x_2}\cdots{n \choose x_m} \Bigg\} \\
+\implies ln\Bigg\{ \prod_{i=1}^{m}{n \choose x_i} \Bigg\} = \Bigg\{ ln{n \choose x_1} + ln{n \choose x_2} + \cdots + ln{n \choose x_m} \Bigg\} \\
+= \sum\limits_{i=1}^m{ln{n \choose x_i}} \label{eq:M006}
+\end{aligned}
+\end{equation}
+
+    \[
+\begin{aligned}
+    \Bigg\{ \prod_{i=1}^{m}p^{x_i}(1-p)^{n-x_i} \Bigg\} = p^{(x_1+x_2+\cdots+x_m)}(1-p)^{(n_1+n_2+\cdots+n_m) - (x_1+x_2+\cdots+x_m) } \nonumber
+\end{aligned}
+\]
+
+Let \(y = \sum\limits_{i=1}^{m}x_i\). The preceding equation could be
+written as, \[
+\begin{aligned}
+     \Bigg\{ \prod_{i=1}^{m}p^{x_i}(1-p)^{n-x_i} \Bigg\} = p^y(1-p)^{mn - y}
+\end{aligned}
+\]
+
+Taking natural logrithm on both sides and using product rule,
+
+\begin{equation}
+\begin{aligned}
+    ln \Bigg\{ \prod_{i=1}^{m}p^{x_i}(1-p)^{n-x_i} \Bigg\} = ln \Big\{p^y(1-p)^{mn - y} \Big\} \\
+    = y \Big\{ln(p)\Big\} + (mn-y)\Big\{ln(1-p)\Big\} \label{eq:M007}
+\end{aligned}
+\end{equation}
+
+    Using \(\ref{eq:M007}\) and \(\ref{eq:M006}\) in \(\ref{eq:M005}\), and
+again using product rule,
+
+\begin{equation}\begin{aligned}
+    ln \Big\{ L(p) \Big\} =  \sum\limits_{i=1}^m{ln{n \choose x_i}} + y \Big\{ln(p)\Big\} + (mn-y)\Big\{ln(1-p)\Big\} \nonumber
+\end{aligned}\end{equation}
+
+    To find the maximum, let us equate the derivative of
+\(ln \Big\{ L(p) \Big\}\) w.r.t \(p\) to \(0\).
+
+\[
+\begin{aligned}
+    \dfrac{ d \Big\{ \{ln  L(p) \}\Big\}  }{dp} = 0 \\
+    \implies \dfrac{ d\Big\{ \sum\limits_{i=1}^m{ln{n \choose x_i}} \Big\} }{dp} + 
+    \dfrac{ d\Big\{ y \{ln(p)\}  \Big\} }{dp} + 
+    \dfrac{ d\Big\{ (mn-y)\{ln(1-p)\} \Big\} }{dp} = 0
+\end{aligned}    
+\]
+
+The first term has no \(p\), so the derivative w.r.t \(p\) becomes 0.
+And for rest of components, by referring to derivatives of natural
+logarithms \ref{eq:MA06} and \ref{eq:MA07},
+
+    \[
+\begin{aligned}
+0 + y \dfrac{d \{ ln(p) \}}{dp} + (mn-y) \dfrac{d \{ ln(1-p) \}  }{dp} = 0 \\
+y \dfrac{1}{p} + (mn-y) \dfrac{-1}{1-p} = 0 \\
+\implies \dfrac{y}{p} = \dfrac{mn-y}{1-p} \\
+y - yp = mnp - yp \\
+y = mnp \\
+p = \dfrac{y}{mn}
+\end{aligned}
+\]
+
+    Substituting, \(y = \sum\limits_{i=1}^{m}x_i\), we get,
+\(p = \dfrac{ \sum\limits_{i=1}^{m}x_i }{mn}\). Note that this is
+consistent with our empirical evidence \(\ref{eq:M004}\)
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Binomial Distribution; $n$ flips; $m$ trials]
+\begin{equation}
+    \begin{aligned}
+        \hat{p} = \dfrac{y}{mn} = \dfrac{\sum\limits_{i=1}^{m}x_i}{mn} = \dfrac{\overline{x}}{n} \to p \label{eq:M008}
+    \end{aligned}
+\end{equation}
+\end{tcolorbox}
+    \section{Normal Distribution}\label{normal-distribution}
+
+Let us try Normal distribution as an example of MLE for continuous
+distribution.
+
+\subsection{Theory}\label{theory}
+
+\paragraph{Probability Density
+Function}\label{probability-density-function}
+
+\(f(x;p) = \dfrac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\Big[ -\dfrac{(x_i - \mu)^2}{2\sigma^2} \Big]\)
+
+\paragraph{Mean}\label{mean}
+
+\(\mu\)
+
+\paragraph{Variance}\label{variance}
+
+\(\sigma^2\)
+
+    \subsection{MLE Derivation}\label{mle-derivation}
+
+Let \(X_1, X_2, \cdots, X_m\) be a random sample from
+\(N(\theta_1, \theta_2)\), where both the parameters belong to parameter
+space defined as
+
+\[
+\Omega = \{ (\theta_1, \theta_2): -\infty < \theta_1 < \infty, 0 < \theta_2 < \infty \}
+\]
+
+Letting \(\theta_1 = \mu, \theta_2 = \sigma^2\), one might be tempted to
+attempt the likelihood function as below (as combined \emph{joint
+probability} of getting all the sample data.
+
+\[
+L(\theta_1,\theta_2) = P(X_1=x_1;X_2=x_2;\cdots;X_n=x_m)
+\]
+
+    However, unlike a \emph{pmf} which directly gives \(P(X_i=x_i)\), a
+\emph{pdf} only a function and always needs integration to find the
+probability area. That is, if \(x_1\) is a sample observation from
+\(N(\theta_1, \theta_2)\), then \(P(X_1=x_1)=0\), and we are not
+interested in that in particular (which was a wrong notion implicitly
+implanted while attempting joint \emph{pmf}). Instead we are interested
+in a collective probability density \emph{function} of all samples'
+individual probability densities.
+
+That is, below is a \emph{continuous} pdf for sample \(X_1\)
+
+\[
+A = f(x_1; \theta_1, \theta_2) = \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_1-\theta_1)^2 }{2\theta_2}}\Big]  
+\]
+
+But when we want to find a probability with above \emph{pdf} its always
+in a range. For example,
+
+\begin{equation}
+P(X_1 \leq a) = \int_{-\infty}^{a} f(x_1; \theta_1, \theta_2)dx_1 \label{eq:M009}
+\end{equation}
+
+Similarly, for another sample \(X_2\) from same \emph{pdf},
+
+\[
+B = f(x_2; \theta_1, \theta_2) = \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_2-\theta_1)^2 }{2\theta_2}}\Big] 
+\]
+
+And for that, for an interesting range, the probability could be
+something like below.
+
+\begin{equation}
+P(X_2 \leq b) = \int_{-\infty}^{b} f(x_2; \theta_1, \theta_2)dx_2 \label{eq:M010}
+\end{equation}
+
+Note A and B are the \emph{functions} while, eq. \(4\) and \(6\) denote
+a probability calculated out of those functions. When we say, we are
+interested in \emph{joint pdf}, we are interested in the multiplication
+of the \emph{functions} A and B (because they are independent), and not
+probabilities like \(\ref{eq:M009}\) and \(\ref{eq:M010}\). The
+probability of any joint interested event could be calculated in
+resultant function AB. That is,
+
+\[
+AB = f(x_1,x_2;\theta_1,\theta_2) = \prod\limits_{i=1}^{2} \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}}\Big] 
+\]
+
+And then, in this \emph{joint pdf} I could calculate interested
+probabilities, for example,
+
+\[
+P(X_1 \leq a; X_2 \leq b) = \int_{-\infty}^{x_1=a}\int_{-\infty}^{x_2=b} \prod\limits_{i=1}^{2} \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}}\Big]
+\]
+
+Generalizing,
+
+\[
+P(X_1 \leq x_1; X_2 \leq x_2) = \prod\limits_{i=1}^{2} \int_{-\infty}^{x_i} \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}}\Big] 
+\]
+
+Not just left area, but any probability of interest could be calculated
+after this step. For example,
+
+\[
+P(X_1 \geq x_1; X_2 \geq x_2) = \prod\limits_{i=1}^{2} \int_{x_i}^{\infty} \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}}\Big] 
+\]
+
+This is why, unlike \emph{pmf}, for a pdf,
+
+\[
+\begin{aligned}
+f(x_1,x_2;\theta_1,\theta_2) = f(x_1;\theta_1,\theta_2)f(x_2;\theta_1,\theta_2) \\ 
+\neq P(X_1 \leq x_1; X_2 \leq x_2) \\
+\neq P(X_1 \geq x_1; X_2 \geq x_2) \\
+\neq P(X_1 = x_1; X_2 = x_2)
+\end{aligned}
+\]
+
+    Thus, a better notion of \emph{joint pdf} as the likelihood function is
+
+\[
+\begin{aligned}
+L(\theta_1,\theta_2) = f(x_1,x_2,\cdots,x_m;\theta_1,\theta_2) = f(x_1;\theta_1,\theta_2)f(x_2;\theta_1,\theta_2)\cdots f(x_m;\theta_1,\theta_2) \\
+= \prod_{i=1}^{m} \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}  \Big]} 
+\end{aligned}
+\]
+
+    Taking natural logarithms on both sides,
+
+\begin{equation}
+\begin{aligned}
+ln \ L(\theta_1,\theta_2) = ln \Bigg\{  \prod_{i=1}^{m} \dfrac{1}{\sqrt{2\pi\theta_2}}{\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}  \Big]}   \Bigg\} \\
+= ln \Bigg\{  \prod_{i=1}^{m} \dfrac{1}{\sqrt{2\pi\theta_2}} \Bigg\} + 
+ln \Bigg\{  \prod_{i=1}^{m} {\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}  \Big]} \Bigg\} \label{eq:M011}
+\end{aligned}
+\end{equation}
+
+    Note that the term,
+
+\[
+\begin{aligned}
+ln \Bigg\{  \prod_{i=1}^{m} \dfrac{1}{\sqrt{2\pi\theta_2}} \Bigg\} 
+= ln \ \Bigg( \dfrac{1}{\sqrt{2\pi\theta_2}} \Bigg)^m \\
+= ln \ (2\pi\theta_2)^{\frac{-m}{2}} \\
+= \bigg(\dfrac{-m}{2}\bigg) \ ln\ (2\pi\theta_2)
+\end{aligned}
+\]
+
+    And for the 2nd term,
+
+\[
+\begin{aligned}
+ln \Bigg\{  \prod_{i=1}^{m} {\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}  \Big]}
+\end{aligned} \Bigg\} 
+= ln \Bigg\{ {\text{exp}}\sum\limits_{i=1}^m{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}  \Big]} \\
+= ln \Bigg\{ {\text{exp}}{\Big[ -\dfrac{  \sum_{i=1}^m(x_i-\theta_1)^2 }{2\theta_2}  \Big]}
+\Bigg\} 
+\]
+
+    Recall that,
+
+\(a = e^{ln(a)}\) so when \(a = e\),
+\(e = e^{ln(e)} \implies ln(e) = 1\). Applying that,
+
+\[
+\begin{aligned}
+ln \Bigg\{  \prod_{i=1}^{m} {\text{exp}}{\Big[ -\dfrac{  (x_i-\theta_1)^2 }{2\theta_2}  \Big]}
+\end{aligned} \Bigg\} 
+= \Bigg[-\dfrac{  \sum_{i=1}^m(x_i-\theta_1)^2 }{2\theta_2}\Bigg]
+\]
+
+    Applying above derivations in eq \(\ref{eq:M011}\),
+
+\begin{equation}
+\begin{aligned}
+ln \ L(\theta_1,\theta_2) = \bigg(\dfrac{-m}{2}\bigg) \ ln\ (2\pi\theta_2) + \Bigg[-\dfrac{  \sum_{i=1}^m(x_i-\theta_1)^2 }{2\theta_2}\Bigg] \label{eq:M012}
+\end{aligned}
+\end{equation}
+
+    In order to evaluate when \(ln L(\theta_1, \theta_2)\) reaches maximum,
+let us take the partial derivatives w.r.t to \(\theta_1, \theta_2\) and
+equate them to 0 (refer appendix \ref{surface-plots})
+
+Assuming \(\theta_2\) as a constant,
+
+\begin{equation}\begin{aligned}
+\dfrac{\partial L}{\partial \theta_1} = 0 +  \dfrac{\partial \Bigg[-\dfrac{  \sum_{i=1}^m(x_i-\theta_1)^2 }{2\theta_2}\Bigg]}{\partial \theta_1} \\
+= \Bigg[-\dfrac{  \sum_{i=1}^m2(x_i-\theta_1) }{2\theta_2}\Bigg] \\
+= \Bigg[-\dfrac{  \sum_{i=1}^m(x_i-\theta_1) }{\theta_2}\Bigg] \label{eq:M013}
+\end{aligned}\end{equation}
+
+Taking \(\dfrac{\partial L}{\partial \theta_1} = 0\), we get,
+
+\begin{equation}\begin{aligned} 
+\Bigg[-\dfrac{  \sum_{i=1}^m(x_i-\theta_1) }{\theta_2}\Bigg] = 0 \\
+\implies \sum_{i=1}^m(x_i-\theta_1) = 0 \\
+\sum_{i=1}^mx_i-m\theta_1 = 0 \\
+\implies \theta_1 = \dfrac{1}{m}\sum_{i=1}^mx_i = \overline{x} \label{eq:M014}
+\end{aligned}\end{equation}
+
+    Assuming \(\theta_1\) as constant,
+
+\begin{equation}\begin{aligned}
+\dfrac{\partial L}{\partial \theta_2} = \bigg( \dfrac{-m}{2} \bigg) \dfrac{\partial ln(2\pi \theta_2)}{\partial \theta_2} + \dfrac{\partial }{\partial \theta_2}\Bigg[-\dfrac{  \sum_{i=1}^m(x_i-\theta_1)^2 }{2\theta_2}\Bigg] \label{eq:M015}
+\end{aligned}\end{equation}
+
+    Taking the first term, recall \(\ref{eq:MA08}\) that
+\(\dfrac{d(ln(cx))}{dx} = \dfrac{1}{x}\), yeah the constant disappears?!
+
+\[
+\therefore \bigg( \dfrac{-m}{2} \bigg) \dfrac{\partial ln(2\pi \theta_2)}{\partial \theta_2}
+= \bigg( \dfrac{-m}{2} \bigg) \dfrac{1}{\theta_2}
+\]
+
+    Taking the second term,
+
+\[\begin{aligned}
+\dfrac{\partial }{\partial \theta_2}\Bigg[-\dfrac{  \sum_{i=1}^m(x_i-\theta_1)^2 }{2\theta_2}\Bigg] \\
+= \dfrac{ - \sum_{i=1}^m(x_i-\theta_1)^2}{2}\dfrac{\partial}{\partial \theta_2}\bigg(\dfrac{1}{\theta_2}\bigg) \\
+= \dfrac{ - \sum_{i=1}^m(x_i-\theta_1)^2}{2}\bigg(\dfrac{\partial \theta_2^{-1}}{\partial \theta_2}\bigg) \\
+= \dfrac{ - \sum_{i=1}^m(x_i-\theta_1)^2}{2}\bigg(-\theta_2^{-2}\bigg) \\
+= \dfrac{ \sum_{i=1}^m(x_i-\theta_1)^2}{2\theta_2^2}
+\end{aligned}\]
+
+    Substituting both in \(\ref{eq:M015}\),
+
+\begin{equation}\begin{aligned}
+\dfrac{\partial L}{\partial \theta_2} = \bigg( \dfrac{-m}{2} \bigg) \dfrac{1}{\theta_2} + \dfrac{ \sum_{i=1}^m(x_i-\theta_1)^2}{2\theta_2^2} 
+\end{aligned}\end{equation}
+
+    Taking \(\dfrac{\partial L}{\partial \theta_2} = 0\), we get,
+
+\begin{equation}\begin{aligned}
+\bigg( \dfrac{-m}{2} \bigg) \dfrac{1}{\theta_2} + \dfrac{ \sum_{i=1}^m(x_i-\theta_1)^2}{2\theta_2^2} = 0  \\
+\implies \dfrac{ \sum_{i=1}^m(x_i-\theta_1)^2}{2\theta_2^2} = \bigg( \dfrac{m}{2} \bigg) \dfrac{1}{\theta_2} \\
+\text{Cancelling common terms on both sides,} \\
+\dfrac{ \sum_{i=1}^m(x_i-\theta_1)^2}{\theta_2} = m \\
+\implies \theta_2 = \dfrac{ \sum_{i=1}^m(x_i-\theta_1)^2}{m} \\
+\theta_2 = \dfrac{ \sum_{i=1}^m(x_i-\overline{x})^2}{m} \label{eq:M016}
+\end{aligned}\end{equation}
+
+    \subsection{Visualization}\label{visualization}
+
+Visualizing the likelihood function \(ln L(\theta_1,\theta_2)\), helps
+to comprehend the concept better especially when we observe where it
+maxes out to provide us the maximum likelihood estimators
+\(\hat{\theta_1},\hat{\theta_2}\). Graphing the direct
+\(L(\theta_1,\theta_2)\) is complicated, so we instead graphed the log
+likelihood function \(ln (L(\theta_1,\theta_2))\). Sample set from a
+binomail distribution (which is approximated by normal distribution
+usually) is used to feed the \(ln(L)\), and then its graph observed for
+varying values of \(\theta_1,\theta_2\).
+
+\paragraph{Sample setup}\label{sample-setup}
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}1}]:} \PY{n}{x\PYZus{}i} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}   \PY{c+c1}{\PYZsh{} a binomial distribution}
+        \PY{c+c1}{\PYZsh{} x\PYZus{}i = np.random.normal(2, 1.5, 100)  \PYZsh{} one could also try this}
+        \PY{n}{m} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{p}{)}
+        \PY{n}{mean} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{p}{)}\PY{o}{/}\PY{n}{m}
+        \PY{n}{variance} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{p}{[} \PY{p}{(}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{n}{mean}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{x\PYZus{}i} \PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{n}{m}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{, variance:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{mean}\PY{p}{,} \PY{n}{variance}\PY{p}{)}\PY{p}{)}
+\end{InVerbatim}
+    \begin{Verbatim}[commandchars=\\\{\},fontsize=\footnotesize]
+mean:2.0, variance:1.0
+
+    \end{Verbatim}
+
+    \paragraph{Graph}\label{graph}
+
+For brevity, graph code is hidden. I have created a separate interactive
+page which explains in detail, how the graph is created and also an
+interactive 3D view of below image at the end of it. Please check it out
+\href{http://nbviewer.jupyter.org/gist/parthi2929/96f5ad7b30a8588ee2920fed594a7172}{here}.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    
+    \texttt{\color{outcolor}Out[{\color{outcolor}3}]:}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{29_MLE_files/29_MLE_61_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \paragraph{\texorpdfstring{Finding the maximum from the computed
+\(ln(L)\)}{Finding the maximum from the computed ln(L)}}\label{finding-the-maximum-from-the-computed-lnl}
+
+The \(ln(L)\) value was computed for different values of
+\((\theta_1,\theta_2)\) along with fixed sum of sample sets as in the
+formula, to build the graph. Now, one could find the maximum value of
+that computed \(ln(L)\), and note that, the respective
+\((\theta_1,\theta_2)\) are indeed the mean and variance as we
+calculated in \(\ref{eq:M014}\) and \(\ref{eq:M016}\).
+\begin{InVerbatim}[commandchars=\\\{\},fontsize=\scriptsize]
+{\color{incolor}In[{\color{incolor}4}]:} \PY{n}{df}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{idxmax}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+\end{InVerbatim}
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} t1     2.000000
+        t2     1.000000
+        L    -22.703017
+        Name: 789, dtype: float64
+\end{Verbatim}
+            \begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Normal Distribution]
+Thus, for any sample set from normal distribution with $N(\theta_1,\theta_2)$, Maximul Likelihood Estimators are
+\begin{equation}
+    \hat{\theta_1} = \dfrac{1}{m}\sum_{i=1}^mx_i = \overline{x} \label{eq:M017} 
+\end{equation}
+\begin{equation}
+    \hat{\theta_2} = \dfrac{ \sum_{i=1}^m(x_i-\overline{x})^2}{m} \label{eq:M018}
+\end{equation}
+\end{tcolorbox}
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

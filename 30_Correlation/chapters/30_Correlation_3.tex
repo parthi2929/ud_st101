@@ -1,0 +1,207 @@
+\documentclass[tikz = true, float=false, crop=false, 11pt]{standalone}
+
+% ANY PREAMBLE HERE IS REMOVED IF STANDALONE SO..
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+	\usepackage{../myipy2tex}
+	\usepackage{../myrawtex}
+	\usepackage{../myipy2tex_custom} 
+	\usepackage{../myrawtex_custom} 
+	\usepackage{../mytikz_custom}		
+	\setcounter{secnumdepth}{5}
+	\usepackage{xr-hyper}
+%	\externaldocument{30_Covariance_1}
+%	\externaldocument{30_Covariance_2}
+%	\externaldocument{30_Covariance_3}
+%	\externaldocument{30_Covariance_4}	
+%	\externaldocument{30_Correlation_1}		
+%	\externaldocument{30_Correlation_2}		
+%	\externaldocument{30_Appendix_1}		
+	\title{Correlation}
+\fi
+
+    
+\begin{document} 
+	
+	\section{Formalization of Sample and Population Correlation}
+	
+	The \textit{standardized covariance} with its unique characteristic is thus called \textbf{Pearson's Correlation Coefficient}, $\mathbf{r}$ as it was formalized by Pearson. It is not required to standardize the sample set everytime, and calculate the standardized covariance as slope of the resultant regression line. We could calculate directly from the given sample set as below.  
+	
+	$$\begin{aligned}
+	r = \mathrm{cov}(X_s, Y_s)  = \dfrac{1}{N-1}\sum_{i=1}^N (x_{is} - \overline{x_s}) (y_{is} - \overline{y_s}) \\  
+	\end{aligned}$$
+	
+	Since standardized, 
+	$$\begin{aligned}
+	\overline{x_s} &= \overline{y_s} = 0  \\	
+	x_{is} = \dfrac{x_i - \overline{x}}{s_X} \ \ &, \ \ y_{is} = \dfrac{y_i - \overline{y}}{s_Y}
+	\end{aligned}$$
+	
+	$$\begin{aligned}
+	\therefore r =  \dfrac{1}{N-1}\sum_{i=1}^N (x_{is})(y_{is}) &=  \dfrac{1}{N-1}\sum_{i=1}^N \bigg( \dfrac{x_i - \overline{x}}{s_X} \bigg)\bigg( \dfrac{y_i - \overline{y}}{s_Y} \bigg) \\
+	&= \dfrac{1}{s_X s_Y} \dfrac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})(y_i - \overline{y}) \\
+	&= \dfrac{\mathrm{cov}(X, Y)}{s_X s_Y} 
+	\end{aligned}$$
+	
+	Thus the \textit{sample correlation coefficient} \textbf{r} of a given sample set $(X,Y)$ is given by
+	
+	$$\begin{aligned}
+	r = \dfrac{\mathrm{cov}(X,Y)}{s_X s_Y}
+	\end{aligned}$$
+	
+	By analogy, a \textit{population correlation coefficient} could also be derived. If $(X,Y)$ are two discrete RVs, with $X = x_1, x_2, \cdots, x_N$, and $Y = y_1, y_2,\cdots, y_M$, and if $p(X,Y), p(X), p(Y)$ are their joint and marginal \textit{pmf}s respectively, then a population correlation coefficient $\mathbf{\rho}$ could be defined as, 
+	
+
+	\begin{align}
+	\rho = \dfrac{\sum_x \sum_y (x - \mu_X)(y - \mu_Y)p(X,Y)}{\sqrt{\sum_x (x - \mu_X)^2p(X) \sum_y (y - \mu_Y)^2p(Y)} }
+	\end{align}
+
+	where, $\mu_X, \mu_Y, \sigma_X, \sigma_Y$ are respective population parameters of X and Y. Recalling Covariance and Variance formula for population as below, 
+	
+	$$\begin{aligned}
+	\mathrm{Cov}(X,Y) = \sum_x \sum_y (x - \mu_X)(y - \mu_Y)p(X,Y) \\
+	\sigma_X^2 = \sum_x (x - \mu_X)^2p(X)  \\
+	\sigma_Y^2 = \sum_y (y - \mu_Y)^2p(Y) 
+	\end{aligned}$$
+	
+	and using that, one could rewrite $\rho$ as
+	
+	\begin{align}
+		\rho = \dfrac{\sum_x \sum_y (x - \mu_X)(y - \mu_Y)p(X,Y)}{\sqrt{\sum_x (x - \mu_X)^2p(X) \sum_y (y - \mu_Y)^2p(Y)} } = \dfrac{\mathrm{Cov}(X,Y)}{\sigma_X\sigma_Y} 
+	\end{align}
+
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Sample and Population Correlation]
+	The \textit{sample correlation coefficient}, $r$ of any given sample set $(X,Y)$ is given by 
+	\begin{align}
+		r = \dfrac{\mathrm{cov}(X,Y)}{s_X s_Y} \label{eq:C6_001}
+	\end{align} \\
+	The \textit{population correlation coefficient}, $\rho$ of any given discrete RVs $(X,Y)$ is given by 
+	\begin{align}
+		\rho = \dfrac{\mathrm{Cov}(X,Y)}{\sigma_X\sigma_Y} \label{eq:C6_002}
+	\end{align}
+	Similar $\rho$ applicable to continuous RVs also, with integration suitably placed in place of summation. 
+	\end{tcolorbox}		
+
+	\section{Cosine Similarity}
+	
+	Interestingly correlation factor could be visualized to an extent in vector form or at least provides us easier computational method of calculation via matrices. Suppose there is a sample set $(X,Y)$ of size 3. That is, if $(X,Y) = \{ (x_1,y_1), (x_2,y_2), (x_3,y_3) \}$, 
+	we could represent them in a 3D vector form as below
+	
+	$$\begin{aligned}
+	\vec{x} &= x_1\hat{i} + x_2\hat{j} + x_3\hat{k} \\
+	\vec{y} &= y_1\hat{i} + y_2\hat{j} + y_3\hat{k} 
+	\end{aligned}$$
+	
+	In simpler matrix notation, 
+	
+	$$\begin{aligned}
+	\vec{x} &= [x_1, x_2, x_3] \\
+	\vec{y} &= [y_1, y_2, y_3]^T
+	\end{aligned}$$
+	
+	Using law of cosines, the angle $\theta$ between vectors $\vec{x},\vec{y}$ can be calculated as
+	
+	$$\begin{aligned}
+	\mathrm{cos}\theta = \dfrac{\vec{x} \bullet \vec{y}}{\lVert x \rVert \lVert y \rVert} 
+	\end{aligned}$$
+	
+	where
+	
+	$$\begin{aligned}
+		& \vec{x} \bullet \vec{y} = 
+		\begin{matrix}
+		\begin{bmatrix}
+		x_1 & x_2 & x_3
+		\end{bmatrix}     \\[2.8ex] 
+		\end{matrix}
+		\begin{bmatrix} 
+		y_1 \\ y_2 \\ y_3
+		\end{bmatrix} = 
+		\begin{bmatrix} 
+		x_1 \\ x_2 \\x_3
+		\end{bmatrix} \bullet
+		\begin{bmatrix} 
+		y_1 \\ y_2 \\ y_3
+		\end{bmatrix}	= x_1y_1 + x_2y_2 + x_3y_3 = \sum_i^3 x_i y_i
+	\end{aligned}$$
+	
+	and
+	
+	$$\begin{aligned}
+	\lVert x \rVert = \sqrt{x_1^2 + x_2^2 + x_3^2} = \sqrt{\sum_i x_i^2} \\
+	\lVert y \rVert = \sqrt{y_1^2 + y_2^2 + y_3^2} = \sqrt{\sum_i y_i^2} \\
+	\end{aligned}$$
+	
+	Readers are strongly advised to go through appendix \ref{sc:AP_001} where the concept is explained in detail and also concluded that the above relation is applicable to any higher dimensional vector. Thus, recalling equation \ref{eq:AP_006} from appendix, if the sample set size is $N$, then we could represent in matrix form and extend the cosine relationship as follows. 
+	
+	Let 
+	
+	$$\begin{aligned}
+	\vec{x} &= [x_1, x_2, x_3, \cdots, x_N] \\
+	\vec{y} &= [y_1, y_2, y_3, \cdots, y_N]^T
+	\end{aligned}$$
+	
+	then, 
+	
+	$$\begin{aligned}
+	& \vec{x} \bullet \vec{y} = 
+	\begin{matrix}
+	\begin{bmatrix}
+	x_1 & x_2 & \cdots & x_N
+	\end{bmatrix}     \\[10ex] 
+	\end{matrix}
+	\begin{bmatrix} 
+	y_1 \\ y_2 \\ \vdots \\ y_N
+	\end{bmatrix} = 
+	\begin{bmatrix} 
+	x_1 \\ x_2 \\ \vdots \\ x_N
+	\end{bmatrix} \bullet
+	\begin{bmatrix} 
+	y_1 \\ y_2 \\ \vdots \\ y_N
+	\end{bmatrix}	
+	&= x_1y_1 + x_2y_2 + \cdots + x_N y_N = \sum_i^N x_i y_i
+	\end{aligned}$$
+	
+	and 
+	
+	$$\begin{aligned}
+	\lVert x \rVert = \sqrt{x_1^2 + x_2^2 + \cdots + x_N^2} = \sqrt{\sum_i^N x_i^2} \\
+	\lVert y \rVert = \sqrt{y_1^2 + y_2^2 + \cdots + y_N^2} = \sqrt{\sum_i^N y_i^2} \\
+	\end{aligned}$$
+	
+	so,
+	
+	$$\begin{aligned}
+	\mathrm{cos}\theta = \dfrac{\vec{x} \bullet \vec{y}}{\lVert x \rVert \lVert y \rVert}  = \dfrac{\sum_i^N x_i y_i}{\sqrt{\sum_i^N x_i^2}\sqrt{\sum_i^N y_i^2}}
+	\end{aligned}$$
+	
+	If we subtract the mean of the RVs, from each of the elements as below, setting up  \textbf{centered} vectors, 
+	
+	$$\begin{aligned}
+		\vec{x_c} &= [x_1 - \overline{x}, x_2 - \overline{x}, x_3 - \overline{x}, \cdots, x_N - \overline{x}] \\
+		\vec{y_c} &= [y_1 - \overline{y}, y_2 - \overline{y}, y_3 - \overline{y}, \cdots, y_N - \overline{y}]^T
+	\end{aligned}$$	
+	
+	this similarly leads to 
+	
+	$$\begin{aligned}
+	\mathrm{cos}\theta = \dfrac{\vec{x_c} \bullet \vec{y_c}}{\lVert x_c \rVert \lVert y_c \rVert}  = \dfrac{\sum_i^N (x_i - \overline{x}) (y_i - \overline{y}) }{ \sqrt{\sum_i^N (x_i - \overline{x})^2}\sqrt{\sum_i^N (y_i - \overline{y})^2} }
+	\end{aligned}$$
+	
+	which is same as \textit{sample correlation coefficient}, $r$. Note that, the value of cosine ranges between $\pm 1$. So when both vectors are in same direction, the $\theta$ is 0, thus cos$\theta$ = 1, maximum value indicating perfect linearity. Similarly when both vectors are in opposite direction, $\theta = 180^{\circ}$, implying cos$\theta$ = -1. When the vectors are perpendicular to each other, $\theta = 90^{\circ}$ implying cos$\theta$ = 0, thus zero correlation. 
+	
+	For those, who find it difficult to comprehend higher dimensional vector, remember that in any higher dimensional vector, the angle between the resultant two vectors is always on a plane (2D), thus the law of cosine still applies. This is also explained in appendix \ref{sc:AP_001}
+	
+	\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Cosine Similarity]
+	The \textit{sample correlation coefficient}, $r$ of any given sample set $(X,Y)$  can also be expressed in vector matrix form, giving a cosine relationship as
+	\begin{align}
+		r = \mathrm{cos}\theta = \dfrac{\vec{x_c} \bullet \vec{y_c}}{\lVert x_c \rVert \lVert y_c \rVert} = \dfrac{\mathrm{cov}(X,Y)}{s_Xs_Y} \label{eq:C6_003}
+	\end{align} \\
+	where, $\vec{x_c}$ and $\vec{y_c}$ indicate \textit{centered} dataset
+	\end{tcolorbox}		
+	
+	
+\end{document}

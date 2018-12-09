@@ -1,0 +1,253 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[float=false,crop=false]{standalone}
+
+    
+    
+
+
+% if you need to cross reference to any raw tex file from this resultant tex file you  need to refer them here..
+% it is not needed when you compile main.tex but make sure the labels are unique
+\ifstandalone
+\usepackage{../myipy2tex}  % NOTE WE ARE ASSSUMING THE STYLE FILE TO BE ONE FOLDER ABOVE
+\usepackage{../myipy2tex_custom}  % YOUR FURTHER CUSTOM STYLES FOR IPYTHON TO LATEX
+\usepackage{../mytikz_custom}
+\usepackage{xr-hyper} % Needed for external references       
+    \externaldocument{30_Correlation_Main} 
+\title{Covariance and Correlation}
+\fi
+
+
+
+
+    
+
+
+    
+
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    % remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \section{Why}\label{why}
+
+Earlier in regression, we said, by eyeballing, one could roughly
+conclude if a viable regression line possible that could be useful. But
+that of course, is not a rigorous approach to decide upon the
+\textbf{goodness} of relation between two variables. Note that for all
+below variation in X and Y, we could still draw a regression line, but
+it is obvious, for those \textbf{closer} to linear relationship between
+them positively or negatively will benefit from regression line than
+those who do not.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_1_files/30_Covariance_1_3_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \section{What}\label{what}
+
+\paragraph{Relationship Definition}\label{relationship-definition}
+
+Let X and Y be the random variables involved, and each point
+representing a \((x,y)\) pair value. What we want to see is, how is each
+point located with respect to every other point in the given sample set.
+Also we want to know if that is in a positive or negative way. Imagine a
+pair of points \((x_1,y_1)\) and \((x_2,y_2)\). Let \(x_1\) and \(x_2\)
+be in increasing order, then if \((y_2 > y_1)\) we could say, the pair
+is in a positive relationship. We could also sort \(y_1,y_2,\cdots\) in
+increasing order, and then say if \(x_2 > x_1\), then the pair is in a
+positive relationship. By positive we just mean, with increasing \(x\)
+the \(y\) increases. The negative relationship is defined simply the
+opposite of it, that is, with increasing \(x\), the \(y\) decreases. Or
+with increasing \(y\), the \(x\) decreases. Consequently, in terms of
+points we could say, given \(y_1<y_2\) , if \(x_1 > x_2\), then its a
+negative relationship. Summarizing we could stick to below convention,
+but one could try the alternate also.
+
+Given \((x_1, y_1),(x_2, y_2)\) and \(y\) is in increasing order, i.e.,
+\((y_1 < y_2)\),\\
+if \((x_1 < x_2)\) or \((x_2 - x_1>0)\), this implies \(x\) has
+increased with \(y\), a positive relationship\\
+if \((x_1 > x_2)\) or \((x_1 - x_2>0)\), this implies \(x\) has
+decreased with \(y\), a negative relationship
+
+    \paragraph{Visual Quantification via Colored
+Rectangles}\label{visual-quantification-via-colored-rectangles}
+
+Now that we have defined the relationship, next should think about
+quantification. After all, what we seek is a \emph{measure}, a
+quantification of the relationship. How could we quantitatively
+differentiate the defined relation between pairs say,
+\([(x_1,y_1),(x_2,y_2)]\) and \([(x_3,y_3),(x_4,y_4)]\)? This could be
+approached with geometry. Imagine drawing a rectangle based on
+\([(x_1,y_1),(x_2,y_2)]\), say \(R_{12}\) and \([(x_3,y_3),(x_4,y_4)]\),
+say \(R_{34}\) separately. Then one rectangle's area would be smaller or
+larger than the other, indicating a quantified measure of how farther
+apart the points are comparitively. Also, we could color the area to
+indicate if the involved pair that is used to construct the rectangle is
+in a positive or negative relationship. To construct a rectangle out of
+two points \([(x_1,y_1),(x_2,y_2)]\), we could just consider them as a
+two oppositing corners of the rectangle, and simply draw one whose sides
+are parallel to the axes. Let us color green for a positive relationship
+and red for a negative relationship. Such a visual quantification is
+illustrated below. Note that, a certain transparency is maintained for
+each rectangle, so the overlapping does not hide any information, but
+simply transparent to us.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_1_files/30_Covariance_1_7_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{equation}
+\text{Area of a rectangle,    } R_{ij} = (x_i - x_j)(y_i - y_j)  \label{eq:C001}
+\end{equation}
+
+    \section{Area Distribution}\label{area-distribution}
+
+Of course we have not drawn all possible combinations above for given
+set of points \((x_1,y_1), (x_2, y_2), (x_3, y_3), (x_4,y_4)\) to
+establish first the basic idea, but that is what we would do for any
+given set of points:Plot all such relationship rectangles for every
+point with every other point in the given sample. We want to know for
+each and every point in given set, its relationship with every other
+point, \emph{quantitatively}. However there is a problem.
+
+    \begin{quote}
+\emph{If we try to plot for every possible pair of given set of data,
+there will be symmetrically distributed duplicity which not only
+introduces redundancy in the measure, but also neutrlizes our
+visualization}
+\end{quote}
+
+    That is, if \((x_i,y_i)\) is a positive relationship with \((x_j,y_j)\),
+it also means \((x_j,y_j)\) is in negative relationship with
+\(x_i, y_i\) in other direction. Trying to take all possible rectangle
+will have this duality for all rectangles. For example, by iterated dual
+looping if at one iteration if \((x_i,y_i) = (1,2), (x_j,y_j) = (3,4)\),
+then down the line, when j takes i value, we have,
+\((x_i,y_i) = (3,4), (x_j,y_j = (1,2))\). In terms of rectangle
+notation, for every \(R_{ij}\), there is \(R_{ji}\) which is of equal
+value.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_1_files/30_Covariance_1_12_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Thus the flaw in the visualization already strongly suggests not to take
+all rectangles for the measure but may be, just half of it as
+representative of entire sample set. Below are the total number of
+rectangles for \(N=6\) pairs of sample sets. The blue shaded is
+symmetrical to yellow shaded. This is why the measure would be
+inherently doubled if all rectangles are taken into account. By nature,
+it is not needed. Think about it. Taking all possible rectangles, simply
+means, looking for a linear relationship in one direction and then
+again, in reverse, and deciding that the relationship is null. We should
+instead decide to take in to account only one direction,which means,
+only half of below rectangles would sufficely give a measure of
+relationship in one direction. Also note the diagonal rectangles have
+zero area, thus can be neglected too.
+% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))% remove input part of cells with tag to_remove
+    %((- if cell.metadata.hide_input -))
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight},min size={0.5\linewidth}{!}}{30_Covariance_1_files/30_Covariance_1_15_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Thus, we would just go with only either blue or yellow rectangles as
+illustrated above. Let us look closer at the product
+\((x_i-x_j)(y_i-y_j)\) for all rectangles. The no of rectangles in the
+half we are interested in is given by \(\dfrac{N(N-1)}{2}\). If \(N=6\),
+you could observe we have \(\dfrac{(6)(5)}{2} = 15\) rectangles as our
+interest out of \(N^2 = 6^2 = 36\) rectangles.
+
+If we untangle the rectangle information systematically,we could come up
+with a summation to calculate the total value as below. Let us consider
+the \emph{yellow} rectangles (you could try the blue ones)
+
+\begin{itemize}
+\tightlist
+\item
+  Let \(i=1\), then
+  \(R_{12} + R_{13} + R_{14} + R_{15} + R_{16} = \sum\limits_{j=i+1}^6R_{1j}\)\\
+\item
+  Let \(i=2\), then
+  \(R_{23} + R_{24} + R_{25} + R_{26} = \sum\limits_{j=i+1}^6R_{2j}\)\\
+\item
+  Let \(i=3\), then
+  \(R_{34} + R_{35} + R_{36} = \sum\limits_{j=i+1}^6R_{3j}\)\\
+\item
+  Let \(i=4\), then \(R_{45} + R_{46} = \sum\limits_{j=i+1}^6R_{4j}\)\\
+\item
+  Let \(i=5\), then \(R_{56} = \sum\limits_{j=i+1}^6R_{5j}\)
+\end{itemize}
+
+We could thus consilidate the total area of our interest as,
+
+\[
+\text{Total Interested Area, TIA} = \sum\limits_{i=1}^5\sum\limits_{j=i+1}^{6}R_{ij}
+\]
+
+When \(i=6\), \(j=i+1=7\), and there is no \(R_{67}\), or
+\(R_{67} = 0\), so we could rewrite slightly as,
+
+\[
+\text{TIA } = \sum\limits_{i=1}^6\sum\limits_{j=i+1}^{6}R_{ij}
+\]
+
+    Using \(\ref{eq:C001}\), and generalizing to \(N\),
+
+\begin{equation}
+    \text{TIA} = \sum\limits_{i=1}^N\sum\limits_{j=i+1}^{N}(x_i - x_j)(y_i - y_j) \label{eq:C002}
+\end{equation}
+
+    \emph{Alternate approach}: We instead could have taken all area, and
+then simply divided by 2. Here, the derivation is straight forward. For
+\(N=6\), there are \(N^2=36\) rectangles possible. And as indexed in
+last diagram, the total area would be,
+
+\[
+\text{Total Area} = \sum\limits_{i=1}^N\sum\limits_{j=1}^NR_{ij}
+\]
+
+Using \(\ref{eq:C001}\) and taking the half as that is our interested
+area, we get,
+
+    \begin{equation}
+\text{TIA} = \dfrac{1}{2}\sum\limits_{i=1}^N\sum\limits_{j=1}^{N}(x_i - x_j)(y_i - y_j) \label{eq:C003}
+\end{equation}
+
+    Both \(\ref{eq:C002}\) and \(\ref{eq:C003}\) are equivalent, but
+\(\ref{eq:C002}\) gives a better intuition, what we are after. Let us
+take a closer look next at the rectangular area distribution.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
